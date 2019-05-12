@@ -1,6 +1,6 @@
 {
   "name": "kamand-web",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "files": [
@@ -9,7 +9,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "URL_OF_YOUR_REPOSITORY"
+    "url": "https://github.com/karianpour/kamand-web"
   },
   "private": false,
   "scripts": {
