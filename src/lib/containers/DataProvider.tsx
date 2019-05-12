@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { observer } from 'mobx-react-lite';
-import { AppStoreContext } from '../../lib/store/appStore';
+import { AppStoreContext } from '../store/appStore';
 
 export interface IDataOptions {
   key: string,
