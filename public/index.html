@@ -20,6 +20,21 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+    <style>
+      @font-face {
+        font-family: Nahid;
+        src: url('%PUBLIC_URL%/assets/Nahid.eot');
+        src: url('%PUBLIC_URL%/assets/Nahid.eot?#iefix') format('embedded-opentype'),
+            url('%PUBLIC_URL%/assets/Nahid.woff') format('woff'),
+            url('%PUBLIC_URL%/assets/Nahid.ttf') format('truetype');
+        font-weight: normal;
+      }
+      html *
+      {
+        font-family: Nahid;
+        font-size: 16px;
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

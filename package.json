@@ -1,22 +1,26 @@
 {
   "name": "kamand-web",
   "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@types/jest": "24.0.12",
-    "@types/node": "12.0.0",
-    "@types/react": "16.8.17",
-    "@types/react-dom": "16.8.4",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1",
-    "typescript": "3.4.5"
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "URL_OF_YOUR_REPOSITORY"
   },
+  "private": false,
   "scripts": {
+    "htmlcss": "copyfiles -u 2 ./src/lib/**/*.html ./src/lib/**/*.css ./dist/",
+    "tsc": "rm -rf dist && tsc --build ./tsconfig.build.json && npm run htmlcss",
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "notused-build": "react-scripts build",
+    "notused-test": "react-scripts test",
+    "notused-eject": "react-scripts eject",
+    "notused-compile": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files --ignore __tests__,spec.js,test.js,__snapshots__",
+    "notused-dist": "npm run tslint && npm run removedist && npm run tsc && npm run gulp:task && cp package.json ./dist && cp README.md ./dist"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -32,5 +36,43 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "@types/jest": "24.0.12",
+    "@types/node": "12.0.0",
+    "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
+    "@types/d3-dsv": "^1.0.36",
+    "@types/d3-format": "^1.3.1",
+    "@types/d3-time-format": "^2.1.1",
+    "@types/moment-jalaali": "^0.7.4",
+    "@types/react-jss": "^8.6.3",
+    "@types/react-router-dom": "^4.3.1",
+    "@types/uuid": "^3.4.4",
+    "axios": "^0.18.0",
+    "d3-dsv": "^1.1.1",
+    "i18next": "^15.0.7",
+    "jss-rtl": "^0.2.3",
+    "localforage": "^1.7.3",
+    "mobx": "^5.9.0",
+    "mobx-persist": "^0.4.1",
+    "mobx-react-lite": "^1.1.1",
+    "moment-jalaali": "^0.8.3",
+    "react-hichestan-numberinput": "^0.1.15",
+    "react-i18next": "^10.5.2",
+    "react-jss": "^8.6.1",
+    "react-router-dom": "^4.3.1",
+    "react-vis": "^1.11.7",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/react": "16.8.17",
+    "@types/react-dom": "16.8.4",
+    "babel-cli": "^6.26.0",
+    "copyfiles": "^2.1.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1",
+    "typescript": "3.4.5"
   }
 }
