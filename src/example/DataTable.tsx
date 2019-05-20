@@ -26,8 +26,8 @@ const DataTable: React.FunctionComponent<IProps> = observer((props) => {
   const { classes } = props;
   const appStore = useContext(AppStoreContext);
   const key = 'test';
-  const query = 'testQuery';
-  const queryParam = {testP: true};
+  const query = 'publicQuery';
+  const queryParam = {year: '1397'};
 
   useEffect(()=>{
     appStore.prepareQueryData(key, query, queryParam, false);

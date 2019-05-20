@@ -7,8 +7,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { mapToFarsi } from '../lib/utils/farsiUtils';
-import withData, { IDataOptions } from '../lib/containers/DataProvider';
+import { mapToFarsi } from '../../lib/utils/farsiUtils';
+import withData, { IDataOptions } from '../../lib/containers/DataProvider';
 
 
 const styles = {
@@ -22,11 +22,11 @@ const styles = {
 
 const dataOption: IDataOptions = {
   key: 'test',
-  query: 'testQuery',
-  queryParams: {testP: true},
+  query: 'publicQuery',
+  queryParams: {year: '1397'},
 }
 
-const DataTableSimple: React.FunctionComponent<IProps> = (props) => {
+const DataTable: React.FunctionComponent<IProps> = (props) => {
   const { t } = useTranslation();
   const { classes, queryData } = props;
 
@@ -62,4 +62,4 @@ interface IProps {
   queryData: any[],
 }
 
-export default withStyles(styles)(withData(DataTableSimple, dataOption));
+export default withStyles(styles)(withData(DataTable, dataOption));

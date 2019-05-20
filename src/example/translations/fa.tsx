@@ -12,6 +12,7 @@ const translation = {
     },
     data: {
       type_name: 'نوع',
+      gauge_label: 'متوسط',
     },
   },
 }

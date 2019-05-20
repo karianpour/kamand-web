@@ -9,7 +9,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 // import DataTable from "./DataTable";
-import DataTableSimple from './DataTableSimple';
+import DataTab from './containers/DataTab';
 
 
 const App: React.FC = () => {
@@ -26,7 +26,7 @@ const App: React.FC = () => {
         </Link>
       </React.Fragment>
     )}>
-      <Route path="/data" component={DataTableSimple} />
+      <Route path="/data" component={DataTab} />
     </KamandApp>
   );
 }
