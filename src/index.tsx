@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import fa from './example/translations/fa';
 import en from './example/translations/en';
-import initTranslation from './lib/translations/i18n';
+import {initTranslation} from './lib/translations/i18n';
 import ExampleApp from './example/ExampleApp';
 // import * as serviceWorker from './serviceWorker';
 
