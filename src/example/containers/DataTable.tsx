@@ -24,6 +24,7 @@ const dataOption: IDataOptions = {
   key: 'test',
   query: 'publicQuery',
   queryParams: {year: '1397'},
+  publicQuery: true,
 }
 
 const DataTable: React.FunctionComponent<IProps> = (props) => {

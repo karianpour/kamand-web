@@ -1,43 +1,63 @@
-import { observable, decorate, action, configure } from 'mobx';
+import { observable, decorate, action, reaction, toJS, configure } from 'mobx';
 import { createContext, Context } from 'react';
-import { create, persist } from 'mobx-persist'
-import localforage from 'localforage';
+import { login, IUser } from '../api/authApi';
 
 
 configure({ enforceActions: "observed" });
 
 class AuthStore {
-  hydrated:boolean = false;
+  user?:IUser;
   loggedin:boolean = false;
   token?:string;
 
-  setHydrated(hydrated: boolean){
-    this.hydrated = hydrated;
+  setUser(user:IUser) {
+    this.user = user;
+    if(user.token){
+      this.loggedin = true;
+      this.token = user.token;
+    }else{
+      this.loggedin = false;
+      this.token = undefined;
+    }
   }
 
+  clearUser() {
+    this.user = undefined;
+    this.loggedin = false;
+    this.token = undefined;
+  }
+
+  async login (username:string, password: string) : Promise<void> {
+    const user = await login({username, password});
+    this.setUser(user);
+  }
 }
 
 decorate(AuthStore, {
-  hydrated: observable,
   loggedin: observable,
   token: observable,
-  setHydrated: action,
+  user: observable.shallow,
+  setUser: action,
+  clearUser: action,
+  login: action,
 });
 
-const schema = {
-  loggedin: true,
-  token: true,
-}
-
-const hydrate = create({
-  storage: localforage,
-  jsonify: false,  
-  debounce: 2000,
-});
-
-export const authStore = persist(schema)(new AuthStore());
-
-hydrate('__auth__', authStore)
-    .then(() => authStore.setHydrated(true));
+export const authStore = new AuthStore();
 
 export const AuthStoreContext: Context<AuthStore> =  createContext(authStore);
+
+let json = localStorage.getItem('__auth__');
+if(json) {
+  const data = JSON.parse(json);
+  if(data){
+    if(data.user){
+      authStore.setUser(data.user);
+    }
+  }
+}
+
+reaction(() => JSON.stringify(toJS(authStore)), json => {
+  localStorage.setItem('__auth__', json);
+}, {
+  delay: 2000,
+});

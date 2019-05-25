@@ -1,7 +1,7 @@
 import { observable, decorate, action, configure } from 'mobx';
 import { createContext, Context } from 'react';
 // import { setAppStore } from '../api/kamandApi';
-import { fetchData } from '../api/kamandApi';
+import { fetchData, loadActData, saveActData } from '../api/kamandApi';
 import { ISnackMessage } from './interfaces/authInterfaces';
 
 configure({ enforceActions: "observed" });
@@ -12,6 +12,7 @@ export class AppStore {
   snackMessage?: ISnackMessage;
 
   readonly queryData = observable.map({}, { deep: false });
+  readonly actData = observable.map({}, { deep: false });
 
   // constructor(){
     // setAppStore(this);
@@ -38,18 +39,31 @@ export class AppStore {
     return this.queryData.get(key);
   }
 
-  async prepareQueryData(key: string, query: string, queryParam: any, forceRefresh: boolean) : Promise<void> {
+  async prepareQueryData(key: string, query: string, queryParam: any, forceRefresh: boolean, publicQuery: boolean = true) : Promise<void> {
     if(!this.queryData.has(key) || forceRefresh){
-      const data = await fetchData(query, queryParam);
+      const data = await fetchData(query, queryParam, publicQuery);
       this.setQueryData(key, data);
     }
   }
 
-  // raceProgress?: RaceProgress;
+  setActData(key: string, actData?: any) {
+    this.actData.set(key, actData);
+  }
 
-  // setRaceProgress(raceProgress?: RaceProgress){
-  //   this.raceProgress = raceProgress;
-  // }
+  getActData(key: string): any{
+    return this.actData.get(key);
+  }
+
+  async loadActData(key: string, query: string, queryParam: any) : Promise<void> {
+    const data = await loadActData(query, queryParam);
+    this.setActData(key, data);
+  }
+
+  async saveActData(key: string, query: string, data: any) : Promise<any> {
+    this.setActData(key, data);
+    const result = await saveActData(query, data);
+    return result;
+  }
 }
 decorate(AppStore, {
   pageTitle: observable,
@@ -60,22 +74,12 @@ decorate(AppStore, {
   snackMessage: observable,
   setSnackMessage: action,
   
-  // queryData: observable,
-  // raceProgress: observable,
   setQueryData: action,
   prepareQueryData: action,
+  setActData: action,
+  loadActData: action,
+  saveActData: action,
 });
-
-// export class RaceProgress {
-  
-//   constructor(
-//     private appStore: AppStore,
-//   ){
-//   }
-
-// }
-// decorate(RaceProgress, {
-// });
 
 export const appStore = new AppStore();
 

@@ -6,6 +6,7 @@ export interface IDataOptions {
   key: string,
   query: string,
   queryParams: any,
+  publicQuery: boolean,
   readonly forwardRef?: boolean,
 }
 
@@ -20,7 +21,7 @@ const withData = (Component:React.FunctionComponent<any>, option: IDataOptions) 
   const appStore = useContext(AppStoreContext);
 
   useEffect(()=>{
-    appStore.prepareQueryData(option.key, option.query, option.queryParams, false);
+    appStore.prepareQueryData(option.key, option.query, option.queryParams, false, option.publicQuery);
   }, [appStore]);
 
   const queryData: any[] = appStore.getQueryData(option.key);

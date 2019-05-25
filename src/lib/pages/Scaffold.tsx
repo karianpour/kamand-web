@@ -8,7 +8,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -24,7 +24,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
 
-// import { AuthStoreContext } from '../store/authStore';
+import { AuthStoreContext } from '../store/authStore';
 import { AppStoreContext } from '../store/appStore';
 import HomePage from './HomePage';
 import NotFound from './NotFound';
@@ -56,9 +56,11 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
   const [sideMenu, setSideMenu] = useState(false);
   const { t } = useTranslation();
   // const authStore = useContext(AuthStoreContext);
+  const authStore = useContext(AuthStoreContext);
   const appStore = useContext(AppStoreContext);
   const { appBarHidden } = appStore;
   const { classes } = props;
+  const { user } = authStore;
 
   return (
     <Router>
@@ -67,11 +69,11 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
           <React.Fragment>
             <AppBar position="fixed">
               <Toolbar>
-                <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={() => setSideMenu(true)}>
+                <IconButton color="inherit" aria-label="Menu" onClick={() => setSideMenu(true)}>
                   <MenuIcon />
                 </IconButton>
-                <p className={classes.username}></p>
-                <PageTitle variant="h6" color="inherit" className={classes.grow} />
+                <p></p>
+                <PageTitle variant="h6" color="inherit" />
                 {/* <Button color="inherit">{t('auth.login')}</Button> */}
                 <div className={classes.logoBox}></div>
               </Toolbar>
@@ -113,6 +115,7 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
           </div>
         </Drawer>
         <div className={classes.content}>
+          {authStore.loggedin || !props.login ? null: props.login}
           <Switch>
             <Route exact path="/" component={HomePage} />
             <Route path="/about-us" component={AboutUsPage} />
@@ -126,9 +129,9 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
   );
 });
 
-interface IProps {
-  classes: any,
+interface IProps extends WithStyles<typeof styles>{
   menus?: ReactNode,
+  login?: ReactNode,
   children?: ReactNode,
 }
 

@@ -31,7 +31,7 @@ const KamandApp: React.FC<IProps> = (props) => {
       <MuiThemeProvider theme={theme}>
         <Notifier/>
         <Suspense fallback={<Loader />}>
-          <Scaffold menus={props.menus}>
+          <Scaffold menus={props.menus} login={props.login}>
             {props.children}
           </Scaffold>
         </Suspense>
@@ -48,6 +48,7 @@ const Loader = () => (
 
 interface IProps {
   menus?: ReactNode,
+  login?: ReactNode,
   children?: ReactNode,
   translation?: any,
 }
