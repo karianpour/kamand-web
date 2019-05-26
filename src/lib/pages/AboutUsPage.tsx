@@ -52,7 +52,7 @@ const AboutUsPage: React.FunctionComponent<IProps> = observer((props) => {
   const appStore = useContext(AppStoreContext);
   useEffect(() => {
     appStore.setPageTitle(t('pages.aboutus'));
-  });
+  }, [appStore, t]);
 
   return (
     <Paper className={classes.listAbout}>

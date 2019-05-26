@@ -23,13 +23,13 @@ const HomePage :  React.FunctionComponent<IProps> = observer((props) => {
   const appStore  = useContext(AppStoreContext);
   useEffect(()=>{
     appStore.setPageTitle(t('auth.logging_out'));
-  });
+  }, [appStore, t]);
 
   const authStore  = useContext(AuthStoreContext);
 
-  // useEffect(() => {
-  //   authStore.clearPlayer();
-  // });
+  useEffect(() => {
+    authStore.clearUser();
+  }, [authStore]);
 
   return(
     <div className={classes.list}>

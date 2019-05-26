@@ -21,7 +21,7 @@ const NotFound :  React.FunctionComponent<IProps> = observer((props) => {
   const appStore  = useContext(AppStoreContext);
   useEffect(()=>{
     appStore.setPageTitle(t('pages.not_found'));
-  });
+  }, [appStore, t]);
 
   return(
     <div className={classes.list}>

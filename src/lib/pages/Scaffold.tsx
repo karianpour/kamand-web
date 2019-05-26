@@ -19,9 +19,9 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import PhoneIcon from '@material-ui/icons/Phone';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+import HomeIcon from '@material-ui/icons/Home';
+import ExitIcon from '@material-ui/icons/ExitToApp';
+import PublicIcon from '@material-ui/icons/Public';
 
 
 import { AuthStoreContext } from '../store/authStore';
@@ -92,20 +92,20 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
             <List>
               <Link to="/">
                 <ListItem button key='home'>
-                  <ListItemIcon><FavoriteIcon /></ListItemIcon>
+                  <ListItemIcon><HomeIcon /></ListItemIcon>
                   <ListItemText primary={t('pages.home')} />
                 </ListItem>
               </Link>
               <Divider />
               <Link to="/about-us">
                 <ListItem button key='about-us'>
-                  <ListItemIcon><PhoneIcon /></ListItemIcon>
+                  <ListItemIcon><PublicIcon /></ListItemIcon>
                   <ListItemText primary={t('pages.aboutus')} />
                 </ListItem>
               </Link>
               <Link to="/logout">
                 <ListItem button key='logout'>
-                  <ListItemIcon><InboxIcon /></ListItemIcon>
+                  <ListItemIcon><ExitIcon /></ListItemIcon>
                   <ListItemText primary={t('auth.logout')} />
                 </ListItem>
               </Link>
