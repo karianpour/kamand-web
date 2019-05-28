@@ -1,4 +1,3 @@
-import { ITestData } from '../store/interfaces/dataInterfaces';
 // import { AppStore } from '../store/appStore';
 import axios, { AxiosRequestConfig } from 'axios';
 import { APIADDRESS } from './authApi';
@@ -6,7 +5,7 @@ import { authStore } from '../store/authStore';
 
 // let appStore: AppStore;
 
-export async function fetchData(query: string, params: any, publicQuery: boolean = false) : Promise<ITestData[] | undefined>{
+export async function fetchData(query: string, params: any, publicQuery: boolean = false) : Promise<any>{
   try{
     const headers = !authStore.token ? undefined : {'Authorization': `Bearer ${authStore.token}`};
     const config:AxiosRequestConfig = {
@@ -26,7 +25,7 @@ export async function fetchData(query: string, params: any, publicQuery: boolean
   }
 }
 
-export async function loadActData(query: string, params: any) : Promise<ITestData[] | undefined>{
+export async function loadActData(query: string, params: any) : Promise<any>{
   try{
     const headers = !authStore.token ? undefined : {'Authorization': `Bearer ${authStore.token}`};
     const config:AxiosRequestConfig = {
@@ -46,7 +45,7 @@ export async function loadActData(query: string, params: any) : Promise<ITestDat
   }
 }
 
-export async function saveActData(query: string, data: any) : Promise<ITestData[] | undefined>{
+export async function saveActData(query: string, data: any) : Promise<any>{
   try{
     const headers = !authStore.token ? undefined : {'Authorization': `Bearer ${authStore.token}`};
     const config:AxiosRequestConfig = {

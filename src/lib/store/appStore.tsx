@@ -3,6 +3,7 @@ import { createContext, Context } from 'react';
 // import { setAppStore } from '../api/kamandApi';
 import { fetchData, loadActData, saveActData } from '../api/kamandApi';
 import { ISnackMessage } from './interfaces/authInterfaces';
+import { IQueryData } from './interfaces/dataInterfaces';
 
 configure({ enforceActions: "observed" });
 
@@ -12,6 +13,7 @@ export class AppStore {
   snackMessage?: ISnackMessage;
 
   readonly queryData = observable.map({}, { deep: false });
+  readonly filtersData = observable.map({});
   readonly actData = observable.map({}, { deep: false });
 
   // constructor(){
@@ -27,12 +29,28 @@ export class AppStore {
   }
 
   setSnackMessage(snackMessage?:ISnackMessage){
-    console.log(snackMessage);
     this.snackMessage = snackMessage;
   }
 
-  setQueryData(key: string, queryData?: any) {
-    this.queryData.set(key, queryData);
+  setFilter(key: string, filter?: any) {
+    this.filtersData.set(key, filter);
+  }
+
+  getFilter(key: string): any{
+    return this.filtersData.get(key);
+  }
+
+  setQueryData(key: string, queryParam?: any, data?: any) {
+    if(Array.isArray(data)){
+      data.forEach((d, i) => {
+        d.arrayIndex = i;
+      })
+    }
+    const qd: IQueryData = observable.object({
+      queryParam: observable.map(queryParam, { deep: false }),
+      data: observable.array(data, { deep: false }),
+    }, {  });
+    this.queryData.set(key, qd);
   }
 
   getQueryData(key: string): any{
@@ -42,7 +60,7 @@ export class AppStore {
   async prepareQueryData(key: string, query: string, queryParam: any, forceRefresh: boolean, publicQuery: boolean = true) : Promise<void> {
     if(!this.queryData.has(key) || forceRefresh){
       const data = await fetchData(query, queryParam, publicQuery);
-      this.setQueryData(key, data);
+      this.setQueryData(key, queryParam, data);
     }
   }
 
@@ -59,8 +77,8 @@ export class AppStore {
     this.setActData(key, data);
   }
 
-  async saveActData(key: string, query: string, data: any) : Promise<any> {
-    this.setActData(key, data);
+  async saveActData(key: string | null, query: string, data: any) : Promise<any> {
+    if(key) this.setActData(key, data);
     const result = await saveActData(query, data);
     return result;
   }
@@ -74,6 +92,7 @@ decorate(AppStore, {
   snackMessage: observable,
   setSnackMessage: action,
   
+  setFilter: action,
   setQueryData: action,
   prepareQueryData: action,
   setActData: action,
