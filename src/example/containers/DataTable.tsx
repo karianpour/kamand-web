@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { withStyles, Paper } from '@material-ui/core';
+import { withStyles, WithStyles, Paper } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -9,6 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import withData, { IDataOptions } from '../../lib/containers/DataProvider';
+import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';
 
 
 const styles = {
@@ -42,7 +43,7 @@ const DataTable: React.FunctionComponent<IProps> = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {queryData && queryData.map((td, index) => (
+          {queryData && queryData.data && queryData.data.map((td, index) => (
             <TableRow key={index}>
               <TableCell padding='none' component="th" scope="row">
                 {td.type_name}
@@ -58,9 +59,8 @@ const DataTable: React.FunctionComponent<IProps> = (props) => {
 
 };
 
-interface IProps {
-  classes: any,
-  queryData: any[],
+interface IProps extends WithStyles<typeof styles>{
+  queryData: IQueryData,
 }
 
 export default withStyles(styles)(withData(DataTable, dataOption));

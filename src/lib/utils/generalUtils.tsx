@@ -1,7 +1,8 @@
 import i18n from '../translations/i18n';
 
 export function msleep(n:number) {
-  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
+  return new Promise(resolve => setTimeout(resolve, n));
+//  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
 }
 
 export function sleep(ms:number) {

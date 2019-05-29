@@ -14,6 +14,7 @@ import {
   DiscreteColorLegend
 } from 'react-vis';
 import Gauge from 'react-svg-gauge';
+import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';
 
 const styles = {
   chartContainer: {
@@ -32,7 +33,7 @@ const DataChart: React.FunctionComponent<IProps> = (props) => {
   const { t } = useTranslation();
   const { classes, queryData } = props;
 
-  if(!queryData || queryData.length===0){
+  if(!queryData || !queryData.data || queryData.data.length===0){
     return <p>no data</p>;
   }
 
@@ -42,7 +43,7 @@ const DataChart: React.FunctionComponent<IProps> = (props) => {
 
   const chartData:IChartDataRow[] = [];
   
-  queryData.forEach((row)=>{
+  queryData.data.forEach((row)=>{
     const found = chartData.find( cd => cd.x === parseInt(row.month));
     if(found){
       found.y += row.count;
@@ -97,7 +98,7 @@ const DataChart: React.FunctionComponent<IProps> = (props) => {
 };
 
 interface IProps extends WithStyles<typeof styles>{
-  queryData: any[],
+  queryData: IQueryData,
 }
 
 export default withStyles(styles)(withData(DataChart, dataOption));

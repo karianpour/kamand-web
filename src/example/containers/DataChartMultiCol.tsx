@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import withData, { IDataOptions } from '../../lib/containers/DataProvider';
 
-import { withStyles } from '@material-ui/core';
+import { withStyles, WithStyles } from '@material-ui/core';
 import {
   XYPlot,
   XAxis,
@@ -13,6 +13,7 @@ import {
   VerticalBarSeriesCanvas,
   DiscreteColorLegend
 } from 'react-vis';
+import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';
 
 
 const styles = {
@@ -32,7 +33,7 @@ const DataChartMultiCol: React.FunctionComponent<IProps> = (props) => {
   const { t } = useTranslation();
   const { classes, queryData } = props;
 
-  if(!queryData || queryData.length===0){
+  if(!queryData || !queryData.data || queryData.data.length===0){
     return <p>no data</p>;
   }
 
@@ -50,7 +51,7 @@ const DataChartMultiCol: React.FunctionComponent<IProps> = (props) => {
   const types: {name: string, label:string}[] = [];
 
 
-  const testDataSorted = queryData.map( td => {
+  const testDataSorted = queryData.data.map( td => {
     const {...rest } = td;
     return {...rest};
   }).sort( (td1, td2) => (parseInt(td1.month) * 10000 - td1.count) - (parseInt(td2.month) * 10000 - td2.count));
@@ -118,9 +119,8 @@ const DataChartMultiCol: React.FunctionComponent<IProps> = (props) => {
 
 };
 
-interface IProps {
-  classes: any,
-  queryData: any[],
+interface IProps extends WithStyles<typeof styles>{
+  queryData: IQueryData,
 }
 
 export default withStyles(styles)(withData(DataChartMultiCol, dataOption));
