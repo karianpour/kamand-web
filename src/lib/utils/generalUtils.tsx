@@ -58,6 +58,7 @@ type IErrorCode = {
 function tryTranslation(code: string | IErrorCode): string | undefined{
   if(typeof code === 'string' ){
     const tkey = `error.${code}`;
+    //FIXME not pure function
     const translated = i18n.t(tkey);
     if(tkey !== translated){
       return translated;
