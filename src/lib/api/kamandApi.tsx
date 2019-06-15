@@ -2,6 +2,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { APIADDRESS } from './authApi';
 import { authStore } from '../store/authStore';
+import { extractError } from '../utils/generalUtils';
 
 // let appStore: AppStore;
 
@@ -39,9 +40,18 @@ export async function loadActData(query: string, params: any) : Promise<any>{
       return result.data;
     }else{
       console.error('failed at loadActData', result);
+      throw {
+        error: 'server error!',
+      };
     }
   }catch(err){
     console.error('failed at loadActData', err);
+    const error = extractError(err);
+    if(!error){
+      //FIXME show snakbar
+      throw new Error('unknown error!');
+    }
+    throw error;
   }
 }
 
@@ -58,9 +68,18 @@ export async function saveActData(query: string, data: any) : Promise<any>{
       return result.data;
     }else{
       console.error('failed at saveActData', result);
+      throw {
+        error: 'server error!',
+      };
     }
   }catch(err){
     console.error('failed at saveActData', err);
+    const error = extractError(err);
+    if(!error){
+      //FIXME show snakbar
+      throw new Error('unknown error!');
+    }
+    throw error;
   }
 }
 
