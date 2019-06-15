@@ -1,4 +1,12 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+#
+
+To Publish
+
+```bash
+npm run build
+npm publish
+```
+do not forget to set the package number
 
 ## Available Scripts
 

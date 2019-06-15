@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../store/appStore';
+import { IQueryData } from '../store/interfaces/dataInterfaces';
 
 export interface IDataOptions {
   key: string,
@@ -24,7 +25,7 @@ const withData = (Component:React.FunctionComponent<any>, option: IDataOptions) 
     appStore.prepareQueryData(option.key, option.query, option.queryParams, false, option.publicQuery);
   }, [appStore]);
 
-  const queryData: any[] = appStore.getQueryData(option.key);
+  const queryData: IQueryData = appStore.getQueryData(option.key);
 
   return <Component queryData={queryData} {...props}/>
 });

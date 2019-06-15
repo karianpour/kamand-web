@@ -1,6 +1,6 @@
 {
   "name": "kamand-web",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "files": [
@@ -46,6 +46,7 @@
     "@types/jest": "24.0.12",
     "@types/moment-jalaali": "^0.7.4",
     "@types/node": "12.0.0",
+    "@types/react-autosuggest": "^9.3.8",
     "@types/react-jss": "^8.6.3",
     "@types/react-router-dom": "^4.3.1",
     "@types/uuid": "^3.4.4",
@@ -59,6 +60,7 @@
     "mobx-persist": "^0.4.1",
     "mobx-react-lite": "^1.4.0",
     "moment-jalaali": "^0.8.3",
+    "react-autosuggest": "^9.4.3",
     "react-hichestan-datetimepicker": "^0.2.12",
     "react-hichestan-numberinput": "^1.0.1",
     "react-i18next": "^10.11.0",
