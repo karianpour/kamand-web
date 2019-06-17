@@ -1,29 +1,24 @@
-import moment from 'moment-jalaali';
-
 const DATE_SEPERATOR =  '/';// this is arabic date seperator ' ؍' but it is right to left glyph and as the numbers are left to right there will be caret position problem
 const MIDDLE_SEPERATOR =  '\xa0';
 const TIME_SEPERATOR =  ':';
-const DATETIME_FORMAT = `jYYYY${DATE_SEPERATOR}jMM${DATE_SEPERATOR}jDD${MIDDLE_SEPERATOR}HH${TIME_SEPERATOR}mm`;
-const DATE_FORMAT = `jYYYY${DATE_SEPERATOR}jMM${DATE_SEPERATOR}jDD`;
-const TIME_FORMAT = `${MIDDLE_SEPERATOR}HH${TIME_SEPERATOR}mm`;
 
 
 export function formatDateTime(date:Date | undefined | null){
   if(!date) return '';
-  const m = moment(date);
-  return m.format(DATETIME_FORMAT);
+  return formatDate(date) +MIDDLE_SEPERATOR+ formatTime(date);
 }
 
 export function formatDate(date:Date | undefined | null){
   if(!date) return '';
-  const m = moment(date);
-  return m.format(DATE_FORMAT);
+  return Date2JalaliDate(date);
 }
 
 export function formatTime(date:Date | undefined | null){
   if(!date) return '';
-  const m = moment(date);
-  return m.format(TIME_FORMAT);
+  let hours: string = date.getHours().toString()
+  let minutes: string = date.getMinutes().toString()
+
+  return `${'00'.substring(hours.length)}${hours}${TIME_SEPERATOR}${'00'.substring(minutes.length)}${minutes}`;
 }
 export interface IDateDiff {
   days: number;
