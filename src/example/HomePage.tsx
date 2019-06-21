@@ -2,9 +2,9 @@ import React, { useEffect, useContext } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
-import { AppStoreContext } from '../store/appStore';
+import { AppStoreContext } from '../lib/store/appStore';
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import { Paper, Typography } from '@material-ui/core';
 // import { secondColor, primaryColor } from '../assets/colors';
@@ -85,7 +85,7 @@ const HomePage: React.FunctionComponent<IProps> = observer((props) => {
 
   return (
     <div className={classes.list}>
-      <Grid container className={classes.bourse}>
+      <Grid container>
         <Grid item sm={12} md={9}>
           <Paper className={classes.paper}>
             <Grid container>
@@ -101,8 +101,7 @@ const HomePage: React.FunctionComponent<IProps> = observer((props) => {
 
 });
 
-interface IProps {
-  classes: any,
+interface IProps extends WithStyles<typeof styles>{
 }
 
 export default withStyles(styles)(HomePage);

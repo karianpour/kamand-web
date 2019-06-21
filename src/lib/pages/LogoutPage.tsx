@@ -8,7 +8,7 @@ import { observer } from 'mobx-react-lite';
 import { AuthStoreContext } from '../store/authStore';
 import { AppStoreContext } from '../store/appStore';
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 
 const styles = {
   list: {
@@ -16,7 +16,7 @@ const styles = {
   },
 };
 
-const HomePage :  React.FunctionComponent<IProps> = observer((props) => {
+const LogoutPage :  React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
   const { classes } = props;
 
@@ -42,8 +42,7 @@ const HomePage :  React.FunctionComponent<IProps> = observer((props) => {
 
 });
 
-interface IProps {
-  classes: any,
+interface IProps extends WithStyles<typeof styles>{
 }
 
-export default withStyles(styles)(HomePage);
+export default withStyles(styles)(LogoutPage);

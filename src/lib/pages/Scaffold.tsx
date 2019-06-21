@@ -4,6 +4,7 @@ import {
   Route,
   Link,
   Switch,
+  RouteComponentProps,
 } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
@@ -26,9 +27,7 @@ import PublicIcon from '@material-ui/icons/Public';
 
 import { AuthStoreContext } from '../store/authStore';
 import { AppStoreContext } from '../store/appStore';
-import HomePage from './HomePage';
 import NotFound from './NotFound';
-import AboutUsPage from './AboutUsPage';
 import LogoutPage from './LogoutPage';
 import PageTitle from '../containers/PageTitle';
 
@@ -97,18 +96,13 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
                 </ListItem>
               </Link>
               <Divider />
-              <Link to="/about-us">
-                <ListItem button key='about-us'>
-                  <ListItemIcon><PublicIcon /></ListItemIcon>
-                  <ListItemText primary={t('pages.aboutus')} />
-                </ListItem>
-              </Link>
               <Link to="/logout">
                 <ListItem button key='logout'>
                   <ListItemIcon><ExitIcon /></ListItemIcon>
                   <ListItemText primary={t('auth.logout')} />
                 </ListItem>
               </Link>
+              <Divider />
               {props.menus}
             </List>
             <Divider />
@@ -117,8 +111,7 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
         <div className={classes.content}>
           {authStore.loggedin || !props.login ? null: props.login}
           <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route path="/about-us" component={AboutUsPage} />
+            {props.home && <Route exact path="/" component={props.home} />}
             <Route path="/logout" component={LogoutPage} />
             {props.children}
             <Route component={NotFound} />
@@ -132,6 +125,7 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
 interface IProps extends WithStyles<typeof styles>{
   menus?: ReactNode,
   login?: ReactNode,
+  home?: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>,
   children?: ReactNode,
 }
 

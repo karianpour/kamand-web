@@ -10,22 +10,26 @@ import ListItemText from '@material-ui/core/ListItemText';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 // import DataTable from "./DataTable";
 import DataTab from './containers/DataTab';
+import HomePage from './HomePage';
 
 
 const App: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <KamandApp menus={(
-      <React.Fragment>
-        <Link to="/data">
-          <ListItem button key='data'>
-          <ListItemIcon><FavoriteIcon /></ListItemIcon>
-            <ListItemText primary={t('pages.data')} />
-          </ListItem>
-        </Link>
-      </React.Fragment>
-    )}>
+    <KamandApp
+      menus={(
+        <React.Fragment>
+          <Link to="/data">
+            <ListItem button key='data'>
+            <ListItemIcon><FavoriteIcon /></ListItemIcon>
+              <ListItemText primary={t('pages.data')} />
+            </ListItem>
+          </Link>
+        </React.Fragment>
+      )}
+      home={HomePage}
+    >
       <Route path="/data" component={DataTab} />
     </KamandApp>
   );

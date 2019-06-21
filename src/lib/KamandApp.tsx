@@ -1,4 +1,7 @@
 import React, { Suspense, ReactNode } from 'react';
+import {
+  RouteComponentProps,
+} from "react-router-dom";
 import './KamandApp.css';
 import Scaffold from './pages/Scaffold';
 import { create } from 'jss';
@@ -31,7 +34,7 @@ const KamandApp: React.FC<IProps> = (props) => {
       <MuiThemeProvider theme={theme}>
         <Notifier/>
         <Suspense fallback={<Loader />}>
-          <Scaffold menus={props.menus} login={props.login}>
+          <Scaffold menus={props.menus} login={props.login} home={props.home}>
             {props.children}
           </Scaffold>
         </Suspense>
@@ -49,6 +52,7 @@ const Loader = () => (
 interface IProps {
   menus?: ReactNode,
   login?: ReactNode,
+  home?: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>,
   children?: ReactNode,
   translation?: any,
 }
