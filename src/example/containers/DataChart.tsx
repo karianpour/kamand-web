@@ -7,11 +7,11 @@ import {
   XYPlot,
   XAxis,
   YAxis,
-  VerticalGridLines,
-  HorizontalGridLines,
+  // VerticalGridLines,
+  // HorizontalGridLines,
   VerticalBarSeries,
-  VerticalBarSeriesCanvas,
-  DiscreteColorLegend
+  // VerticalBarSeriesCanvas,
+  // DiscreteColorLegend
 } from 'react-vis';
 import Gauge from 'react-svg-gauge';
 import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import withData, { IDataOptions } from '../../lib/containers/DataProvider';
 
 import { withStyles, WithStyles } from '@material-ui/core';
@@ -10,8 +10,8 @@ import {
   VerticalGridLines,
   HorizontalGridLines,
   VerticalBarSeries,
-  VerticalBarSeriesCanvas,
-  DiscreteColorLegend
+  // VerticalBarSeriesCanvas,
+  // DiscreteColorLegend
 } from 'react-vis';
 import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';
 
@@ -30,7 +30,7 @@ const dataOption: IDataOptions = {
 }
 
 const DataChartMultiCol: React.FunctionComponent<IProps> = (props) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const { classes, queryData } = props;
 
   if(!queryData || !queryData.data || queryData.data.length===0){

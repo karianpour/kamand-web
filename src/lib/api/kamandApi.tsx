@@ -11,6 +11,7 @@ export async function fetchData(query: string, params: any, publicQuery: boolean
     const headers = !authStore.token ? undefined : {'Authorization': `Bearer ${authStore.token}`};
     const config:AxiosRequestConfig = {
       baseURL: APIADDRESS,
+      timeout: 30 * 1000,
       params,
       headers,
     };
@@ -31,6 +32,7 @@ export async function loadActData(query: string, params: any) : Promise<any>{
     const headers = !authStore.token ? undefined : {'Authorization': `Bearer ${authStore.token}`};
     const config:AxiosRequestConfig = {
       baseURL: APIADDRESS,
+      timeout: 30 * 1000,
       params,
       headers,
     };
@@ -40,9 +42,10 @@ export async function loadActData(query: string, params: any) : Promise<any>{
       return result.data;
     }else{
       console.error('failed at loadActData', result);
-      throw {
+      const e = {
         error: 'server error!',
       };
+      throw e;
     }
   }catch(err){
     console.error('failed at loadActData', err);
@@ -60,6 +63,7 @@ export async function saveActData(query: string, data: any) : Promise<any>{
     const headers = !authStore.token ? undefined : {'Authorization': `Bearer ${authStore.token}`};
     const config:AxiosRequestConfig = {
       baseURL: APIADDRESS,
+      timeout: 60 * 1000,
       headers,
     };
     const result:any = await axios.post(query, data, config);
@@ -68,9 +72,10 @@ export async function saveActData(query: string, data: any) : Promise<any>{
       return result.data;
     }else{
       console.error('failed at saveActData', result);
-      throw {
+      const e = {
         error: 'server error!',
       };
+      throw e;
     }
   }catch(err){
     console.error('failed at saveActData', err);

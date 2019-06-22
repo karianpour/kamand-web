@@ -40,7 +40,7 @@ export class AppStore {
     return this.filtersData.get(key);
   }
 
-  setQueryData(key: string, queryParam?: any, data?: any) {
+  setQueryData(key: string, queryParam: any, data: any, loading: boolean, error: boolean) {
     if(Array.isArray(data)){
       data.forEach((d, i) => {
         d.arrayIndex = i;
@@ -48,7 +48,9 @@ export class AppStore {
     }
     const qd: IQueryData = observable.object({
       queryParam: observable.map(queryParam, { deep: false }),
-      data: observable.array(data, { deep: false }),
+      data: !data ? [] : observable.array(data, { deep: false }),
+      loading,
+      error,
     }, {  });
     this.queryData.set(key, qd);
   }
@@ -59,8 +61,19 @@ export class AppStore {
 
   async prepareQueryData(key: string, query: string, queryParam: any, forceRefresh: boolean, publicQuery: boolean = true) : Promise<void> {
     if(!this.queryData.has(key) || forceRefresh){
-      const data = await fetchData(query, queryParam, publicQuery);
-      this.setQueryData(key, queryParam, data);
+      const previousData = this.getQueryData(key);
+      if(previousData){
+        this.setQueryData(key, previousData.queryParam, previousData.data, true, false);
+      }else{
+        this.setQueryData(key, queryParam, undefined, true, false);
+      }
+      try{
+        const data = await fetchData(query, queryParam, publicQuery);
+        this.setQueryData(key, queryParam, data, false, !data);
+      }catch(err){
+        console.error(`error while fetching data in prepareQueryData with ${err}`);
+        this.setQueryData(key, queryParam, undefined, false, true);
+      }
     }
   }
 

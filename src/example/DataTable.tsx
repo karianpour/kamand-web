@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../lib/store/appStore';
 
-import { withStyles, Paper } from '@material-ui/core';
+import { withStyles, WithStyles, Paper } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -62,8 +62,7 @@ const DataTable: React.FunctionComponent<IProps> = observer((props) => {
 
 });
 
-interface IProps {
-  classes: any,
+interface IProps extends WithStyles<typeof styles>{
 }
 
 export default withStyles(styles)(DataTable);

@@ -23,18 +23,20 @@ export async function login(loginInfo : ILogin) : Promise<IUser>{
     if(result.status === 200){
       return result.data;
     }else{
-      console.log(result);
-      throw {
+      console.error(result);
+      const e = {
         username: 'failed',
       };
+      throw e;
     }
   }catch(err){
     const error = extractError(err);
     if(!error){
       if(err.response.status===404){
-        throw {
+        const e = {
           username: 'failed',
         };
+        throw e;
       }else{
         //FIXME show snakbar
         throw new Error('unknown error!');

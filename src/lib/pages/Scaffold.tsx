@@ -22,7 +22,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
 import ExitIcon from '@material-ui/icons/ExitToApp';
-import PublicIcon from '@material-ui/icons/Public';
+// import PublicIcon from '@material-ui/icons/Public';
 
 
 import { AuthStoreContext } from '../store/authStore';
@@ -59,7 +59,7 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
   const appStore = useContext(AppStoreContext);
   const { appBarHidden } = appStore;
   const { classes } = props;
-  const { user } = authStore;
+  // const { user } = authStore;
 
   return (
     <Router>

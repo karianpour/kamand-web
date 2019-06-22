@@ -25,9 +25,13 @@ const withData = (Component:React.FunctionComponent<any>, option: IDataOptions) 
     appStore.prepareQueryData(option.key, option.query, option.queryParams, false, option.publicQuery);
   }, [appStore]);
 
+  const handleRefresh = () => {
+    appStore.prepareQueryData(option.key, option.query, option.queryParams, true, option.publicQuery);
+  }
+
   const queryData: IQueryData = appStore.getQueryData(option.key);
 
-  return <Component queryData={queryData} {...props}/>
+  return <Component queryData={queryData} refreshHandler={handleRefresh} {...props}/>
 });
 
 export default withData;

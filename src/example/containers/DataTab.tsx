@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { withStyles, Typography } from '@material-ui/core';
+import { withStyles, WithStyles, Typography } from '@material-ui/core';
 import DataTable from './DataTable';
 import DataChart from './DataChart';
 import DataChartMultiCol from './DataChartMultiCol';
@@ -25,7 +25,7 @@ const styles = {
 
 const DataTab: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState(1)
+  const [activeTab, setActiveTab] = useState(0);
   const { classes } = props;
 
   return (
@@ -37,13 +37,13 @@ const DataTab: React.FunctionComponent<IProps> = observer((props) => {
         textColor="primary"
         centered
       >
-        <Tab label={<Typography className={classes.title} color="textSecondary" gutterBottom>
+        <Tab label={<Typography color="textSecondary" gutterBottom>
           {t('data.table')}
         </Typography>} />
-        <Tab label={<Typography className={classes.title} color="textSecondary" gutterBottom>
+        <Tab label={<Typography color="textSecondary" gutterBottom>
           {t('data.chart')}
         </Typography>} />
-        <Tab label={<Typography className={classes.title} color="textSecondary" gutterBottom>
+        <Tab label={<Typography color="textSecondary" gutterBottom>
           {t('data.chart_multi')}
         </Typography>} />
       </Tabs>
@@ -56,8 +56,7 @@ const DataTab: React.FunctionComponent<IProps> = observer((props) => {
 
 });
 
-interface IProps {
-  classes: any,
+interface IProps extends WithStyles<typeof styles>{
 }
 
 export default withStyles(styles)(DataTab);
