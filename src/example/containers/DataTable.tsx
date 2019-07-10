@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { observer } from 'mobx-react-lite';
 
 import { withStyles, WithStyles, Paper } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
@@ -8,10 +9,13 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import withData, { IDataOptions } from '../../lib/containers/DataProvider';
 import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';
+import { AppStoreContext, AppStore } from '../../lib/store/appStore';
 
 
 const styles = {
@@ -26,9 +30,35 @@ const styles = {
 const dataOption: IDataOptions = {
   key: 'test',
   query: 'publicQuery',
-  queryParams: {year: '1397'},
+  queryParams: (appStore: AppStore)=>{
+    return {
+      type_name: appStore.getFilter('type_name')
+    }
+  },
   publicQuery: true,
 }
+
+const DataFilters: React.FunctionComponent<{}> = observer((props) => {
+  const { t } = useTranslation();
+  const appStore = useContext(AppStoreContext);
+
+  return (
+    <Grid 
+      container spacing={8}
+      direction="row"
+      justify="flex-start"
+      alignItems="flex-end"
+    >
+      <Grid item xs={3} >
+        <TextField
+          value={appStore.getFilter('type_name') || ''}
+          onChange={(e: any) => appStore.setFilter('type_name', e.target.value)}
+          label={t('data.type_name')}
+        />
+      </Grid>
+    </Grid>
+  );
+});
 
 const DataTable: React.FunctionComponent<IProps> = (props) => {
   const { t } = useTranslation();
@@ -38,6 +68,7 @@ const DataTable: React.FunctionComponent<IProps> = (props) => {
 
   return (
     <Paper className={classes.root}>
+      <DataFilters/>
       {queryData.loading && <CircularProgress/>}
       {!queryData.loading && <Button onClick={refreshHandler}>Refresh</Button>}
 
