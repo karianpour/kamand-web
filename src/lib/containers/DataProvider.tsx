@@ -28,7 +28,7 @@ const withData = (Component:React.FunctionComponent<any>, options: IDataOptions)
     }else{
       queryParams = options.queryParams;
     }
-    console.log(`execute prepareQuery with ${queryParams}`)
+    // console.log(`execute prepareQuery with ${queryParams}`)
     appStore.prepareQueryData(options.key, options.query, queryParams, forceRefresh, options.publicQuery);
   }, [appStore]);
 

@@ -88,6 +88,37 @@ export async function saveActData(query: string, data: any) : Promise<any>{
   }
 }
 
+export async function executeApi(executionConfig: AxiosRequestConfig) : Promise<any>{
+  try{
+    const headers = !authStore.token ? undefined : {'Authorization': `Bearer ${authStore.token}`};
+    const config:AxiosRequestConfig = {
+      baseURL: APIADDRESS,
+      timeout: 60 * 1000,
+      headers,
+      ...executionConfig,
+    };
+    const result:any = await axios(config);
+  
+    if(result.status === 200){
+      return result.data;
+    }else{
+      console.error('failed at saveActData', result);
+      const e = {
+        error: 'server error!',
+      };
+      throw e;
+    }
+  }catch(err){
+    console.error('failed at saveActData', err);
+    const error = extractError(err);
+    if(!error){
+      //FIXME show snakbar
+      throw new Error('unknown error!');
+    }
+    throw error;
+  }
+}
+
 // export async function setAppStore(_appStore: AppStore) : Promise<void>{
 //   appStore = _appStore;
 // }
