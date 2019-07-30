@@ -6,57 +6,59 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { withStyles, WithStyles, Typography } from '@material-ui/core';
-import DataTable from './DataTableWithHook';
-import DataChart from './DataChart';
-import DataChartMultiCol from './DataChartMultiCol';
+import { RouteComponentProps } from 'react-router';
+import VoucherTable from './VoucherTable';
+import AccTable from './AccTable';
 
 
 const styles = {
   root: {
     flexGrow: 1,
     margin: '0 10px',
-   height: 440,
-   overflow: 'auto',
+    height: 440,
+    overflow: 'auto',
     '@media (min-width: 920px)':{
       marginRight: 10,
     }
   },
 };
 
-const DataTab: React.FunctionComponent<IProps> = observer((props) => {
+const VoucherTab: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState(0);
-  const { classes } = props;
+  const { classes, location: { hash } } = props;
+  const defaultTab = parseInt(hash ? hash.substring(1) : '0')
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  const handleTabsChange = (_: React.ChangeEvent<any>, value: number) => {
+    setActiveTab(value);
+    props.history.push(`#${value}`)
+  }
 
   return (
     <Paper className={classes.root}>
       <Tabs
         value={activeTab}
-        onChange={(event: React.ChangeEvent<any>, value) => { setActiveTab(value) }}
+        onChange={handleTabsChange}
         indicatorColor="primary"
         textColor="primary"
         centered
       >
         <Tab label={<Typography color="textSecondary" gutterBottom>
-          {t('data.table')}
+          {t('data.voucher')}
         </Typography>} />
         <Tab label={<Typography color="textSecondary" gutterBottom>
-          {t('data.chart')}
-        </Typography>} />
-        <Tab label={<Typography color="textSecondary" gutterBottom>
-          {t('data.chart_multi')}
+          {t('data.acc')}
         </Typography>} />
       </Tabs>
       
-      {activeTab === 0 && <DataTable />}
-      {activeTab === 1 && <DataChart field={'count'} />}
-      {activeTab === 2 && <DataChartMultiCol />}
+      {activeTab === 0 && <VoucherTable />}
+      {activeTab === 1 && <AccTable/>}
     </Paper>
   );
 
 });
 
-interface IProps extends WithStyles<typeof styles>{
+interface IProps extends WithStyles<typeof styles>, RouteComponentProps<any>{
 }
 
-export default withStyles(styles)(DataTab);
+export default withStyles(styles)(VoucherTab);
