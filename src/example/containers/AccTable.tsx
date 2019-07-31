@@ -13,6 +13,8 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { AppStoreContext, AppStore } from '../../lib/store/appStore';
 import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
@@ -54,14 +56,14 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
         <TextField
           value={appStore.getFilter('code') || ''}
           onChange={(e: any) => appStore.setFilter('code', e.target.value)}
-          label={t('example.code')}
+          label={t('data.code')}
         />
       </Grid>
       <Grid item xs={3} >
         <TextField
           value={appStore.getFilter('name') || ''}
           onChange={(e: any) => appStore.setFilter('name', e.target.value)}
-          label={t('example.name')}
+          label={t('data.name')}
         />
       </Grid>
     </Grid>
@@ -79,7 +81,7 @@ const AccTable: React.FunctionComponent<IProps> = observer((props) => {
   return (
     <Paper className={classes.root}>
       <DataFilters/>
-      <Button component="a" href={`/acc/edit/new`}>{t('actions.add')}</Button>
+      <Button component="a" href={`/acc/edit/new`}><AddIcon/></Button>
       {queryData.loading && <CircularProgress/>}
       {!queryData.loading && <Button onClick={refreshHandler}><RefreshIcon/></Button>}
 
@@ -103,7 +105,7 @@ const AccTable: React.FunctionComponent<IProps> = observer((props) => {
               <TableCell padding='none' align="center">{mapToFarsi(td.name)}</TableCell>
               <TableCell padding='none' align="center">{mapToFarsi(td.createdAt.toString())}</TableCell>
               <TableCell padding='none' align="center">
-                <Button component="a" href={`/acc/edit/${td.id}`}>{t('actions.edit')}</Button>
+                <Button component="a" href={`/acc/edit/${td.id}`}><EditIcon/></Button>
               </TableCell>
             </TableRow>
           ))}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
@@ -9,6 +9,7 @@ import { withStyles, WithStyles, Typography } from '@material-ui/core';
 import { RouteComponentProps } from 'react-router';
 import VoucherTable from './VoucherTable';
 import AccTable from './AccTable';
+import { AppStoreContext } from '../../lib/store/appStore';
 
 
 const styles = {
@@ -28,6 +29,12 @@ const VoucherTab: React.FunctionComponent<IProps> = observer((props) => {
   const { classes, location: { hash } } = props;
   const defaultTab = parseInt(hash ? hash.substring(1) : '0')
   const [activeTab, setActiveTab] = useState(defaultTab);
+
+  const appStore = useContext(AppStoreContext);
+
+  useEffect(() => {
+    appStore.setPageTitle(t('pages.voucher'));
+  }, [appStore, t]);
 
   const handleTabsChange = (_: React.ChangeEvent<any>, value: number) => {
     setActiveTab(value);

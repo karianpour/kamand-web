@@ -14,15 +14,31 @@ export const TextWidget = ({
   label,
   inputProps,
   ...props
-}:(FieldProps<any> & {label?: string, inputProps?: any})) => (
+}:(FieldProps<any> & {label?: string, inputProps?: any})) => {
+  let {value, onChange, ...restField} = field;
+
+  // console.log({value, restField});
+  if(value === undefined || value === null){
+    // console.log('make it empty')
+    value = '';
+  }
+
+  const handleChange = (a:React.ChangeEvent<any>)=>{
+    // console.log({a})
+    onChange(a);
+  }
+
+  return (
   <TextField
     label={label}
-    {...field} {...props}
+    value={value}
+    onChange={handleChange}
+    {...restField} {...props}
     helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
     error={(!!errors[field.name] && !!touched[field.name])}
     inputProps={inputProps}
   />
-);
+)};
 
 export const DecimalWidget = ({
   field, // { name, value, onChange, onBlur }
@@ -30,10 +46,26 @@ export const DecimalWidget = ({
   label,
   inputProps,
   ...props
-}:(FieldProps<any> & {label?: string, inputProps?: any})) => (
+}:(FieldProps<any> & {label?: string, inputProps?: any})) => {
+  let {value, onChange, ...restField} = field;
+
+  // console.log({value, restField});
+  if(value === undefined || value === null){
+    // console.log('make it empty')
+    value = '';
+  }
+
+  const handleChange = (a:React.ChangeEvent<any>)=>{
+    // console.log({a})
+    onChange(a);
+  }
+
+  return (
   <TextField
     label={label}
-    {...field} {...props}
+    value={value}
+    onChange={handleChange}
+    {...restField} {...props}
     helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
     error={(!!errors[field.name] && !!touched[field.name])}
     InputProps={{
@@ -41,7 +73,7 @@ export const DecimalWidget = ({
       inputProps,
     }}
   />
-);
+)};
 
 export const NumberWidget = ({
   field, // { name, value, onChange, onBlur }
@@ -49,10 +81,26 @@ export const NumberWidget = ({
   label,
   inputProps,
   ...props
-}:(FieldProps<any> & {label?: string, inputProps?: any})) => (
+}:(FieldProps<any> & {label?: string, inputProps?: any})) => {
+  let {value, onChange, ...restField} = field;
+
+  // console.log({value, restField});
+  if(value === undefined || value === null){
+    // console.log('make it empty')
+    value = '';
+  }
+
+  const handleChange = (a:React.ChangeEvent<any>)=>{
+    // console.log({a})
+    onChange(a);
+  }
+
+  return (
   <TextField
     label={label}
-    {...field} {...props}
+    value={value}
+    onChange={handleChange}
+    {...restField} {...props}
     helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
     error={(!!errors[field.name] && !!touched[field.name])}
     InputProps={{
@@ -60,7 +108,7 @@ export const NumberWidget = ({
       inputProps,
     }}
   />
-);
+)};
 
 export const DateTimeWidget = ({
   field, // { name, value, onChange, onBlur }
@@ -68,10 +116,26 @@ export const DateTimeWidget = ({
   label,
   inputProps,
   ...props
-}:(FieldProps<any> & {label?: string, inputProps?: any})) => (
+}:(FieldProps<any> & {label?: string, inputProps?: any})) => {
+  let {value, onChange, ...restField} = field;
+
+  // console.log({value, restField});
+  if(value === undefined || value === null){
+    // console.log('make it empty')
+    value = '';
+  }
+
+  const handleChange = (a:React.ChangeEvent<any>)=>{
+    // console.log({a})
+    onChange(a);
+  }
+
+  return (
   <TextField
     label={label}
-    {...field} {...props}
+    value={value}
+    onChange={handleChange}
+    {...restField} {...props}
     helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
     error={(!!errors[field.name] && !!touched[field.name])}
     InputProps={{
@@ -79,7 +143,7 @@ export const DateTimeWidget = ({
       inputProps,
     }}
   />
-);
+)};
 
 export const DateWidget = ({
   field, // { name, value, onChange, onBlur }
@@ -87,10 +151,25 @@ export const DateWidget = ({
   label,
   inputProps,
   ...props
-}:(FieldProps<any> & {label?: string, inputProps?: any})) => (
+}:(FieldProps<any> & {label?: string, inputProps?: any})) => {
+  let {value, onChange, ...restField} = field;
+
+  // console.log({value, restField});
+  if(value === undefined || value === null){
+    // console.log('make it empty')
+    value = '';
+  }
+
+  const handleChange = (a:React.ChangeEvent<any>)=>{
+    // console.log({a})
+    onChange(a);
+  }
+  return (
   <TextField
     label={label}
-    {...field} {...props}
+    value={value}
+    onChange={handleChange}
+    {...restField} {...props}
     helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
     error={(!!errors[field.name] && !!touched[field.name])}
     InputProps={{
@@ -98,7 +177,7 @@ export const DateWidget = ({
       inputProps,
     }}
   />
-);
+)};
 
 export const BooleanWidget = ({
   field: {value, ...restField}, // { name, value, onChange, onBlur }
@@ -124,10 +203,26 @@ export const SelectWidget = ({
   label,
   children,
   ...props
-}:(FieldProps<any> & {label?: string, children: React.ReactNode})) => (
+}:(FieldProps<any> & {label?: string, children: React.ReactNode})) => {
+  let {value, onChange, ...restField} = field;
+
+  // console.log({value, restField});
+  if(value === undefined || value === null){
+    // console.log('make it empty')
+    value = '';
+  }
+
+  const handleChange = (a:React.ChangeEvent<any>)=>{
+    // console.log({a})
+    onChange(a);
+  }
+
+  return (
   <TextField
     label={label}
-    {...field} {...props}
+    value={value}
+    onChange={handleChange}
+    {...restField} {...props}
     helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
     error={(!!errors[field.name] && !!touched[field.name])}
     InputProps={{
@@ -142,4 +237,4 @@ export const SelectWidget = ({
       ),
     }}
   />
-);
+)};

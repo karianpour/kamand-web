@@ -13,6 +13,8 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { AppStoreContext, AppStore } from '../../lib/store/appStore';
 import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
@@ -54,14 +56,14 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
         <TextField
           value={appStore.getFilter('voucherNo') || ''}
           onChange={(e: any) => appStore.setFilter('voucherNo', e.target.value)}
-          label={t('example.voucherNo')}
+          label={t('data.voucherNo')}
         />
       </Grid>
       <Grid item xs={3} >
         <TextField
           value={appStore.getFilter('voucherDate') || ''}
           onChange={(e: any) => appStore.setFilter('voucherDate', e.target.value)}
-          label={t('example.voucherDate')}
+          label={t('data.voucherDate')}
         />
       </Grid>
     </Grid>
@@ -79,7 +81,7 @@ const VoucherTable: React.FunctionComponent<IProps> = observer((props) => {
   return (
     <Paper className={classes.root}>
       <DataFilters/>
-      <Button component="a" href={`/voucher/edit/new`}>{t('actions.add')}</Button>
+      <Button component="a" href={`/voucher/edit/new`}><AddIcon/></Button>
       {queryData.loading && <CircularProgress/>}
       {!queryData.loading && <Button onClick={refreshHandler}><RefreshIcon/></Button>}
 
@@ -103,7 +105,7 @@ const VoucherTable: React.FunctionComponent<IProps> = observer((props) => {
               <TableCell padding='none' align="center">{mapToFarsi(td.voucherDate)}</TableCell>
               <TableCell padding='none' align="center">{mapToFarsi(td.createdAt.toString())}</TableCell>
               <TableCell padding='none' align="center">
-                <Button component="a" href={`/voucher/edit/${td.id}`}>{t('actions.edit')}</Button>
+                <Button component="a" href={`/voucher/edit/${td.id}`}><EditIcon/></Button>
               </TableCell>
             </TableRow>
           ))}

@@ -4,7 +4,7 @@ import {
 } from "react-router-dom";
 import { Formik, FormikActions, Form, FastField, FieldArray } from 'formik';
 import MenuItem from '@material-ui/core/MenuItem';
-import { TextWidget, DecimalWidget, SelectWidget, BooleanWidget, DateTimeWidget, DateWidget } from '../../lib/components/widgets';
+import { TextWidget, DecimalWidget, NumberWidget, SelectWidget, BooleanWidget, DateTimeWidget, DateWidget } from '../../lib/components/widgets';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -93,7 +93,7 @@ interface Values {
   registered?: boolean,
   amount?: number,
   remark?: string,
-  created_at?: string,
+  createdAt?: string,
   voucherType?: '' | 'normal' | 'special',
   articles: {
     id: string,
@@ -103,7 +103,7 @@ interface Values {
     registered?: boolean,
     amount?: number,
     remark?: string,
-    created_at?: string,
+    createdAt?: string,
     voucherType?: '' | 'normal' | 'special',
   }[],
 }
@@ -142,9 +142,9 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
         acc_id: undefined,
         registered: false,
         amount: undefined,
-        remark: '',
-        created_at: (new Date()).toISOString(),
-        voucherType: 'normal',
+        remark: undefined,
+        createdAt: undefined,
+        voucherType: undefined,
         articles: [],
       };
       appStore.setActData(key.current, values);
@@ -186,10 +186,10 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
                 <ArrowBack/>
               </Button>
               <Grid item xs={12}>
-                <FastField className={classes.input} name="id" label={t('voucher.id')} fullWidth readOnly component={TextWidget} inputProps={{ readOnly: true }} />
+                <FastField className={classes.input} name="id" label={t('data.id')} fullWidth readOnly component={TextWidget} inputProps={{ readOnly: true }} />
               </Grid>
               <Grid item xs={12}>
-                <FastField className={classes.input} name="refer" label={t('voucher.refer')} fullWidth component={TextWidget} />
+                <FastField className={classes.input} name="refer" label={t('data.refer')} fullWidth component={TextWidget} />
               </Grid>
 
               <Grid className={classes.spaceBox} item xs={12}>
@@ -201,10 +201,10 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
                   centered
                 >
                   <Tab label={<Typography color="textSecondary" gutterBottom>
-                    {t('voucher.mainTab')}
+                    {t('data.mainTab')}
                   </Typography>} />
                   <Tab label={<Typography color="textSecondary" gutterBottom>
-                    {t('voucher.articles')}
+                    {t('data.articles')}
                   </Typography>} />
                 </Tabs>
 
@@ -219,7 +219,7 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  {t('buttons.submit')}
+                  {t('data.submit')}
                 </Button>
               </Grid>
               <Grid sm={4} item>
@@ -231,7 +231,7 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
                   onClick={handleReset}
                   disabled={!dirty || isSubmitting}
                 >
-                  {t('buttons.reset')}
+                  {t('data.reset')}
                 </Button>
               </Grid>
             </Grid>
@@ -258,32 +258,35 @@ const MainTab: React.FunctionComponent = () => {
     <React.Fragment>
       <Grid container spacing={24}>
         <Grid item xs={12} sm={6}>
-          <FastField fullWidth name="voucherNo" label={t('voucher.voucherNo')} component={DecimalWidget} inputProps={{ maxLength: 4 }} />
+          <FastField fullWidth name="voucherNo" label={t('data.voucherNo')} component={NumberWidget} inputProps={{ maxLength: 4 }} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FastField fullWidth name="voucherDate" label={t('voucher.voucherDate')} component={DateWidget} />
+          <FastField fullWidth name="voucherDate" label={t('data.voucherDate')} component={DateWidget} />
         </Grid>
         <Grid item xs={12}>
-          <FastField name="voucherType" label={t('voucher.voucherType')} fullWidth component={SelectWidget}>
+          <FastField fullWidth name="accId" label={t('data.accSuggest')} component={AccSuggestWidget} />
+        </Grid>
+        <Grid item xs={12}>
+          <FastField name="voucherType" label={t('data.voucherType')} fullWidth component={SelectWidget}>
             <MenuItem value="">
               <em>-</em>
             </MenuItem>
-            <MenuItem value="normal">{t('voucher.normal')}</MenuItem>
-            <MenuItem value="special">{t('voucher.special')}</MenuItem>
+            <MenuItem value="normal">{t('data.normal')}</MenuItem>
+            <MenuItem value="special">{t('data.special')}</MenuItem>
           </FastField>
         </Grid>
         <Grid item xs={12} sm={4}>
-          <FastField fullWidth name="amount" label={t('voucher.amount')} component={DecimalWidget} />
+          <FastField fullWidth name="amount" label={t('data.amount')} component={DecimalWidget} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FastField fullWidth name="createdAt" label={t('voucher.createdAt')} component={DateTimeWidget} />
+          <FastField fullWidth name="createdAt" label={t('data.createdAt')} component={DateTimeWidget} />
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        <FastField name="registered" label={t('voucher.registered')} color="primary" component={BooleanWidget} />
+        <FastField name="registered" label={t('data.registered')} color="primary" component={BooleanWidget} />
       </Grid>
       <Grid item xs={12}>
-        <FastField name="remark" label={t('voucher.remark')} fullWidth component={TextWidget} margin="normal" />
+        <FastField name="remark" label={t('data.remark')} fullWidth component={TextWidget} margin="normal" />
       </Grid>
     </React.Fragment>
   )
@@ -319,9 +322,9 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
                   acc_id: undefined,
                   registered: false,
                   amount: undefined,
-                  remark: '',
-                  created_at: '',
-                  voucherType: '',
+                  remark: undefined,
+                  createdAt: undefined,
+                  voucherType: undefined,
                 })}
               >
                 <AddIcon />
@@ -331,15 +334,15 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
               <Table padding='default'>
                 <TableHead>
                   <TableRow>
-                    <TableCell className={classes.cells} padding='none' align="center">{t('voucher.row')}</TableCell>
-                    <TableCell className={classes.cells} padding='none' align="center">{t('voucher.articleNo')}</TableCell>
-                    <TableCell className={classes.cells} padding='none' align="center">{t('voucher.articleDate')}</TableCell>
-                    <TableCell className={classes.cells} padding='none' align="center">{t('voucher.acc')}</TableCell>
-                    <TableCell className={classes.cells} padding='none' align="center">{t('voucher.registered')}</TableCell>
-                    <TableCell className={classes.cells} padding='none' align="center">{t('voucher.amount')}</TableCell>
-                    <TableCell className={classes.cells} padding='none' align="center">{t('voucher.refer')}</TableCell>
-                    <TableCell className={classes.cells} padding='none' align="center">{t('voucher.remark')}</TableCell>
-                    <TableCell className={classes.cells} padding='none' align="center">{t('voucher.createdAt')}</TableCell>
+                    <TableCell className={classes.cells} padding='none' align="center">{t('data.row')}</TableCell>
+                    <TableCell className={classes.cells} padding='none' align="center">{t('data.articleNo')}</TableCell>
+                    <TableCell className={classes.cells} padding='none' align="center">{t('data.articleDate')}</TableCell>
+                    <TableCell className={classes.cells} padding='none' align="center">{t('data.acc')}</TableCell>
+                    <TableCell className={classes.cells} padding='none' align="center">{t('data.registered')}</TableCell>
+                    <TableCell className={classes.cells} padding='none' align="center">{t('data.amount')}</TableCell>
+                    <TableCell className={classes.cells} padding='none' align="center">{t('data.refer')}</TableCell>
+                    <TableCell className={classes.cells} padding='none' align="center">{t('data.remark')}</TableCell>
+                    <TableCell className={classes.cells} padding='none' align="center">{t('data.createdAt')}</TableCell>
                     <TableCell className={classes.cells} padding='none' align="center">&nbsp;</TableCell>
                   </TableRow>
                 </TableHead>
@@ -350,21 +353,21 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
                         {mapToFarsi(index + 1)}
                       </TableCell>
                       <TableCell style={{width:20}} className={classes.cells} padding='none' align="center">
-                        <FastField name={`articles.${index}.articleNo`} component={DecimalWidget} inputProps={{ maxLength: 1 }} />
+                        <FastField name={`articles.${index}.articleNo`} component={NumberWidget} inputProps={{ maxLength: 1 }} />
                       </TableCell>
                       <TableCell style={{width:20}} className={classes.cells} padding='none' align="center">
                         <FastField name={`articles.${index}.articleDate`} component={DateWidget} />
                       </TableCell>
                       <TableCell className={classes.cells} padding='none' align="center">
-                        <FastField name={`articles.${index}.accId`} placeholder={t('voucher.accSuggest')} fullWidth component={AccSuggestWidget} margin="normal" />
+                        <FastField name={`articles.${index}.accId`} placeholder={t('data.accSuggest')} fullWidth component={AccSuggestWidget} margin="normal" />
                       </TableCell>
                       <TableCell className={classes.cells} padding='none' align="center">
-                      <FastField name={`articles.${index}.voucherType`} placeholder={t('voucher.voucherType')} fullWidth component={SelectWidget}>
+                      <FastField name={`articles.${index}.voucherType`} placeholder={t('data.voucherType')} fullWidth component={SelectWidget}>
                         <MenuItem value="">
                           <em>-</em>
                         </MenuItem>
-                        <MenuItem value="normal">{t('voucher.normal')}</MenuItem>
-                        <MenuItem value="special">{t('voucher.special')}</MenuItem>
+                        <MenuItem value="normal">{t('data.normal')}</MenuItem>
+                        <MenuItem value="special">{t('data.special')}</MenuItem>
                       </FastField>
                       </TableCell>
                       <TableCell style={{width:80}} className={classes.cells} padding='none' align="center">
