@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FieldProps } from 'formik';
+import { FieldProps, getIn } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import { DecimalInput, NumberInput } from 'react-hichestan-numberinput';
@@ -28,14 +28,17 @@ export const TextWidget = ({
     onChange(a);
   }
 
+  const error = errors[field.name];
+  const touch = getIn(touched, field.name);
+
   return (
   <TextField
     label={label}
     value={value}
     onChange={handleChange}
     {...restField} {...props}
-    helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
-    error={(!!errors[field.name] && !!touched[field.name])}
+    helperText={(error && touch) && error}
+    error={(!!error && !!touch)}
     inputProps={inputProps}
   />
 )};
@@ -60,14 +63,17 @@ export const DecimalWidget = ({
     onChange(a);
   }
 
+  const error = errors[field.name];
+  const touch = getIn(touched, field.name);
+
   return (
   <TextField
     label={label}
     value={value}
     onChange={handleChange}
     {...restField} {...props}
-    helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
-    error={(!!errors[field.name] && !!touched[field.name])}
+    helperText={(error && touch) && error}
+    error={(!!error && !!touch)}
     InputProps={{
       inputComponent: DecimalInput,
       inputProps,
@@ -95,14 +101,17 @@ export const NumberWidget = ({
     onChange(a);
   }
 
+  const error = errors[field.name];
+  const touch = getIn(touched, field.name);
+  
   return (
   <TextField
     label={label}
     value={value}
     onChange={handleChange}
     {...restField} {...props}
-    helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
-    error={(!!errors[field.name] && !!touched[field.name])}
+    helperText={(error && touch) && error}
+    error={(!!error && !!touch)}
     InputProps={{
       inputComponent: NumberInput,
       inputProps,
@@ -130,14 +139,17 @@ export const DateTimeWidget = ({
     onChange(a);
   }
 
+  const error = errors[field.name];
+  const touch = getIn(touched, field.name);
+
   return (
   <TextField
     label={label}
     value={value}
     onChange={handleChange}
     {...restField} {...props}
-    helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
-    error={(!!errors[field.name] && !!touched[field.name])}
+    helperText={(error && touch) && error}
+    error={(!!error && !!touch)}
     InputProps={{
       inputComponent: DateTimeInput,
       inputProps,
@@ -164,14 +176,18 @@ export const DateWidget = ({
     // console.log({a})
     onChange(a);
   }
+
+  const error = errors[field.name];
+  const touch = getIn(touched, field.name);
+
   return (
   <TextField
     label={label}
     value={value}
     onChange={handleChange}
     {...restField} {...props}
-    helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
-    error={(!!errors[field.name] && !!touched[field.name])}
+    helperText={(error && touch) && error}
+    error={(!!error && !!touch)}
     InputProps={{
       inputComponent: DateInput,
       inputProps,
@@ -217,14 +233,17 @@ export const SelectWidget = ({
     onChange(a);
   }
 
+  const error = errors[field.name];
+  const touch = getIn(touched, field.name);
+
   return (
   <TextField
     label={label}
     value={value}
     onChange={handleChange}
     {...restField} {...props}
-    helperText={(errors[field.name] && touched[field.name]) && errors[field.name]}
-    error={(!!errors[field.name] && !!touched[field.name])}
+    helperText={(error && touch) && error}
+    error={(!!error && !!touch)}
     InputProps={{
       inputComponent: (props: any)=> (
         <Select

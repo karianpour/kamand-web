@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import Autosuggest, { RenderSuggestionsContainerParams } from 'react-autosuggest';
-import { FieldProps } from 'formik';
+import { FieldProps, getIn } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -169,6 +169,9 @@ const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
     );
   }
 
+  const error = errors[field.name];
+  const touch = getIn(touched, field.name);
+
   const inputProps = {
     classes,
     placeholder,
@@ -178,8 +181,8 @@ const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
     field,
     onChange: handleInputChange,
     onBlur: handleBlur,
-    helperText: (errors[field.name] && touched[field.name]) && errors[field.name],
-    error: (!!errors[field.name] && !!touched[field.name]),
+    helperText: (error && touch) && error,
+    error: (!!error && !!touch),
     refreshHandler,
     ...restProps,
   };
