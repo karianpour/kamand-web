@@ -12,6 +12,12 @@ const translation = {
       voucher: 'اسناد',
       acc: 'حسابها',
     },
+    error: {
+      required: '{{field, translate}} اجباری است',
+      duplicate: '{{field, translate}} تکراری است',
+      mismatch: '{{field, translate}} تظابق ندارد',
+      malformat: '{{field, translate}} فرمت نامناسبی دارد',
+    },
     data: {
       type_name: 'نوع',
       gauge_label: 'متوسط',

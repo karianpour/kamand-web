@@ -87,9 +87,9 @@ const styles = {
 
 interface Values {
   id: string,
-  voucher_no?: string,
-  voucher_date?: string,
-  acc_id?: string,
+  voucherNo?: string,
+  voucherDate?: string,
+  accId?: string,
   registered?: boolean,
   amount?: number,
   remark?: string,
@@ -97,9 +97,9 @@ interface Values {
   voucherType?: '' | 'normal' | 'special',
   articles: {
     id: string,
-    article_no?: string,
-    article_date?: string,
-    acc_id?: string,
+    articleNo?: string,
+    articleDate?: string,
+    accId?: string,
     registered?: boolean,
     amount?: number,
     remark?: string,
@@ -137,9 +137,9 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
     if (id === 'new') {
       const values: Values = {
         id: uuidv4(),
-        voucher_no: undefined,
-        voucher_date: undefined,
-        acc_id: undefined,
+        voucherNo: undefined,
+        voucherDate: undefined,
+        accId: undefined,
         registered: false,
         amount: undefined,
         remark: undefined,
@@ -258,7 +258,7 @@ const MainTab: React.FunctionComponent = () => {
     <React.Fragment>
       <Grid container spacing={24}>
         <Grid item xs={12} sm={6}>
-          <FastField fullWidth name="voucherNo" label={t('data.voucherNo')} component={NumberWidget} inputProps={{ maxLength: 4 }} />
+          <FastField fullWidth name="voucherNo" label={t('data.voucherNo')} component={TextWidget} inputProps={{ maxLength: 4 }} />
         </Grid>
         <Grid item xs={12} sm={6}>
           <FastField fullWidth name="voucherDate" label={t('data.voucherDate')} component={DateWidget} />
@@ -317,9 +317,9 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
                 variant="outlined" color="primary"
                 onClick={() => arrayHelpers.push({ 
                   id: uuidv4(),
-                  article_no: undefined,
-                  article_date: undefined,
-                  acc_id: undefined,
+                  articleNo: undefined,
+                  articleDate: undefined,
+                  accId: undefined,
                   registered: false,
                   amount: undefined,
                   remark: undefined,
