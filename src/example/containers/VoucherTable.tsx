@@ -34,8 +34,8 @@ const dataOption: IDataOptions = {
   query: 'voucher_list',
   queryParams: (appStore: AppStore)=>{
     return {
-      code: appStore.getFilter('voucherNo'),
-      name: appStore.getFilter('voucherDate'),
+      voucherNo: appStore.getFilter('voucherNo'),
+      voucherDate: appStore.getFilter('voucherDate'),
     }
   },
   publicQuery: false,
