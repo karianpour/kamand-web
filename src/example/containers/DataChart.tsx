@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import withData, { IDataOptions } from '../../lib/containers/DataProvider';
+import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
 
-import { withStyles, WithStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import {
   XYPlot,
   XAxis,
@@ -14,13 +14,12 @@ import {
   // DiscreteColorLegend
 } from 'react-vis';
 import Gauge from 'react-svg-gauge';
-import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';
 
-const styles = {
+const useStyles = makeStyles({
   chartContainer: {
     margin: '5px 3px',
   },
-};
+});
 
 const dataOption: IDataOptions = {
   key: 'test',
@@ -31,7 +30,8 @@ const dataOption: IDataOptions = {
 
 const DataChart: React.FunctionComponent<IProps> = (props) => {
   const { t } = useTranslation();
-  const { classes, queryData } = props;
+  const classes = useStyles();
+  const { queryData } = useKamandData(dataOption);
 
   if(!queryData || !queryData.data || queryData.data.length===0){
     return <p>no data</p>;
@@ -97,8 +97,7 @@ const DataChart: React.FunctionComponent<IProps> = (props) => {
 
 };
 
-interface IProps extends WithStyles<typeof styles>{
-  queryData: IQueryData,
+interface IProps {
 }
 
-export default withStyles(styles)(withData(DataChart, dataOption));
+export default DataChart;

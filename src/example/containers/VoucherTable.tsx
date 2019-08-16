@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 
-import { withStyles, WithStyles, Paper } from '@material-ui/core';
+import { makeStyles, Paper } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -18,16 +18,17 @@ import EditIcon from '@material-ui/icons/Edit';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { AppStoreContext, AppStore } from '../../lib/store/appStore';
 import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
+import { AdapterLink } from '../../lib/components/misc';
 
 
-const styles = {
+const useStyles = makeStyles({
   root: {
     width: '100%',
     // marginTop: theme.spacing.unit * 3,
     // margin: '5px 3px',
     // overflowX: 'auto',
   },
-};
+});
 
 const dataOption: IDataOptions = {
   key: 'voucher',
@@ -47,7 +48,7 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
 
   return (
     <Grid 
-      container spacing={8}
+      container spacing={1}
       direction="row"
       justify="flex-start"
       alignItems="flex-end"
@@ -72,7 +73,7 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
 
 const VoucherTable: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const { classes } = props;
+  const classes = useStyles();
 
   const { queryData, refreshHandler } = useKamandData(dataOption);
 
@@ -81,13 +82,13 @@ const VoucherTable: React.FunctionComponent<IProps> = observer((props) => {
   return (
     <Paper className={classes.root}>
       <DataFilters/>
-      <Button component="a" href={`/voucher/edit/new`}><AddIcon/></Button>
+      <Button component={AdapterLink} to={`/voucher/edit/new`}><AddIcon/></Button>
       {queryData.loading && <CircularProgress/>}
       {!queryData.loading && <Button onClick={refreshHandler}><RefreshIcon/></Button>}
 
       {queryData.error && <p>error</p>}
 
-      {!queryData.loading && !queryData.error && <Table padding='dense'>
+      {!queryData.loading && !queryData.error && <Table size='small'>
         <TableHead>
           <TableRow>
             <TableCell padding='none' align="center">{t('data.voucherNo')}</TableCell>
@@ -105,7 +106,7 @@ const VoucherTable: React.FunctionComponent<IProps> = observer((props) => {
               <TableCell padding='none' align="center">{mapToFarsi(td.voucherDate)}</TableCell>
               <TableCell padding='none' align="center">{mapToFarsi(td.createdAt.toString())}</TableCell>
               <TableCell padding='none' align="center">
-                <Button component="a" href={`/voucher/edit/${td.id}`}><EditIcon/></Button>
+                <Button component={AdapterLink} to={`/voucher/edit/${td.id}`}><EditIcon/></Button>
               </TableCell>
             </TableRow>
           ))}
@@ -116,7 +117,7 @@ const VoucherTable: React.FunctionComponent<IProps> = observer((props) => {
 
 });
 
-interface IProps extends WithStyles<typeof styles>{
+interface IProps {
 }
 
-export default withStyles(styles)(VoucherTable);
+export default VoucherTable;

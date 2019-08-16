@@ -6,8 +6,7 @@ import './KamandApp.css';
 import Scaffold from './pages/Scaffold';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
-import JssProvider from 'react-jss/lib/JssProvider';
-import { createGenerateClassName, jssPreset } from '@material-ui/core/styles';
+import { StylesProvider, createGenerateClassName, jssPreset } from '@material-ui/styles';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import Notifier from './Notifier';
 import './translations/i18n';
@@ -15,7 +14,6 @@ import './translations/i18n';
 const theme = createMuiTheme({
   direction: 'rtl',
   typography: {
-    useNextVariants: true,
     // Use the system font instead of the default Roboto font.
     fontFamily: [
       'Nahid',
@@ -30,7 +28,7 @@ const generateClassName = createGenerateClassName();
 
 const KamandApp: React.FC<IProps> = (props) => {
   return (
-    <JssProvider jss={jss} generateClassName={generateClassName}>
+    <StylesProvider jss={jss} generateClassName={generateClassName}>
       <MuiThemeProvider theme={theme}>
         <Notifier/>
         <Suspense fallback={<Loader />}>
@@ -39,7 +37,7 @@ const KamandApp: React.FC<IProps> = (props) => {
           </Scaffold>
         </Suspense>
       </MuiThemeProvider>
-    </JssProvider>
+    </StylesProvider>
   );
 }
 

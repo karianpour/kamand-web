@@ -11,9 +11,9 @@ import { observer } from 'mobx-react-lite';
 import { AuthStoreContext } from '../lib/store/authStore';
 
 
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 
-const styles = {
+const useStyles = makeStyles({
   titleBox: {
     padding: '8px 16px',
     marginBottom: 25,
@@ -48,7 +48,7 @@ const styles = {
   forgetBtn: {
     margin: '20px 0 0'
   }
-}
+});
 
 interface Values {
   mobileNumber: string;
@@ -57,7 +57,7 @@ interface Values {
 
 const Login: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const { classes } = props;
+  const classes = useStyles();
   const authStore = useContext(AuthStoreContext);
 
   const onSubmit = async (values: Values, actions: FormikActions<Values>) => {
@@ -90,7 +90,7 @@ const Login: React.FunctionComponent<IProps> = observer((props) => {
       validate={validate}
       render={({ dirty, isSubmitting, handleReset }) => (
         <Form className={classes.loginBox}>
-          <Grid container spacing={8}>
+          <Grid container spacing={1}>
             <div className={classes.loginInput}>
               <Grid item xs={12}>
                 <Field name="mobileNumber" label={t('auth.mobileNumber')} fullWidth component={NumberWidget} placeholder={'0912*******'} inputProps={{type:'tel', maxLength: 12}}/>
@@ -99,7 +99,7 @@ const Login: React.FunctionComponent<IProps> = observer((props) => {
                 <Field name="password" label={t('auth.password')} fullWidth component={TextWidget} type="password"/>
               </Grid>
             </div>
-            <Grid container spacing={8} className={classes.btnBox}>
+            <Grid container spacing={1} className={classes.btnBox}>
               <Grid sm={8} item>
                 <Button
                   style={{ width: '100%' }}
@@ -131,7 +131,7 @@ const Login: React.FunctionComponent<IProps> = observer((props) => {
   );
 });
 
-interface IProps extends WithStyles<typeof styles>{
+interface IProps {
 }
 
-export default withStyles(styles)(Login);
+export default (Login);

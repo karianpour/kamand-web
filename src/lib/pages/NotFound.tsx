@@ -7,17 +7,17 @@ import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../store/appStore';
 
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 
-const styles = {
+const useStyles = makeStyles({
   list: {
     width: 250,
   },
-};
+});
 
 const NotFound :  React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const { classes } = props;
+  const classes = useStyles();
   const appStore  = useContext(AppStoreContext);
   useEffect(()=>{
     appStore.setPageTitle(t('pages.not_found'));
@@ -33,7 +33,6 @@ const NotFound :  React.FunctionComponent<IProps> = observer((props) => {
 });
 
 interface IProps {
-  classes: any,
 }
 
-export default withStyles(styles)(NotFound);
+export default (NotFound);

@@ -8,17 +8,17 @@ import { observer } from 'mobx-react-lite';
 import { AuthStoreContext } from '../store/authStore';
 import { AppStoreContext } from '../store/appStore';
 
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 
-const styles = {
+const useStyles = makeStyles({
   list: {
     width: 250,
   },
-};
+});
 
 const LogoutPage :  React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const { classes } = props;
+  const classes = useStyles();
 
   const appStore  = useContext(AppStoreContext);
   useEffect(()=>{
@@ -42,7 +42,7 @@ const LogoutPage :  React.FunctionComponent<IProps> = observer((props) => {
 
 });
 
-interface IProps extends WithStyles<typeof styles>{
+interface IProps {
 }
 
-export default withStyles(styles)(LogoutPage);
+export default (LogoutPage);

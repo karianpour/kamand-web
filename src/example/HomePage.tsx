@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../lib/store/appStore';
 
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 import { Paper, Typography } from '@material-ui/core';
 // import { secondColor, primaryColor } from '../assets/colors';
 
 
-const styles = {
+const useStyles = makeStyles({
   list: {
     overflow: 'hidden',
   },
@@ -70,11 +70,11 @@ const styles = {
       marginRight: 20
     }
   }
-};
+});
 
 const HomePage: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const { classes } = props;
+  const classes = useStyles();
   const appStore = useContext(AppStoreContext);
 
   useEffect(() => {
@@ -101,7 +101,7 @@ const HomePage: React.FunctionComponent<IProps> = observer((props) => {
 
 });
 
-interface IProps extends WithStyles<typeof styles>{
+interface IProps {
 }
 
-export default withStyles(styles)(HomePage);
+export default (HomePage);

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 
-import { withStyles, WithStyles, Paper } from '@material-ui/core';
+import { makeStyles, Paper } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -17,14 +17,14 @@ import { AppStoreContext, AppStore } from '../../lib/store/appStore';
 import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
 
 
-const styles = {
+const useStyles = makeStyles({
   root: {
     width: '100%',
     // marginTop: theme.spacing.unit * 3,
     // margin: '5px 3px',
     // overflowX: 'auto',
   },
-};
+});
 
 const dataOption: IDataOptions = {
   key: 'test',
@@ -43,7 +43,7 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
 
   return (
     <Grid 
-      container spacing={8}
+      container spacing={1}
       direction="row"
       justify="flex-start"
       alignItems="flex-end"
@@ -61,7 +61,7 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
 
 const DataTable: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const { classes } = props;
+  const classes = useStyles();
 
   const { queryData, refreshHandler } = useKamandData(dataOption);
 
@@ -75,7 +75,7 @@ const DataTable: React.FunctionComponent<IProps> = observer((props) => {
 
       {queryData.error && <p>error</p>}
 
-      {!queryData.loading && !queryData.error && <Table padding='dense'>
+      {!queryData.loading && !queryData.error && <Table size='small'>
         <TableHead>
           <TableRow>
             <TableCell padding='none' align="center">{t('data.type_name')}</TableCell>
@@ -100,7 +100,7 @@ const DataTable: React.FunctionComponent<IProps> = observer((props) => {
 
 });
 
-interface IProps extends WithStyles<typeof styles>{
+interface IProps {
 }
 
-export default withStyles(styles)(DataTable);
+export default (DataTable);

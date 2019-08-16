@@ -25,13 +25,13 @@ import {
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../../lib/store/appStore';
-import { withStyles, WithStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { AccSuggestWidget } from '../components/AccSuggest';
 import uuidv4 from 'uuid/v4';
 
 
-const styles = {
+const useStyles = makeStyles({
   titleBox: {
     padding: '8px 16px',
     marginBottom: 25,
@@ -83,7 +83,7 @@ const styles = {
     justifyContent: 'flex-end',
     width: '100%',
   }
-}
+});
 
 interface Values {
   id: string,
@@ -119,8 +119,9 @@ const validationFunction = (t: (k: string) => string) => (values: Values) => {
 const GameForm: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
-  const { classes, match: { params: { id } } } = props;
+  const { match: { params: { id } } } = props;
   const appStore = useContext(AppStoreContext);
+  const classes = useStyles();
 
   useEffect(() => {
     appStore.setPageTitle(t('pages.voucher'));
@@ -181,7 +182,7 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
           {/* Prevent implicit submission of the form */}
           <button type="submit" disabled style={{display: 'none'}} aria-hidden="true"></button>
           <Paper className={classes.root}>
-            <Grid container spacing={24}>
+            <Grid container spacing={3}>
               <Button onClick={()=>  props.history.goBack()} className={classes.backBtn}>
                 <ArrowBack/>
               </Button>
@@ -246,17 +247,17 @@ interface MatchParams {
   id: string;
 }
 
-interface IProps extends WithStyles<typeof styles>, RouteComponentProps<MatchParams> {
+interface IProps extends RouteComponentProps<MatchParams> {
 }
 
-export default withStyles(styles)(GameForm);
+export default (GameForm);
 
 const MainTab: React.FunctionComponent = () => {
   const { t } = useTranslation();
 
   return (
     <React.Fragment>
-      <Grid container spacing={24}>
+      <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <FastField fullWidth name="voucherNo" label={t('data.voucherNo')} component={TextWidget} inputProps={{ maxLength: 4 }} />
         </Grid>
@@ -293,25 +294,28 @@ const MainTab: React.FunctionComponent = () => {
 };
 
 
-const articleTabStyles = (theme: Theme) => createStyles({
+const useArticleTabStyles = makeStyles({
   cells: {
     padding: '0px 10px'
   },
 });
 
-interface IArticleTabProps extends WithStyles<typeof articleTabStyles> {
+interface IArticleTabProps {
   values: any,
 }
 
 const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
   const { t } = useTranslation();
-  const { values, classes } = props;
+  const { values } = props;
+
+  const classes = useArticleTabStyles();
+
 
   return (
     <React.Fragment>
       <FieldArray name="articles"
         render={arrayHelpers => (
-          <Grid container spacing={24}>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <Button
                 variant="outlined" color="primary"
@@ -405,4 +409,4 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
   );
 };
 
-const ArticleTabStyles = withStyles(articleTabStyles)(ArticleTab);
+const ArticleTabStyles = (ArticleTab);
