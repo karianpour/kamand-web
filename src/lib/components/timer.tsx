@@ -1,23 +1,25 @@
 import React, { useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import { renderDateDiff } from '../utils/dateUtils';
 import { calcDateDifferences } from '../utils/dateUtils';
 
-const styles = {
+const useStyles = makeStyles({
   time:{
     fontSize: 12,
     '@media(max-width: 920px)':{
       fontSize: 10
     }
   }
-}
+});
 
 const TimerSticker: React.FunctionComponent<IProps> = (props) => {
   const spanEl = useRef<HTMLSpanElement>(null);
   const { t } = useTranslation();
 
-  const {time,classes} = props; 
+  const {time} = props; 
+
+  const classes = useStyles();
 
   const update = ()=>{
     const now = new Date();
@@ -40,8 +42,8 @@ const TimerSticker: React.FunctionComponent<IProps> = (props) => {
   
 }
 
-interface IProps extends WithStyles<typeof styles> {
+interface IProps {
   time: Date,
 }
 
-export default withStyles(styles)(TimerSticker);
+export default (TimerSticker);

@@ -5,13 +5,14 @@ import { AppStoreContext } from './store/appStore';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import { withStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 
-const styles = (theme:Theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   close: {
-    padding: theme.spacing.unit / 2,
+    padding: theme.spacing(0.5),
   },
-});
+}));
 
 const Notifier: React.FunctionComponent<IProps> = observer((props) => {
   const appStore = useContext(AppStoreContext);
@@ -23,7 +24,7 @@ const Notifier: React.FunctionComponent<IProps> = observer((props) => {
   }
 
   // const { t } = useTranslation();
-  const { classes } = props;
+  const classes = useStyles();
 
   const hide = () => {
     appStore.setSnackMessage(undefined);
@@ -58,7 +59,6 @@ const Notifier: React.FunctionComponent<IProps> = observer((props) => {
 });
 
 interface IProps {
-  classes: any,
 }
 
-export default withStyles(styles)(Notifier);
+export default (Notifier);

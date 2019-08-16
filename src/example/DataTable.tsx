@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../lib/store/appStore';
 
-import { withStyles, WithStyles, Paper } from '@material-ui/core';
+import { makeStyles, Paper } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -12,18 +12,18 @@ import TableRow from '@material-ui/core/TableRow';
 import { mapToFarsi } from '../lib/utils/farsiUtils';
 
 
-const styles = {
+const useStyles = makeStyles({
   root: {
     width: '100%',
     // marginTop: theme.spacing.unit * 3,
     // margin: '5px 3px',
     // overflowX: 'auto',
   },
-};
+});
 
 const DataTable: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const { classes } = props;
+  const classes = useStyles();
   const appStore = useContext(AppStoreContext);
   const key = 'test';
   const query = 'publicQuery';
@@ -37,7 +37,7 @@ const DataTable: React.FunctionComponent<IProps> = observer((props) => {
 
   return (
     <Paper className={classes.root}>
-      <Table padding='dense'>
+      <Table size='small'>
         <TableHead>
           <TableRow>
             <TableCell padding='none' align="center">{t('data.type_name')}</TableCell>
@@ -62,7 +62,7 @@ const DataTable: React.FunctionComponent<IProps> = observer((props) => {
 
 });
 
-interface IProps extends WithStyles<typeof styles>{
+interface IProps {
 }
 
-export default withStyles(styles)(DataTable);
+export default (DataTable);

@@ -1,8 +1,8 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
-import withData, { IDataOptions } from '../../lib/containers/DataProvider';
+import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
 
-import { withStyles, WithStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import {
   XYPlot,
   XAxis,
@@ -13,14 +13,13 @@ import {
   // VerticalBarSeriesCanvas,
   // DiscreteColorLegend
 } from 'react-vis';
-import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';
 
 
-const styles = {
+const useStyles = makeStyles({
   chartContainer: {
     margin: '5px 3px',
   },
-};
+});
 
 const dataOption: IDataOptions = {
   key: 'test',
@@ -31,7 +30,8 @@ const dataOption: IDataOptions = {
 
 const DataChartMultiCol: React.FunctionComponent<IProps> = (props) => {
   // const { t } = useTranslation();
-  const { classes, queryData } = props;
+  const classes = useStyles();
+  const { queryData } = useKamandData(dataOption);
 
   if(!queryData || !queryData.data || queryData.data.length===0){
     return <p>no data</p>;
@@ -119,8 +119,7 @@ const DataChartMultiCol: React.FunctionComponent<IProps> = (props) => {
 
 };
 
-interface IProps extends WithStyles<typeof styles>{
-  queryData: IQueryData,
+interface IProps {
 }
 
-export default withStyles(styles)(withData(DataChartMultiCol, dataOption));
+export default DataChartMultiCol;

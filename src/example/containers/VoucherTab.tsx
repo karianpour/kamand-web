@@ -5,14 +5,14 @@ import { observer } from 'mobx-react-lite';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { withStyles, WithStyles, Typography } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 import { RouteComponentProps } from 'react-router';
 import VoucherTable from './VoucherTable';
 import AccTable from './AccTable';
 import { AppStoreContext } from '../../lib/store/appStore';
 
 
-const styles = {
+const useStyles = makeStyles({
   root: {
     flexGrow: 1,
     margin: '0 10px',
@@ -22,13 +22,14 @@ const styles = {
       marginRight: 10,
     }
   },
-};
+});
 
 const VoucherTab: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const { classes, location: { hash } } = props;
+  const { location: { hash } } = props;
   const defaultTab = parseInt(hash ? hash.substring(1) : '0')
   const [activeTab, setActiveTab] = useState(defaultTab);
+  const classes = useStyles();
 
   const appStore = useContext(AppStoreContext);
 
@@ -65,7 +66,7 @@ const VoucherTab: React.FunctionComponent<IProps> = observer((props) => {
 
 });
 
-interface IProps extends WithStyles<typeof styles>, RouteComponentProps<any>{
+interface IProps extends RouteComponentProps<any>{
 }
 
-export default withStyles(styles)(VoucherTab);
+export default (VoucherTab);

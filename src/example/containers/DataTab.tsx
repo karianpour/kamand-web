@@ -5,13 +5,13 @@ import { observer } from 'mobx-react-lite';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { withStyles, WithStyles, Typography } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 import DataTable from './DataTableWithHook';
 import DataChart from './DataChart';
 import DataChartMultiCol from './DataChartMultiCol';
 
 
-const styles = {
+const useStyles = makeStyles({
   root: {
     flexGrow: 1,
     margin: '0 10px',
@@ -21,12 +21,12 @@ const styles = {
       marginRight: 10,
     }
   },
-};
+});
 
 const DataTab: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
-  const { classes } = props;
+  const classes = useStyles();
 
   return (
     <Paper className={classes.root}>
@@ -49,14 +49,14 @@ const DataTab: React.FunctionComponent<IProps> = observer((props) => {
       </Tabs>
       
       {activeTab === 0 && <DataTable />}
-      {activeTab === 1 && <DataChart field={'count'} />}
+      {activeTab === 1 && <DataChart />}
       {activeTab === 2 && <DataChartMultiCol />}
     </Paper>
   );
 
 });
 
-interface IProps extends WithStyles<typeof styles>{
+interface IProps {
 }
 
-export default withStyles(styles)(DataTab);
+export default (DataTab);

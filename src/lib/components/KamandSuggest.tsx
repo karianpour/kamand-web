@@ -5,12 +5,12 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 // import { useTranslation } from 'react-i18next';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../store/appStore';
 import { IQueryData } from '../store/interfaces/dataInterfaces';
 
-const styles = {
+const useStyles = makeStyles({
   root: {
     height: 250,
     flexGrow: 1,
@@ -43,7 +43,7 @@ const styles = {
   divider: {
     // height: theme.spacing.unit * 2,
   },
-};
+});
 
 function renderSuggestionsContainer(options: RenderSuggestionsContainerParams) {
   // const refresh = ()=>{
@@ -87,8 +87,9 @@ function renderInputComponent(inputProps: any) {
 const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
   const [value, setValue] = useState('');
   const [lastSelectedValue, setLastSelectedValue] = useState<any>({});
-  const { field:{ name, onChange }, classes } = props;
+  const { field:{ name, onChange } } = props;
 
+  const classes = useStyles();
   const [suggestions, setSuggestions] = useState<any[]>([]);
 
   const appStore = useContext(AppStoreContext);
@@ -210,7 +211,7 @@ const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
   );
 });
 
-interface IProps extends WithStyles<typeof styles>, FieldProps<any> {
+interface IProps extends FieldProps<any> {
   onChange: any,
   label?: string,
   placeholder?: string,
@@ -224,7 +225,7 @@ interface IProps extends WithStyles<typeof styles>, FieldProps<any> {
   getMatchingSuggestions: (value: string, suggestionData: IQueryData)=>any[],
 }
 
-export const KamandSuggestWidget = withStyles(styles)(KamandSuggest);
+export const KamandSuggestWidget = (KamandSuggest);
 
 const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props) => {
   const [value, setValue] = useState('');
@@ -233,7 +234,6 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
     name,
     value: selectedValue,
     onChange,
-    classes,
     label,
     children,
     placeholder,
@@ -247,6 +247,8 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
     ...restProps
   } = props;
   const [suggestions, setSuggestions] = useState<any[]>([]);
+
+  const classes = useStyles();
 
   const appStore = useContext(AppStoreContext);
 
@@ -345,7 +347,7 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
   );
 });
 
-interface IPropsInput extends WithStyles<typeof styles> {
+interface IPropsInput {
   value?: any,
   name?: string,
   onChange: any,
@@ -360,4 +362,4 @@ interface IPropsInput extends WithStyles<typeof styles> {
   getMatchingSuggestions: (value: string, suggestionData: IQueryData)=>any[],
 }
 
-export const KamandSuggestInput = withStyles(styles)(KamandSuggestBase);
+export const KamandSuggestInput = (KamandSuggestBase);

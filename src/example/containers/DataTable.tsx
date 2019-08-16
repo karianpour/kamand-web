@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 
-import { withStyles, WithStyles, Paper } from '@material-ui/core';
+import { makeStyles, Paper } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -13,19 +13,19 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
-import withData, { IDataOptions } from '../../lib/containers/DataProvider';
+import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
 import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';
 import { AppStoreContext, AppStore } from '../../lib/store/appStore';
 
 
-const styles = {
+const useStyles = makeStyles({
   root: {
     width: '100%',
     // marginTop: theme.spacing.unit * 3,
     // margin: '5px 3px',
     // overflowX: 'auto',
   },
-};
+});
 
 const dataOption: IDataOptions = {
   key: 'test',
@@ -44,7 +44,7 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
 
   return (
     <Grid 
-      container spacing={8}
+      container spacing={1}
       direction="row"
       justify="flex-start"
       alignItems="flex-end"
@@ -62,7 +62,8 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
 
 const DataTable: React.FunctionComponent<IProps> = (props) => {
   const { t } = useTranslation();
-  const { classes, queryData, refreshHandler } = props;
+  const classes = useStyles();
+  const { queryData, refreshHandler } = useKamandData(dataOption);
 
   if(!queryData) return null;
 
@@ -74,7 +75,7 @@ const DataTable: React.FunctionComponent<IProps> = (props) => {
 
       {queryData.error && <p>error</p>}
 
-      {!queryData.loading && !queryData.error && <Table padding='dense'>
+      {!queryData.loading && !queryData.error && <Table size='small'>
         <TableHead>
           <TableRow>
             <TableCell padding='none' align="center">{t('data.type_name')}</TableCell>
@@ -99,9 +100,7 @@ const DataTable: React.FunctionComponent<IProps> = (props) => {
 
 };
 
-interface IProps extends WithStyles<typeof styles>{
-  queryData: IQueryData,
-  refreshHandler: ()=>void,
+interface IProps {
 }
 
-export default withStyles(styles)(withData(DataTable, dataOption));
+export default DataTable;

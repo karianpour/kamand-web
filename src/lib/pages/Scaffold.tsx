@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -31,7 +31,7 @@ import NotFound from './NotFound';
 import LogoutPage from './LogoutPage';
 import PageTitle from '../containers/PageTitle';
 
-const styles = {
+const useStyles = makeStyles({
   list: {
     width: 250,
   },
@@ -48,7 +48,7 @@ const styles = {
     //   padding: 5,
     // }
   },
-};
+});
 
 
 const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
@@ -58,7 +58,7 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
   const authStore = useContext(AuthStoreContext);
   const appStore = useContext(AppStoreContext);
   const { appBarHidden } = appStore;
-  const { classes } = props;
+  const classes = useStyles();
   // const { user } = authStore;
 
   return (
@@ -122,11 +122,11 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
   );
 });
 
-interface IProps extends WithStyles<typeof styles>{
+interface IProps {
   menus?: ReactNode,
   login?: ReactNode,
   home?: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>,
   children?: ReactNode,
 }
 
-export default withStyles(styles)(Scaffold);
+export default (Scaffold);
