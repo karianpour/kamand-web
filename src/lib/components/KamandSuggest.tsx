@@ -123,11 +123,11 @@ const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
 
   useEffect(()=>{
     if(suggestionData && suggestionData.data && props.field.value){
-      const newValue = suggestionData.data.find(row => row.id === props.field.value);
+      const newValue = suggestionData.data.find(row => getSuggestionValue(row) === props.field.value);
       setValue(getSuggestionDescription(newValue));
       setLastSelectedValue(newValue);
     }
-  }, [appStore, getSuggestionDescription, suggestionData, props.field.value]);
+  }, [appStore, getSuggestionDescription, getSuggestionValue, suggestionData, props.field.value]);
 
   const handleInputChange = (event: any) => {
     if(event.target.value !== undefined) {
@@ -148,7 +148,7 @@ const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
 
   const handleSelected = (event: any, selected: any)=> {
     if(selected.suggestion){
-      if(onChange) onChange({target: {name, value: selected.suggestion.id}});
+      if(onChange) onChange({target: {name, value: getSuggestionValue(selected.suggestion)}});
       setValue(getSuggestionDescription(selected.suggestion));
       setLastSelectedValue(selected.suggestion);
     }
@@ -265,7 +265,7 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
 
   useEffect(()=>{
     if(suggestionData && suggestionData.data && selectedValue && selectedValue!==getSuggestionValue(lastSelectedValue)){
-      const newValue = suggestionData.data.find(row => row.id === selectedValue);
+      const newValue = suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
       setValue(getSuggestionDescription(newValue));
       setLastSelectedValue(newValue);
     }
@@ -290,7 +290,7 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
 
   const handleSelected = (event: any, selected: any)=> {
     if(selected.suggestion){
-      if(onChange) onChange({target: {name, value: selected.suggestion.id}});
+      if(onChange) onChange({target: {name, value: getSuggestionValue(selected.suggestion)}});
       setValue(getSuggestionDescription(selected.suggestion));
       setLastSelectedValue(selected.suggestion);
     }
