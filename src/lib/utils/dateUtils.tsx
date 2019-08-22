@@ -3,6 +3,18 @@ const MIDDLE_SEPERATOR =  '\xa0';
 const TIME_SEPERATOR =  ':';
 
 
+export function formatDateTimeString(dateStr:string | undefined | null){
+  if(!dateStr) return '';
+  const date = new Date(dateStr);
+  return formatDate(date) +MIDDLE_SEPERATOR+ formatTime(date);
+}
+
+export function formatDateString(dateStr:string | undefined | null){
+  if(!dateStr) return '';
+  const date = new Date(dateStr);
+  return Date2JalaliDate(date);
+}
+
 export function formatDateTime(date:Date | undefined | null){
   if(!date) return '';
   return formatDate(date) +MIDDLE_SEPERATOR+ formatTime(date);

@@ -19,6 +19,7 @@ import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { AppStoreContext, AppStore } from '../../lib/store/appStore';
 import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
 import { AdapterLink } from '../../lib/components/misc';
+import { formatDateString, formatDateTimeString } from '../../lib/utils/dateUtils';
 
 
 const useStyles = makeStyles({
@@ -103,8 +104,8 @@ const VoucherTable: React.FunctionComponent<IProps> = observer((props) => {
               <TableCell padding='none' component="th" scope="row">
                 {td.voucherNo}
               </TableCell>
-              <TableCell padding='none' align="center">{mapToFarsi(td.voucherDate)}</TableCell>
-              <TableCell padding='none' align="center">{mapToFarsi(td.createdAt.toString())}</TableCell>
+              <TableCell padding='none' align="center">{mapToFarsi(formatDateString(td.voucherDate))}</TableCell>
+              <TableCell padding='none' align="center">{mapToFarsi(formatDateTimeString(td.createdAt))}</TableCell>
               <TableCell padding='none' align="center">
                 <Button component={AdapterLink} to={`/voucher/edit/${td.id}`}><EditIcon/></Button>
               </TableCell>

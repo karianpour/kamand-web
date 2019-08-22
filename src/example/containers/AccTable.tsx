@@ -19,6 +19,7 @@ import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { AppStoreContext, AppStore } from '../../lib/store/appStore';
 import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
 import { AdapterLink } from '../../lib/components/misc';
+import { formatDateTimeString } from '../../lib/utils/dateUtils';
 
 
 const useStyles = makeStyles({
@@ -104,7 +105,7 @@ const AccTable: React.FunctionComponent<IProps> = observer((props) => {
                 {td.code}
               </TableCell>
               <TableCell padding='none' align="center">{mapToFarsi(td.name)}</TableCell>
-              <TableCell padding='none' align="center">{mapToFarsi(td.createdAt.toString())}</TableCell>
+              <TableCell padding='none' align="center">{mapToFarsi(formatDateTimeString(td.createdAt))}</TableCell>
               <TableCell padding='none' align="center">
                 <Button component={AdapterLink} to={`/acc/edit/${td.id}`}><EditIcon/></Button>
               </TableCell>
