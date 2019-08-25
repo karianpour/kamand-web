@@ -5,10 +5,10 @@ import { AppStoreContext } from './store/appStore';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import { Theme } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/styles';
+import { Theme } from '@material-ui/core';
 
-const useStyles = makeStyles<Theme>((theme) => ({
+const useStyles = makeStyles<Theme>(theme=>({
   close: {
     padding: theme.spacing(0.5),
   },
@@ -19,9 +19,6 @@ const Notifier: React.FunctionComponent<IProps> = observer((props) => {
 
   const { snackMessage } = appStore;
 // console.log(`render in notifier with `, snackMessage)
-  if(!snackMessage){
-    return null;
-  }
 
   // const { t } = useTranslation();
   const classes = useStyles();
@@ -29,6 +26,10 @@ const Notifier: React.FunctionComponent<IProps> = observer((props) => {
   const hide = () => {
     appStore.setSnackMessage(undefined);
   };
+
+  if(!snackMessage){
+    return null;
+  }
 
   return (
     <Snackbar

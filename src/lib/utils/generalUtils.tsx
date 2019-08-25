@@ -1,20 +1,69 @@
 import i18n from '../translations/i18n';
 
 export function msleep(n:number) {
-  return new Promise(resolve => setTimeout(resolve, n));
-//  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
+  //  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
+  return sleep(n);
 }
 
 export function sleep(ms:number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+export function extractErrorMessage (err:any): any{
+  const details = extractError(err);
+  if(typeof details === 'string'){
+    return details;
+  }
+
+  if(!!!details.codes) {
+    console.error(`there should be a problem in extractError function in generalUtils module!`);
+    return tryTranslation('odd') || 'odd error';
+  };
+
+  let message = '';
+  const appendError = (c: any) => {
+    const translated = tryTranslation(c);
+    message += `${translated || JSON.stringify(c)}\n`;
+  };
+  for(let k in details.codes){
+    if(!details.codes.hasOwnProperty(k)) continue;
+    const code = details.codes[k];
+    const f = tryTranslation(k);
+    message += `${f || k}:\n`;
+    if(Array.isArray(code)){
+      code.forEach( appendError );
+    }else{
+      appendError(code);
+      // const translated = tryTranslation(code);
+      // message += `${translated || code}\n`;
+    }
+  }
+  return message;
+}
+
 export function extractError (err:any): any{
+  let details: any;
+  let message: string;
   if(
     err && err.response && err.response.data && err.response.data.error && err.response.data.statusCode !== 200
   ){
+    message = err.response.data.message;
     try{
-      const details = JSON.parse(err.response.data.message);
+      details = JSON.parse(message);
+    }catch(_){
+      return {message};
+    }
+  }else if(err && err.payload){
+    details = err.payload;
+    message = err.message || JSON.stringify(err.payload);
+  }else if(err.message && err.message === 'Network Error'){
+    message = tryTranslation('network_error') || 'network error';
+  }else{
+    message = tryTranslation('unknown') || 'unknown error';
+  }
+
+  if(details){
+    try{
       if(details){
         console.log({err, error: details});
         if(Array.isArray(details)){
@@ -27,10 +76,11 @@ export function extractError (err:any): any{
         return details;
       }
     }catch(_){
-      return err.response.data.message;
+      return {message};
     }
   }
-  return err;
+
+  return {message};
 }
 
 function translate (details: any) {
@@ -41,7 +91,10 @@ function translate (details: any) {
     if(Array.isArray(code)){
       code.forEach( (c, i) => {
         const translated = tryTranslation(c);
-        if(translated) details[k][i] = translated;
+        if(translated) {
+          if(!details[k]) details[k] = [];
+          details[k][i] = translated
+        };
       });
     }else{
       const translated = tryTranslation(code);
@@ -73,6 +126,17 @@ function tryTranslation(code: string | IErrorCode): string | undefined{
 
   }
   return;
+}
+
+export function readParam(search: string, param: string): string {
+  const i1 = search.indexOf(param+'=');
+  if(i1>-1){
+    let i2 = search.indexOf('&', i1);
+    if(i2===-1) i2 = search.length;
+    return search.substring(i1 + param.length+1, i2);
+  }
+
+  return '';
 }
 
 export function hasRole(user: any, checkingRoles: string | string[]): boolean {

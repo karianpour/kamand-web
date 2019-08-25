@@ -118,8 +118,9 @@ const validationFunction = (t: (k: string) => string) => (values: Values) => {
 
 const GameForm: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState(0);
-  const { match: { params: { id } } } = props;
+  const { match: { params: { id } }, location: { hash } } = props;
+  const defaultTab = parseInt(hash ? hash.substring(1) : '0')
+  const [activeTab, setActiveTab] = useState(defaultTab);
   const appStore = useContext(AppStoreContext);
   const classes = useStyles();
 
@@ -154,16 +155,17 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
     }
   }, [key, id, appStore]);
 
-  if (!data) {
-    return <div>loading...</div>;
-  }
-
   const onSubmit = async (values: Values, actions: FormikActions<Values>) => {
     try {
       await appStore.saveActData(key.current, `/voucher/${values.id}`, values);
+      appStore.setSnackMessage({message: t('info.succeed')});
       // console.log(values)
     } catch (err) {
       //TODO if we get connection error we have to show a proper message 
+      console.log({err})
+      if(err.message){
+        appStore.setSnackMessage(err);
+      }
       actions.setErrors(err);
     } finally {
       actions.setSubmitting(false);
@@ -171,6 +173,15 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
   };
 
   const validate = validationFunction(t);
+
+  const handleTabsChange = (_: React.ChangeEvent<any>, value: number) => {
+    setActiveTab(value);
+    props.history.replace(`#${value}`)
+  }
+
+  if (!data) {
+    return <div>loading...</div>;
+  }
 
   return (
     <Formik
@@ -196,7 +207,7 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
               <Grid className={classes.spaceBox} item xs={12}>
                 <Tabs
                   value={activeTab}
-                  onChange={(_: React.ChangeEvent<any>, value) => { setActiveTab(value) }}
+                  onChange={handleTabsChange}
                   indicatorColor="primary"
                   textColor="primary"
                   centered
@@ -210,7 +221,7 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
                 </Tabs>
 
                 {activeTab === 0 && <MainTab />}
-                {activeTab === 1 && <ArticleTabStyles values={values} />}
+                {activeTab === 1 && <ArticleTab values={values} />}
               </Grid>
               <Grid sm={8} item>
                 <Button
@@ -295,6 +306,12 @@ const MainTab: React.FunctionComponent = () => {
 
 
 const useArticleTabStyles = makeStyles({
+  table:{
+    minWidth: 1900,
+  },
+  tableContainer: {
+    overflow: 'auto',
+  },
   cells: {
     padding: '0px 10px'
   },
@@ -334,14 +351,15 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
                 <AddIcon />
               </Button>
             </Grid>
-            <Grid item xs={12}>
-              <Table padding='default'>
+            <Grid item xs={12} className={classes.tableContainer}>
+              <Table padding='default' className={classes.table}>
                 <TableHead>
                   <TableRow>
                     <TableCell className={classes.cells} padding='none' align="center">{t('data.row')}</TableCell>
                     <TableCell className={classes.cells} padding='none' align="center">{t('data.articleNo')}</TableCell>
                     <TableCell className={classes.cells} padding='none' align="center">{t('data.articleDate')}</TableCell>
                     <TableCell className={classes.cells} padding='none' align="center">{t('data.acc')}</TableCell>
+                    <TableCell className={classes.cells} padding='none' align="center">{t('data.voucherType')}</TableCell>
                     <TableCell className={classes.cells} padding='none' align="center">{t('data.registered')}</TableCell>
                     <TableCell className={classes.cells} padding='none' align="center">{t('data.amount')}</TableCell>
                     <TableCell className={classes.cells} padding='none' align="center">{t('data.refer')}</TableCell>
@@ -353,19 +371,19 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
                 <TableBody>
                   {values.articles && values.articles.map((td: any, index: number) => (
                     <TableRow key={index} selected={false} hover={true}>
-                      <TableCell className={classes.cells} padding='none' component="th" scope="row">
+                      <TableCell style={{width:20}} className={classes.cells} padding='none' component="th" scope="row">
                         {mapToFarsi(index + 1)}
                       </TableCell>
-                      <TableCell style={{width:20}} className={classes.cells} padding='none' align="center">
+                      <TableCell style={{width:30}} className={classes.cells} padding='none' align="center">
                         <FastField name={`articles.${index}.articleNo`} component={NumberWidget} inputProps={{ maxLength: 1 }} />
                       </TableCell>
-                      <TableCell style={{width:20}} className={classes.cells} padding='none' align="center">
+                      <TableCell style={{width:60}} className={classes.cells} padding='none' align="center">
                         <FastField name={`articles.${index}.articleDate`} component={DateWidget} />
                       </TableCell>
-                      <TableCell className={classes.cells} padding='none' align="center">
+                      <TableCell style={{minWidth:120}} className={classes.cells} padding='none' align="center">
                         <FastField name={`articles.${index}.accId`} placeholder={t('data.accSuggest')} fullWidth component={AccSuggestWidget} margin="normal" />
                       </TableCell>
-                      <TableCell className={classes.cells} padding='none' align="center">
+                      <TableCell style={{minWidth:80}} className={classes.cells} padding='none' align="center">
                       <FastField name={`articles.${index}.voucherType`} placeholder={t('data.voucherType')} fullWidth component={SelectWidget}>
                         <MenuItem value="">
                           <em>-</em>
@@ -374,16 +392,16 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
                         <MenuItem value="special">{t('data.special')}</MenuItem>
                       </FastField>
                       </TableCell>
-                      <TableCell style={{width:80}} className={classes.cells} padding='none' align="center">
+                      <TableCell style={{width:30}} className={classes.cells} padding='none' align="center">
                         <FastField name={`articles.${index}.registered`} component={BooleanWidget} margin="normal" />
                       </TableCell>
-                      <TableCell style={{width:20}} className={classes.cells} padding='none' align="center">
+                      <TableCell style={{width:80}} className={classes.cells} padding='none' align="center">
                         <FastField name={`articles.${index}.amount`} component={DecimalWidget} inputProps={{ maxLength: 1 }} />
                       </TableCell>
                       <TableCell style={{width:80}} className={classes.cells} padding='none' align="center">
                         <FastField name={`articles.${index}.refer`} fullWidth component={TextWidget} margin="normal" />
                       </TableCell>
-                      <TableCell className={classes.cells} padding='none' align="center">
+                      <TableCell style={{minWidth:120}} className={classes.cells} padding='none' align="center">
                         <FastField name={`articles.${index}.remark`} fullWidth component={TextWidget} margin="normal" multiline={true} rowsMax={4} />
                       </TableCell>
                       <TableCell style={{width:80}} className={classes.cells} padding='none' align="center">
@@ -409,4 +427,3 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
   );
 };
 
-const ArticleTabStyles = (ArticleTab);

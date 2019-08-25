@@ -4,7 +4,7 @@ const translation = {
       label: 'نام',
     },
     home: {
-      hello: 'سلام' 
+      mainPage: 'صفحه اصلی' 
     },
     pages: {
       home: 'خانه',
@@ -12,11 +12,15 @@ const translation = {
       voucher: 'اسناد',
       acc: 'حسابها',
     },
+    info:{
+      succeed: 'عملیات با موفقیت انجام شد.',
+    },
     error: {
       required: '{{field, translate}} اجباری است',
       duplicate: '{{field, translate}} تکراری است',
       mismatch: '{{field, translate}} تظابق ندارد',
       malformat: '{{field, translate}} فرمت نامناسبی دارد',
+      network_error: 'ارتباط با سرور مشکل دارد',
     },
     data: {
       type_name: 'نوع',

@@ -90,7 +90,7 @@ const HomePage: React.FunctionComponent<IProps> = observer((props) => {
           <Paper className={classes.paper}>
             <Grid container>
               <Grid item sm={8}>
-                <Typography align="left" gutterBottom={true} variant="h5" className={classes.aboutText}>{t('home.hello')}</Typography>
+                <Typography align="left" gutterBottom={true} variant="h5" className={classes.aboutText}>{t('home.mainPage')}</Typography>
               </Grid>
             </Grid>
           </Paper>
