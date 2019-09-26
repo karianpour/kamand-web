@@ -9,8 +9,7 @@ export function sleep(ms:number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function extractErrorMessage (err:any): any{
-  const details = extractError(err);
+export function extractErrorMessage (details:any): any{
   if(typeof details === 'string'){
     return details;
   }
@@ -47,11 +46,18 @@ export function extractError (err:any): any{
   if(
     err && err.response && err.response.data && err.response.data.error && err.response.data.statusCode !== 200
   ){
-    message = err.response.data.message;
-    try{
-      details = JSON.parse(message);
-    }catch(_){
-      return {message};
+    if(err.response.data.payload){
+      details = err.response.data.payload;
+      message = err.response.data.payload;
+    }else if(err.response.data.message){
+      message = err.response.data.message;
+      try{
+        details = JSON.parse(message);
+      }catch(_){
+        return {message};
+      }
+    }else{
+      message = tryTranslation('unknown') || 'unknown error';
     }
   }else if(err && err.payload){
     details = err.payload;
