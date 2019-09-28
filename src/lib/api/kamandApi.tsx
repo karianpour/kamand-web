@@ -1,14 +1,18 @@
 // import { AppStore } from '../store/appStore';
 import axios, { AxiosRequestConfig } from 'axios';
-import { APIADDRESS } from './authApi';
 import { authStore } from '../store/authStore';
 import { extractError } from '../utils/generalUtils';
 
-// let appStore: AppStore;
+const APIADDRESS = process.env.REACT_APP_APIADDRESS || '';
+
+function addToken(headers: any){
+  if(authStore.token) headers['Authorization'] = `Bearer ${authStore.token}`;
+}
 
 export async function fetchData(query: string, params: any, publicQuery: boolean = false) : Promise<any>{
   try{
-    const headers = !authStore.token ? undefined : {'Authorization': `Bearer ${authStore.token}`};
+    const headers = {};
+    addToken(headers);
     const config:AxiosRequestConfig = {
       baseURL: APIADDRESS,
       timeout: 30 * 1000,
@@ -29,7 +33,8 @@ export async function fetchData(query: string, params: any, publicQuery: boolean
 
 export async function loadActData(query: string, params: any) : Promise<any>{
   try{
-    const headers = !authStore.token ? undefined : {'Authorization': `Bearer ${authStore.token}`};
+    const headers = {};
+    addToken(headers);
     const config:AxiosRequestConfig = {
       baseURL: APIADDRESS,
       timeout: 30 * 1000,
@@ -60,7 +65,8 @@ export async function loadActData(query: string, params: any) : Promise<any>{
 
 export async function saveActData(query: string, data: any) : Promise<any>{
   try{
-    const headers = !authStore.token ? undefined : {'Authorization': `Bearer ${authStore.token}`};
+    const headers = {};
+    addToken(headers);
     const config:AxiosRequestConfig = {
       baseURL: APIADDRESS,
       timeout: 60 * 1000,
@@ -90,7 +96,8 @@ export async function saveActData(query: string, data: any) : Promise<any>{
 
 export async function executeApi(executionConfig: AxiosRequestConfig) : Promise<any>{
   try{
-    const headers = !authStore.token ? undefined : {'Authorization': `Bearer ${authStore.token}`};
+    const headers = {};
+    addToken(headers);
     const config:AxiosRequestConfig = {
       baseURL: APIADDRESS,
       timeout: 60 * 1000,

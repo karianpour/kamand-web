@@ -9,6 +9,7 @@ class AuthStore {
   user?:IUser;
   loggedin:boolean = false;
   token?:string;
+  readonly optionData = observable.map({}, { deep: false });
 
   setUser(user:IUser) {
     this.user = user;
@@ -31,6 +32,14 @@ class AuthStore {
     const user = await login({username, password});
     this.setUser(user);
   }
+
+  setOptionData(key: string, data: any) {
+    this.optionData.set(key, data);
+  }
+
+  getOptionData(key: string): any{
+    return this.optionData.get(key);
+  }
 }
 
 decorate(AuthStore, {
@@ -40,6 +49,7 @@ decorate(AuthStore, {
   setUser: action,
   clearUser: action,
   login: action,
+  setOptionData: action,
 });
 
 export const authStore = new AuthStore();
@@ -52,6 +62,12 @@ if(json) {
   if(data){
     if(data.user){
       authStore.setUser(data.user);
+    }
+    if(data.optionData){
+      for(const k in data.optionData){
+        if(!data.optionData.hasOwnProperty(k)) continue;
+        authStore.setOptionData(k, data.optionData[k]);
+      }
     }
   }
 }

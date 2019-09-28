@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { extractError } from '../utils/generalUtils';
 
-export const APIADDRESS = process.env.REACT_APP_APIADDRESS || '';
+const APIADDRESS = process.env.REACT_APP_APIADDRESS || '';
 const LoginURI = process.env.REACT_APP_LoginURI || '/users/login';
 
 export interface IUser{
