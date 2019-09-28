@@ -1,6 +1,6 @@
 {
   "name": "kamand-web",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "files": [
@@ -95,6 +95,8 @@
     "react-svg-gauge": "^1.0.10",
     "react-vis": "^1.11.7",
     "typescript": "3.4.5",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "tslint-config-airbnb": "^5.11.2",
+    "tslint-config-prettier": "^1.18.0"
   }
 }

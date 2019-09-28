@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { extractError } from '../utils/generalUtils';
 
 export const APIADDRESS = process.env.REACT_APP_APIADDRESS || '';
+const LoginURI = process.env.REACT_APP_LoginURI || '/users/login';
 
 export interface IUser{
   token:string,
@@ -18,7 +19,7 @@ export async function login(loginInfo : ILogin) : Promise<IUser>{
     const config:AxiosRequestConfig = {
       baseURL: APIADDRESS,
     };
-    const result:any = await axios.post('/users/login', loginInfo, config);
+    const result:any = await axios.post(LoginURI, loginInfo, config);
   
     if(result.status === 200){
       return result.data;
