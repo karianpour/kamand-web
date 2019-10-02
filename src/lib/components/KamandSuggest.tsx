@@ -123,7 +123,7 @@ const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
   const selectedValue = props.field.value;
 
   useEffect(()=>{
-    if(suggestionData && suggestionData.data && selectedValue && selectedValue!==getSuggestionValue(lastSelectedValue)){
+    if(suggestionData && suggestionData.data && selectedValue && (!lastSelectedValue || selectedValue!==getSuggestionValue(lastSelectedValue))){
       const newValue = suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
       setValue(getSuggestionDescription(newValue));
       setLastSelectedValue(newValue);
@@ -265,7 +265,7 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
   const suggestionData: IQueryData = appStore.getQueryData(queryKey);
 
   useEffect(()=>{
-    if(suggestionData && suggestionData.data && selectedValue && selectedValue!==getSuggestionValue(lastSelectedValue)){
+    if(suggestionData && suggestionData.data && selectedValue && (!lastSelectedValue || selectedValue!==getSuggestionValue(lastSelectedValue))){
       const newValue = suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
       setValue(getSuggestionDescription(newValue));
       setLastSelectedValue(newValue);

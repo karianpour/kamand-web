@@ -107,7 +107,7 @@ const KamandStaticSuggest: React.FunctionComponent<IProps> = observer((props) =>
   const selectedValue = props.field.value;
 
   useEffect(()=>{
-    if(suggestionData && selectedValue && selectedValue!==getSuggestionValue(lastSelectedValue)){
+    if(suggestionData && selectedValue && (!lastSelectedValue || selectedValue!==getSuggestionValue(lastSelectedValue))){
       const newValue = suggestionData.find(row => getSuggestionValue(row) === selectedValue);
       setValue(getSuggestionDescription(newValue));
       setLastSelectedValue(newValue);
@@ -231,7 +231,7 @@ const KamandStaticSuggestBase: React.FunctionComponent<IPropsInput> = observer((
   const suggestionData = getListSuggestions();
 
   useEffect(()=>{
-    if(suggestionData && selectedValue && selectedValue!==getSuggestionValue(lastSelectedValue)){
+    if(suggestionData && selectedValue && (!lastSelectedValue || selectedValue!==getSuggestionValue(lastSelectedValue))){
       const newValue = suggestionData.find(row => getSuggestionValue(row) === selectedValue);
       setValue(getSuggestionDescription(newValue));
       setLastSelectedValue(newValue);
