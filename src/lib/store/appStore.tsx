@@ -16,6 +16,8 @@ export class AppStore {
   readonly filtersData = observable.map({});
   readonly actData = observable.map({}, { deep: false });
 
+  readonly optionData = observable.map({}, { deep: false });
+
   // constructor(){
     // setAppStore(this);
   // }
@@ -95,6 +97,14 @@ export class AppStore {
     const result = await saveActData(query, data);
     return result;
   }
+
+  setOptionData(key: string, data: any) {
+    this.optionData.set(key, data);
+  }
+
+  getOptionData(key: string): any{
+    return this.optionData.get(key);
+  }
 }
 decorate(AppStore, {
   pageTitle: observable,
@@ -111,6 +121,7 @@ decorate(AppStore, {
   setActData: action,
   loadActData: action,
   saveActData: action,
+  setOptionData: action,
 });
 
 export const appStore = new AppStore();

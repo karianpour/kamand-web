@@ -120,14 +120,15 @@ const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
   }
 
   const suggestionData: IQueryData = appStore.getQueryData(queryKey);
+  const selectedValue = props.field.value;
 
   useEffect(()=>{
-    if(suggestionData && suggestionData.data && props.field.value){
-      const newValue = suggestionData.data.find(row => getSuggestionValue(row) === props.field.value);
+    if(suggestionData && suggestionData.data && selectedValue && selectedValue!==getSuggestionValue(lastSelectedValue)){
+      const newValue = suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
       setValue(getSuggestionDescription(newValue));
       setLastSelectedValue(newValue);
     }
-  }, [appStore, getSuggestionDescription, getSuggestionValue, suggestionData, props.field.value]);
+  }, [appStore, getSuggestionDescription, getSuggestionValue, suggestionData, selectedValue]);
 
   const handleInputChange = (event: any) => {
     if(event.target.value !== undefined) {

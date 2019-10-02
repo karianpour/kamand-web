@@ -104,14 +104,15 @@ const KamandStaticSuggest: React.FunctionComponent<IProps> = observer((props) =>
   } = props;
 
   const suggestionData = getListSuggestions();
+  const selectedValue = props.field.value;
 
   useEffect(()=>{
-    if(suggestionData && props.field.value){
-      const newValue = suggestionData.find(row => getSuggestionValue(row) === props.field.value);
+    if(suggestionData && selectedValue && selectedValue!==getSuggestionValue(lastSelectedValue)){
+      const newValue = suggestionData.find(row => getSuggestionValue(row) === selectedValue);
       setValue(getSuggestionDescription(newValue));
       setLastSelectedValue(newValue);
     }
-  }, [getSuggestionDescription, getSuggestionValue, suggestionData, props.field.value]);
+  }, [getSuggestionDescription, getSuggestionValue, suggestionData, selectedValue]);
 
   const handleInputChange = (event: any) => {
     if(event.target.value !== undefined) {
