@@ -12,11 +12,11 @@ export class AppStore {
   appBarHidden: boolean = false;
   snackMessage?: ISnackMessage;
 
-  readonly queryData = observable.map({}, { deep: false });
-  readonly filtersData = observable.map({});
-  readonly actData = observable.map({}, { deep: false });
+  readonly queryData = observable.map<string, any>({}, { deep: false });
+  readonly filtersData = observable.map<string, any>({});
+  readonly actData = observable.map<string, any>({}, { deep: false });
 
-  readonly optionData = observable.map({}, { deep: false });
+  readonly optionData = observable.map<string, any>({}, { deep: false });
 
   // constructor(){
     // setAppStore(this);
@@ -87,6 +87,10 @@ export class AppStore {
     return this.actData.get(key);
   }
 
+  deleteActData(key: string): any{
+    return this.actData.delete(key);
+  }
+
   async loadActData(key: string, query: string, queryParam: any) : Promise<void> {
     const data = await loadActData(query, queryParam);
     this.setActData(key, data);
@@ -95,6 +99,9 @@ export class AppStore {
   async saveActData(key: string | null, query: string, data: any) : Promise<any> {
     if(key) this.setActData(key, data);
     const result = await saveActData(query, data);
+    if(result && key){
+      this.setActData(key, data);
+    }
     return result;
   }
 

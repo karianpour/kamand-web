@@ -9,7 +9,7 @@ class AuthStore {
   user?:IUser;
   loggedin:boolean = false;
   token?:string;
-  readonly optionData = observable.map({}, { deep: false });
+  readonly optionData = observable.map<string, any>({}, { deep: false });
 
   setUser(user:IUser) {
     this.user = user;

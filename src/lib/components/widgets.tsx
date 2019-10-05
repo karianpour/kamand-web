@@ -58,6 +58,8 @@ export const DecimalWidget = ({
     value = '';
   }
 
+  const shrink = !!value || value===0;
+
   const handleChange = (a:React.ChangeEvent<any>)=>{
     // console.log({a})
     onChange(a);
@@ -74,6 +76,7 @@ export const DecimalWidget = ({
     {...restField} {...props}
     helperText={(error && touch) && error}
     error={(!!error && !!touch)}
+    InputLabelProps={shrink ? {shrink} : {}}
     InputProps={{
       inputComponent: DecimalInput,
       inputProps,
@@ -96,6 +99,8 @@ export const NumberWidget = ({
     value = '';
   }
 
+  const shrink = !!value || value===0;
+
   const handleChange = (a:React.ChangeEvent<any>)=>{
     // console.log({a})
     onChange(a);
@@ -112,6 +117,7 @@ export const NumberWidget = ({
     {...restField} {...props}
     helperText={(error && touch) && error}
     error={(!!error && !!touch)}
+    InputLabelProps={shrink ? {shrink} : {}}
     InputProps={{
       inputComponent: NumberInput,
       inputProps,
@@ -134,6 +140,8 @@ export const DateTimeWidget = ({
     value = '';
   }
 
+  const shrink = !!value;
+
   const handleChange = (a:React.ChangeEvent<any>)=>{
     // console.log({a})
     onChange(a);
@@ -150,6 +158,7 @@ export const DateTimeWidget = ({
     {...restField} {...props}
     helperText={(error && touch) && error}
     error={(!!error && !!touch)}
+    InputLabelProps={shrink ? {shrink} : {}}
     InputProps={{
       inputComponent: DateTimeInput,
       inputProps,
@@ -172,6 +181,8 @@ export const DateWidget = ({
     value = '';
   }
 
+  const shrink = !!value;
+
   const handleChange = (a:React.ChangeEvent<any>)=>{
     // console.log({a})
     onChange(a);
@@ -188,6 +199,7 @@ export const DateWidget = ({
     {...restField} {...props}
     helperText={(error && touch) && error}
     error={(!!error && !!touch)}
+    InputLabelProps={shrink ? {shrink} : {}}
     InputProps={{
       inputComponent: DateInput,
       inputProps,

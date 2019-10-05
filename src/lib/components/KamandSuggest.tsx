@@ -128,7 +128,7 @@ const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
       setValue(getSuggestionDescription(newValue));
       setLastSelectedValue(newValue);
     }
-  }, [appStore, getSuggestionDescription, getSuggestionValue, suggestionData, selectedValue]);
+  }, [appStore, getSuggestionDescription, getSuggestionValue, suggestionData, selectedValue, lastSelectedValue]);
 
   const handleInputChange = (event: any) => {
     if(event.target.value !== undefined) {
@@ -271,7 +271,7 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
       setLastSelectedValue(newValue);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appStore, suggestionData, selectedValue]);
+  }, [appStore, suggestionData, selectedValue, lastSelectedValue]);
 
   const handleInputChange = (event: any) => {
     if(event.target.value !== undefined) {
