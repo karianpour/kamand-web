@@ -134,7 +134,7 @@ const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
     if(event.target.value !== undefined) {
       setValue(event.target.value);
       if(!event.target.value){
-        if(onChange) onChange({target: {name, value: ''}});
+        if(onChange) onChange({target: {name, value: null}});
         setLastSelectedValue({});
       }
     }
@@ -277,7 +277,7 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
     if(event.target.value !== undefined) {
       setValue(event.target.value);
       if(!event.target.value){
-        if(onChange) onChange({target: {name, value: ''}});
+        if(onChange) onChange({target: {name, value: null}});
         setLastSelectedValue({});
       }
     }

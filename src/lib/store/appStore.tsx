@@ -1,7 +1,7 @@
 import { observable, decorate, action, configure } from 'mobx';
 import { createContext, Context } from 'react';
 // import { setAppStore } from '../api/kamandApi';
-import { fetchData, loadActData, saveActData } from '../api/kamandApi';
+import { fetchData, loadActData, saveActData, removeActData } from '../api/kamandApi';
 import { ISnackMessage } from './interfaces/authInterfaces';
 import { IQueryData } from './interfaces/dataInterfaces';
 
@@ -91,9 +91,15 @@ export class AppStore {
     return this.actData.delete(key);
   }
 
-  async loadActData(key: string, query: string, queryParam: any) : Promise<void> {
+  async loadActData(key: string, query: string, queryParam: any, makeObservable?: (data: any)=>any) : Promise<void> {
     const data = await loadActData(query, queryParam);
-    this.setActData(key, data);
+    if(data){
+      if(makeObservable){
+        this.setActData(key, makeObservable(data));
+      }else{
+        this.setActData(key, data);
+      }
+    }
   }
 
   async saveActData(key: string | null, query: string, data: any) : Promise<any> {
@@ -101,6 +107,14 @@ export class AppStore {
     const result = await saveActData(query, data);
     if(result && key){
       this.setActData(key, data);
+    }
+    return result;
+  }
+
+  async removeActData(key: string | null, query: string, data: any) : Promise<any> {
+    const result = await removeActData(query, data);
+    if(result && key){
+      this.deleteActData(key);
     }
     return result;
   }
@@ -128,6 +142,7 @@ decorate(AppStore, {
   setActData: action,
   loadActData: action,
   saveActData: action,
+  removeActData: action,
   setOptionData: action,
 });
 

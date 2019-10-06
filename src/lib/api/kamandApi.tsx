@@ -94,6 +94,38 @@ export async function saveActData(query: string, data: any) : Promise<any>{
   }
 }
 
+export async function removeActData(query: string, params: any) : Promise<any>{
+  try{
+    const headers = {};
+    addToken(headers);
+    const config:AxiosRequestConfig = {
+      baseURL: APIADDRESS,
+      timeout: 60 * 1000,
+      params,
+      headers,
+    };
+    const result:any = await axios.delete(query, config);
+  
+    if(result.status === 200){
+      return result.data;
+    }else{
+      console.error('failed at removeActData', result);
+      const e = {
+        error: 'server error!',
+      };
+      throw e;
+    }
+  }catch(err){
+    console.error('failed at removeActData', err);
+    const error = extractError(err);
+    if(!error){
+      //FIXME show snakbar
+      throw new Error('unknown error!');
+    }
+    throw error;
+  }
+}
+
 export async function executeApi(executionConfig: AxiosRequestConfig) : Promise<any>{
   try{
     const headers = {};
