@@ -22,6 +22,7 @@ const useStyles = makeStyles({
     // marginTop: theme.spacing.unit,
     left: 0,
     right: 0,
+    top: '100%',
   },
   suggestion: {
     display: 'block',

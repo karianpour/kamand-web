@@ -25,6 +25,7 @@ const useStyles = makeStyles({
     // marginTop: theme.spacing.unit,
     left: 0,
     right: 0,
+    top: '100%',
   },
   suggestion: {
     display: 'block',
@@ -169,7 +170,9 @@ const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
   const renderSuggestion = (suggestion: any, { query, isHighlighted }: any) => {
     return (
       <MenuItem selected={isHighlighted} component="div">
-        <span>{getSuggestionDescription(suggestion)}</span>
+        <div>
+          <span>{getSuggestionDescription(suggestion)}</span>
+        </div>
       </MenuItem>
     );
   }
