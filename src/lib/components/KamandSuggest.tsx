@@ -9,6 +9,7 @@ import { makeStyles } from '@material-ui/styles';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../store/appStore';
 import { IQueryData } from '../store/interfaces/dataInterfaces';
+import { hash } from '../utils/generalUtils';
 
 const useStyles = makeStyles({
   root: {
@@ -110,16 +111,18 @@ const KamandSuggest: React.FunctionComponent<IProps> = observer((props) => {
     ...restProps
   } = props;
 
+  const hashKey = queryKey + '/'+ hash(JSON.stringify(queryParam));
+
   useEffect(()=>{
-    appStore.prepareQueryData(queryKey, query, queryParam, false, publicQuery);
-  }, [appStore, queryKey, query, queryParam, publicQuery]);
+    appStore.prepareQueryData(hashKey, query, queryParam, false, publicQuery);
+  }, [appStore, hashKey, query, queryParam, publicQuery]);
 
   const refreshHandler = () => {
     setSuggestions([]);
-    appStore.prepareQueryData(queryKey, query, queryParam, true, publicQuery);
+    appStore.prepareQueryData(hashKey, query, queryParam, true, publicQuery);
   }
 
-  const suggestionData: IQueryData = appStore.getQueryData(queryKey);
+  const suggestionData: IQueryData = appStore.getQueryData(hashKey);
   const selectedValue = props.field.value;
 
   useEffect(()=>{
@@ -253,16 +256,18 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
 
   const appStore = useContext(AppStoreContext);
 
+  const hashKey = queryKey + '/'+ hash(JSON.stringify(queryParam));
+
   useEffect(()=>{
-    appStore.prepareQueryData(queryKey, query, queryParam, false, publicQuery);
-  }, [appStore, queryKey, query, queryParam, publicQuery]);
+    appStore.prepareQueryData(hashKey, query, queryParam, false, publicQuery);
+  }, [appStore, hashKey, query, queryParam, publicQuery]);
 
   const refreshHandler = () => {
     setSuggestions([]);
-    appStore.prepareQueryData(queryKey, query, queryParam, true, publicQuery);
+    appStore.prepareQueryData(hashKey, query, queryParam, true, publicQuery);
   }
 
-  const suggestionData: IQueryData = appStore.getQueryData(queryKey);
+  const suggestionData: IQueryData = appStore.getQueryData(hashKey);
 
   useEffect(()=>{
     if(suggestionData && suggestionData.data && selectedValue && (!lastSelectedValue || selectedValue!==getSuggestionValue(lastSelectedValue))){

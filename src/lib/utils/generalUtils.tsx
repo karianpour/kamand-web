@@ -167,3 +167,7 @@ export function hasRole(user: any, checkingRoles: string | string[]): boolean {
   // user.roles && user.roles.findIndex( (r) => 'admin');
   return false;
 }
+
+export function hash(s: string){
+  return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+}
