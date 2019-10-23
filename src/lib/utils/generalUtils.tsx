@@ -9,6 +9,20 @@ export function sleep(ms:number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+export function extractFlatMessagesFromError(err: any): string[]{
+  const messages: string[] = [];
+  for(let k in err){
+    if(!err.hasOwnProperty(k)) continue;
+    if(k==='codes') continue;
+    if(Array.isArray(err[k])){
+      messages.push(...(err[k].map( (e: any) => !e ? '' : e.toString())));
+    }else if(err[k]){
+      messages.push(err[k].toString());
+    }
+  }
+  return messages;
+}
+
 export function extractErrorMessage (details:any): any{
   if(typeof details === 'string'){
     return details;
