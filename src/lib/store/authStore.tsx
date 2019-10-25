@@ -26,6 +26,7 @@ class AuthStore {
     this.user = undefined;
     this.loggedin = false;
     this.token = undefined;
+    this.optionData.clear();
   }
 
   async login (username:string, password: string) : Promise<void> {
