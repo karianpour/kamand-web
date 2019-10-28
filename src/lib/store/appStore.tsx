@@ -4,6 +4,7 @@ import { createContext, Context } from 'react';
 import { fetchData, loadActData, saveActData, removeActData } from '../api/kamandApi';
 import { ISnackMessage } from './interfaces/authInterfaces';
 import { IQueryData } from './interfaces/dataInterfaces';
+import { hash } from '../utils/generalUtils';
 
 configure({ enforceActions: "observed" });
 
@@ -65,7 +66,7 @@ export class AppStore {
     if(!this.queryData.has(key) || forceRefresh){
       const previousData = this.getQueryData(key);
       if(previousData){
-        this.setQueryData(key, previousData.queryParam, previousData.data, true, false);
+        this.setQueryData(key, queryParam, previousData.data, true, false);
       }else{
         this.setQueryData(key, queryParam, undefined, true, false);
       }
@@ -91,14 +92,23 @@ export class AppStore {
     return this.actData.delete(key);
   }
 
+  private loadingActData: {[key:string]: boolean} = {};
   async loadActData(key: string, query: string, queryParam: any, makeObservable?: (data: any)=>any) : Promise<void> {
-    const data = await loadActData(query, queryParam);
-    if(data){
-      if(makeObservable){
-        this.setActData(key, makeObservable(data));
-      }else{
-        this.setActData(key, data);
+    const hashKey = query + '/'+ hash(JSON.stringify(queryParam));
+    if(this.loadingActData[hashKey]) return;
+    this.loadingActData[hashKey] = true;
+    try{
+      const data = await loadActData(query, queryParam);
+      delete this.loadingActData[hashKey];
+      if(data){
+        if(makeObservable){
+          this.setActData(key, makeObservable(data));
+        }else{
+          this.setActData(key, data);
+        }
       }
+    }catch(err){
+      throw err;
     }
   }
 

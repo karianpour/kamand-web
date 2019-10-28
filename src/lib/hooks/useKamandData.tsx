@@ -2,9 +2,10 @@ import { useEffect, useContext, useCallback } from 'react';
 // import { observer } from 'mobx-react-lite';
 import { AppStoreContext, AppStore } from '../store/appStore';
 import { IQueryData } from '../store/interfaces/dataInterfaces';
+import { hash } from '../utils/generalUtils';
 
 export interface IDataOptions {
-  key: string,
+  key?: string,
   query: string,
   queryParams: object | ((appStore:AppStore)=>any),
   publicQuery: boolean,
@@ -13,16 +14,19 @@ export interface IDataOptions {
 const useKamandData = (options: IDataOptions) => {
   const appStore = useContext(AppStoreContext);
 
+  let queryParams: any;
+  if(typeof options.queryParams === 'function'){
+    queryParams = options.queryParams(appStore);
+  }else{
+    queryParams = options.queryParams;
+  }
+
+  const hashKey = options.key ? options.key : options.query + '/'+ hash(JSON.stringify(queryParams));
+
   const prepare = useCallback((forceRefresh: boolean) => {
-    let queryParams;
-    if(typeof options.queryParams === 'function'){
-      queryParams = options.queryParams(appStore);
-    }else{
-      queryParams = options.queryParams;
-    }
     // console.log(`execute prepareQuery with ${queryParams}`)
-    appStore.prepareQueryData(options.key, options.query, queryParams, forceRefresh, options.publicQuery);
-  }, [appStore, options]);
+    appStore.prepareQueryData(hashKey, options.query, queryParams, forceRefresh, options.publicQuery);
+  }, [appStore, options, hashKey, queryParams]);
 
   useEffect(()=>{
     prepare(false);
@@ -32,7 +36,7 @@ const useKamandData = (options: IDataOptions) => {
     prepare(true);
   }
 
-  const queryData: IQueryData = appStore.getQueryData(options.key);
+  const queryData: IQueryData = appStore.getQueryData(hashKey);
 
   return {
     queryData,
