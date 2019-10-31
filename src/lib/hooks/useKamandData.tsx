@@ -9,6 +9,7 @@ export interface IDataOptions {
   query: string,
   queryParams: object | ((appStore:AppStore)=>any),
   publicQuery: boolean,
+  notReady?: boolean | ((dataOptions:IDataOptions)=>boolean),
 }
 
 const useKamandData = (options: IDataOptions) => {
@@ -25,7 +26,15 @@ const useKamandData = (options: IDataOptions) => {
 
   const prepare = useCallback((forceRefresh: boolean) => {
     // console.log(`execute prepareQuery with ${queryParams}`)
-    appStore.prepareQueryData(hashKey, options.query, queryParams, forceRefresh, options.publicQuery);
+    let prepareIt = true;
+    if(typeof options.notReady === 'function'){
+      prepareIt = !options.notReady(options);
+    }else{
+      prepareIt = !options.notReady;
+    }
+    if(prepareIt){
+      appStore.prepareQueryData(hashKey, options.query, queryParams, forceRefresh, options.publicQuery);
+    }
   }, [appStore, options, hashKey, queryParams]);
 
   useEffect(()=>{
