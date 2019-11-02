@@ -1,15 +1,15 @@
 import { useEffect, useContext, useCallback } from 'react';
 // import { observer } from 'mobx-react-lite';
-import { AppStoreContext, AppStore } from '../store/appStore';
+import { AppStoreContext } from '../store/appStore';
 import { IQueryData } from '../store/interfaces/dataInterfaces';
 import { hash } from '../utils/generalUtils';
 
 export interface IDataOptions {
   key?: string,
   query: string,
-  queryParams: object | ((appStore:AppStore)=>any),
+  queryParams: any | (()=>any),
   publicQuery: boolean,
-  notReady?: boolean | ((dataOptions:IDataOptions)=>boolean),
+  notReady?: boolean | ((queryParams:any)=>boolean),
 }
 
 const useKamandData = (options: IDataOptions) => {
@@ -17,7 +17,7 @@ const useKamandData = (options: IDataOptions) => {
 
   let queryParams: any;
   if(typeof options.queryParams === 'function'){
-    queryParams = options.queryParams(appStore);
+    queryParams = options.queryParams();
   }else{
     queryParams = options.queryParams;
   }
@@ -28,7 +28,7 @@ const useKamandData = (options: IDataOptions) => {
     // console.log(`execute prepareQuery with ${queryParams}`)
     let prepareIt = true;
     if(typeof options.notReady === 'function'){
-      prepareIt = !options.notReady(options);
+      prepareIt = !options.notReady(queryParams);
     }else{
       prepareIt = !options.notReady;
     }

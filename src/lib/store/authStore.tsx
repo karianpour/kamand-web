@@ -5,7 +5,7 @@ import { login, IUser } from '../api/authApi';
 
 configure({ enforceActions: "observed" });
 
-class AuthStore {
+export class AuthStore {
   user?:IUser;
   loggedin:boolean = false;
   token?:string;

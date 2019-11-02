@@ -4,7 +4,7 @@ import { FieldProps, getIn } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import { DecimalInput, NumberInput } from 'react-hichestan-numberinput';
-import {DateTimeInput, DateInput} from 'react-hichestan-datetimepicker';
+import { DateTimeInput, DateInput } from 'react-hichestan-datetimepicker';
 import Switch from '@material-ui/core/Switch';
 import { FormControlLabel } from '@material-ui/core';
 
