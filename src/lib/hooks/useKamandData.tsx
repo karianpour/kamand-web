@@ -49,6 +49,7 @@ const useKamandData = (options: IDataOptions) => {
 
   return {
     queryData,
+    queryParams,
     refreshHandler,
   }
 };

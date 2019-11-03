@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 // import fa from './fa';
 // import en from './en';
 import { mapToFarsi } from '../utils/farsiUtils';
+import { formatDateString } from '../utils/dateUtils';
 
 export function initTranslation(resources: any){
   i18next
@@ -15,6 +16,7 @@ export function initTranslation(resources: any){
       escapeValue: false,
       format: function(value, format, lng) {
         if (format === 'number' && lng==='fa') return mapToFarsi(value);
+        if (format === 'date' && lng==='fa') return mapToFarsi(formatDateString(value));
         if (format === 'translate') return i18next.t(value);
         // if(value instanceof Date) return moment(value).format(format);
         return value;
