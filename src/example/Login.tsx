@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-import { Formik, FormikActions, Form, Field } from 'formik';
-import {TextWidget, NumberWidget} from '../lib/components/widgets';
+import {TextKamandField, NumberKamandField} from '../lib/components/Fields';
 
 import {
   Grid,
@@ -12,6 +11,7 @@ import { AuthStoreContext } from '../lib/store/authStore';
 
 
 import { makeStyles } from '@material-ui/styles';
+import { useKamandForm, FormSubmitResult } from '../lib/hooks/useKamandForm';
 
 const useStyles = makeStyles({
   titleBox: {
@@ -60,19 +60,18 @@ const Login: React.FunctionComponent<IProps> = observer((props) => {
   const classes = useStyles();
   const authStore = useContext(AuthStoreContext);
 
-  const onSubmit = async (values: Values, actions: FormikActions<Values>) => {
-    // actions.setSubmitting(true);
+  const handleSubmit = async (values: Values): Promise<FormSubmitResult<Values>>  => {
     try {
       await authStore.login(values.mobileNumber, values.password);
-    } catch (err) {
-      //TODO if we get connection error we have to show a proper message 
-      actions.setErrors(err);
-    }finally{
-      actions.setSubmitting(false);
+      return {}
+    } catch (errors) {
+      return {
+        errors,
+      }
     }
   };
 
-  const validate = (values: Values) => {
+  const validate = async (values: Values) => {
     const errors: any = {};
     if (!values.mobileNumber) {
       errors.mobileNumber = t('messages.required');
@@ -83,51 +82,52 @@ const Login: React.FunctionComponent<IProps> = observer((props) => {
     return errors;
   };
 
+
+  const form = useKamandForm<Values>({
+    submit: handleSubmit,
+    initialValues: { mobileNumber: '', password: '' },
+    validate: validate,
+  });
+
   return (
-    <Formik
-      onSubmit={onSubmit}
-      initialValues={{ mobileNumber: '', password: '' }}
-      validate={validate}
-      render={({ dirty, isSubmitting, handleReset }) => (
-        <Form className={classes.loginBox}>
-          <Grid container spacing={1}>
-            <div className={classes.loginInput}>
-              <Grid item xs={12}>
-                <Field name="mobileNumber" label={t('auth.mobileNumber')} fullWidth component={NumberWidget} placeholder={'0912*******'} inputProps={{type:'tel', maxLength: 12}}/>
-              </Grid>
-              <Grid item xs={12} className={classes.marginInput}>
-                <Field name="password" label={t('auth.password')} fullWidth component={TextWidget} type="password"/>
-              </Grid>
-            </div>
-            <Grid container spacing={1} className={classes.btnBox}>
-              <Grid sm={8} item>
-                <Button
-                  style={{ width: '100%' }}
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={isSubmitting}
-                >
-                  {t('buttons.submit')}
-                </Button>
-              </Grid>
-              <Grid sm={4} item>
-                <Button
-                  style={{ width: '100%' }}
-                  type="button"
-                  color="primary"
-                  variant="contained"
-                  onClick={handleReset}
-                  disabled={isSubmitting || !dirty}
-                >
-                  {t('buttons.reset')}
-                </Button>
-              </Grid>
-            </Grid>
+    <div className={classes.loginBox}>
+      <Grid container spacing={1}>
+        <div className={classes.loginInput}>
+          <Grid item xs={12}>
+            <NumberKamandField {...form.getFieldProps('mobileNumber')} label={t('auth.mobileNumber')} fullWidth placeholder={'0912*******'} inputProps={{type:'tel', maxLength: 12}}/>
           </Grid>
-        </Form>
-      )}
-    />
+          <Grid item xs={12} className={classes.marginInput}>
+            <TextKamandField {...form.getFieldProps('password')} label={t('auth.password')} fullWidth type="password"/>
+          </Grid>
+        </div>
+        <Grid container spacing={1} className={classes.btnBox}>
+          <Grid sm={8} item>
+            <Button
+              style={{ width: '100%' }}
+              type="button"
+              variant="contained"
+              color="primary"
+              onClick={form.submitForm}
+              disabled={form.isSubmitting()}
+            >
+              {t('buttons.submit')}
+            </Button>
+          </Grid>
+          <Grid sm={4} item>
+            <Button
+              style={{ width: '100%' }}
+              type="button"
+              color="primary"
+              variant="contained"
+              onClick={form.resetForm}
+              disabled={form.isSubmitting() || !form.isDirty()}
+            >
+              {t('buttons.reset')}
+            </Button>
+          </Grid>
+        </Grid>
+      </Grid>
+    </div>
   );
 });
 

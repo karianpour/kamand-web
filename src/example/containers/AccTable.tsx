@@ -16,7 +16,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
-import { AppStoreContext, AppStore } from '../../lib/store/appStore';
+import { AppStoreContext, AppStore, appStore } from '../../lib/store/appStore';
 import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
 import { AdapterLink } from '../../lib/components/misc';
 import { formatDateTimeString } from '../../lib/utils/dateUtils';
@@ -31,17 +31,17 @@ const useStyles = makeStyles({
   },
 });
 
-const dataOption: IDataOptions = {
+const dataOptions = (appStore: AppStore): IDataOptions => ({
   key: 'acc',
   query: 'acc_list',
-  queryParams: (appStore: AppStore)=>{
+  queryParams: ()=>{
     return {
       code: appStore.getFilter('code'),
       name: appStore.getFilter('name'),
     }
   },
   publicQuery: false,
-}
+});
 
 const DataFilters: React.FunctionComponent<{}> = observer((props) => {
   const { t } = useTranslation();
@@ -76,7 +76,7 @@ const AccTable: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
   const classes = useStyles();
 
-  const { queryData, refreshHandler } = useKamandData(dataOption);
+  const { queryData, refreshHandler } = useKamandData(dataOptions(appStore));
 
   if(!queryData) return null;
 

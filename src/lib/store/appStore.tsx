@@ -92,8 +92,15 @@ export class AppStore {
     return this.actData.delete(key);
   }
 
+  async loadActDataFirstCache(key: string, query: string, queryParam: any, makeObservable?: (data: any)=>any) : Promise<any> {
+    const cache = this.actData.get(key);
+    if(cache) return cache;
+    const data = await this.loadActData(key, query, queryParam, makeObservable);    
+    return data;
+  }
+
   private loadingActData: {[key:string]: boolean} = {};
-  async loadActData(key: string, query: string, queryParam: any, makeObservable?: (data: any)=>any) : Promise<void> {
+  async loadActData(key: string, query: string, queryParam: any, makeObservable?: (data: any)=>any) : Promise<any> {
     const hashKey = query + '/'+ hash(JSON.stringify(queryParam));
     if(this.loadingActData[hashKey]) return;
     this.loadingActData[hashKey] = true;
@@ -107,6 +114,7 @@ export class AppStore {
           this.setActData(key, data);
         }
       }
+      return data;
     }catch(err){
       throw err;
     }
@@ -150,6 +158,7 @@ decorate(AppStore, {
   setQueryData: action,
   prepareQueryData: action,
   setActData: action,
+  loadActDataFirstCache: action,
   loadActData: action,
   saveActData: action,
   removeActData: action,

@@ -14,8 +14,7 @@ import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
-import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';
-import { AppStoreContext, AppStore } from '../../lib/store/appStore';
+import { AppStoreContext, AppStore, appStore } from '../../lib/store/appStore';
 
 
 const useStyles = makeStyles({
@@ -27,16 +26,16 @@ const useStyles = makeStyles({
   },
 });
 
-const dataOption: IDataOptions = {
+const dataOptions = (appStore: AppStore): IDataOptions => ({
   key: 'test',
   query: 'publicQuery',
-  queryParams: (appStore: AppStore)=>{
+  queryParams: ()=>{
     return {
       type_name: appStore.getFilter('type_name')
     }
   },
   publicQuery: true,
-}
+});
 
 const DataFilters: React.FunctionComponent<{}> = observer((props) => {
   const { t } = useTranslation();
@@ -63,7 +62,7 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
 const DataTable: React.FunctionComponent<IProps> = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { queryData, refreshHandler } = useKamandData(dataOption);
+  const { queryData, refreshHandler } = useKamandData(dataOptions(appStore));
 
   if(!queryData) return null;
 
