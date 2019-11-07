@@ -10,29 +10,30 @@ import { StylesProvider, createGenerateClassName, jssPreset } from '@material-ui
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import Notifier from './Notifier';
 import './translations/i18n';
-
-const theme = createMuiTheme({
-  direction: 'rtl',
-  typography: {
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      'Nahid',
-    ].join(','),
-  },  
-});
-
-// @ts-ignore
-const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
-
-const generateClassName = createGenerateClassName();
+import { DefaultLoadingIndicator } from './components/LazyLoadOnView';
 
 const KamandApp: React.FC<IProps> = (props) => {
+  const theme = createMuiTheme({
+    direction: props.direction || 'rtl',
+    typography: {
+      // Use the system font instead of the default Roboto font.
+      fontFamily: [
+        'Nahid',
+      ].join(','),
+    },  
+  });
+  
+  // @ts-ignore
+  const jss = (props.direction || 'rtl') === 'rtl' ? {jss: create({ plugins: [...jssPreset().plugins, rtl()] })} : undefined;
+
+  const generateClassName = createGenerateClassName();
+
   return (
-    <StylesProvider jss={jss} generateClassName={generateClassName}>
+    <StylesProvider {...jss} generateClassName={generateClassName}>
       <MuiThemeProvider theme={theme}>
         <Notifier/>
-        <Suspense fallback={<Loader />}>
-          <Scaffold menus={props.menus} login={props.login} home={props.home}>
+        <Suspense fallback={<DefaultLoadingIndicator />}>
+          <Scaffold direction={props.direction} menus={props.menus} login={props.login} home={props.home}>
             {props.children}
           </Scaffold>
         </Suspense>
@@ -41,13 +42,8 @@ const KamandApp: React.FC<IProps> = (props) => {
   );
 }
 
-const Loader = () => (
-  <div className="App">
-    <div>loading...</div>
-  </div>
-);
-
 interface IProps {
+  direction?: 'rtl' | 'ltr',
   menus?: ReactNode,
   login?: ReactNode,
   home?: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>,

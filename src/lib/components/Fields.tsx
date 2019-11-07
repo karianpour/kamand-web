@@ -5,7 +5,7 @@ import Select from '@material-ui/core/Select';
 import { DecimalInput, NumberInput } from 'react-hichestan-numberinput';
 import { DateTimeInput, DateInput } from 'react-hichestan-datetimepicker';
 import Switch, { SwitchProps } from '@material-ui/core/Switch';
-import { FormControlLabel } from '@material-ui/core';
+import { FormControlLabel, FormHelperText, FormControl } from '@material-ui/core';
 import { FormFieldProps } from '../hooks/useKamandForm';
 
 export const TextKamandField = ({
@@ -127,6 +127,7 @@ export const DateKamandField = ({
 )};
 
 export const BooleanKamandField = ({
+  id,
   onChange,
   value,
   name,
@@ -135,25 +136,33 @@ export const BooleanKamandField = ({
   helperText,
   inputProps,
   ...props
-}:({inputProps?: SwitchProps, label?: string} & FormFieldProps)) => {
+}:({id?: string, inputProps?: SwitchProps, label?: string} & FormFieldProps)) => {
 
-  // the following should be rendered as well, let's look in TextField in material-ui code
-  //  error
-  //  helperText
+  const helperTextId = helperText && id ? `${id}-helper-text` : undefined;
+  
   return (
-    <FormControlLabel
-      {...props}
-      label={label}
-      control={
-        <Switch
-          {...inputProps}
-          name={name}
-          onChange={onChange}
-          checked={value}
-          value={name}
-        />
-      }
-    />
+    <FormControl
+      error={error}
+    >
+      <FormControlLabel
+        {...props}
+        label={label}
+        control={
+          <Switch
+            {...inputProps}
+            name={name}
+            onChange={onChange}
+            checked={value}
+            value={name}
+          />
+        }
+      />
+      {helperText && (
+        <FormHelperText id={helperTextId}>
+          {helperText}
+        </FormHelperText>
+      )}
+    </FormControl>
   )
 };
 

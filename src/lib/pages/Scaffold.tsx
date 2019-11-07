@@ -61,9 +61,11 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
   const classes = useStyles();
   // const { user } = authStore;
 
+  const dir = {dir: props.direction || 'rtl'};
+
   return (
     <Router>
-      <div dir="rtl" className="App">
+      <div {...dir} className="App">
         {appBarHidden ? null : (
           <React.Fragment>
             <AppBar position="fixed">
@@ -123,6 +125,7 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
 });
 
 interface IProps {
+  direction?: 'rtl' | 'ltr',
   menus?: ReactNode,
   login?: ReactNode,
   home?: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>,

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   RouteComponentProps
 } from "react-router-dom";
@@ -29,6 +29,7 @@ import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { AccSuggestInput } from '../components/AccSuggest';
 import uuidv4 from 'uuid/v4';
 import { useKamandForm, KamandForm, FormSubmitResult } from '../../lib/hooks/useKamandForm';
+import { DefaultLoadingIndicator } from '../../lib/components/LazyLoadOnView';
 
 
 const useStyles = makeStyles({
@@ -110,13 +111,14 @@ interface Values {
 
 const validationFunction = (t: (k: string) => string) => async (values: Values) => {
   const errors: any = {};
+  errors.registered = t('error.required');
   if (!values.id) {
     errors.id = t('error.required');
   }
   return errors;
 }
 
-const GameForm: React.FunctionComponent<IProps> = observer((props) => {
+const VoucherForm: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
   const { match: { params: { id } }, location: { hash } } = props;
   const defaultTab = parseInt(hash ? hash.substring(1) : '0')
@@ -129,9 +131,9 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
   }, [appStore, t]);
   // const id = '837c662f-0f07-4a91-a407-bae9e98639f6';
 
-  const key = useRef(`game/${id}`);
+  const key = `voucher/${id}`;
 
-  const data = appStore.getActData(key.current);
+  const data = appStore.getActData(key);
 
   // console.log({ key, id, data, props });
 
@@ -149,15 +151,15 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
         voucherType: undefined,
         articles: [],
       };
-      appStore.setActData(key.current, values);
+      appStore.setActData(key, values);
     } else {
-      appStore.loadActData(key.current, `/voucher/${id}`, {});
+      appStore.loadActData(key, `/voucher/${id}`, {});
     }
   }, [key, id, appStore]);
 
   const handleSubmit = async (values: Values): Promise<FormSubmitResult<Values>> => {
     try {
-      await appStore.saveActData(key.current, `/voucher/${values.id}`, values);
+      await appStore.saveActData(key, `/voucher/${values.id}`, values);
       appStore.setSnackMessage({message: t('info.succeed')});
       // console.log(values)
       return {}
@@ -184,7 +186,7 @@ const GameForm: React.FunctionComponent<IProps> = observer((props) => {
   });
 
   if (!form.values) {
-    return <div>loading...</div>;
+    return <DefaultLoadingIndicator/>;
   }
 
   return (
@@ -255,7 +257,7 @@ interface MatchParams {
 interface IProps extends RouteComponentProps<MatchParams> {
 }
 
-export default (GameForm);
+export default (VoucherForm);
 
 const MainTab: React.FunctionComponent<{form: KamandForm<Values>}> = (props) => {
   const { t } = useTranslation();
