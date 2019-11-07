@@ -135,24 +135,27 @@ export const BooleanKamandField = ({
   helperText,
   inputProps,
   ...props
-}:({inputProps?: SwitchProps, label?: string} & FormFieldProps)) => (
-  //K1 TODO I migh have to change the onChange handler to get value from checked
-  // it does not work properly
+}:({inputProps?: SwitchProps, label?: string} & FormFieldProps)) => {
+
   // the following should be rendered as well, let's look in TextField in material-ui code
   //  error
   //  helperText
-  <FormControlLabel
-    {...props}
-    label={label}
-    control={
-      <Switch
-        {...inputProps}
-        checked={value}
-        value={name}
-      />
-    }
-  />
-);
+  return (
+    <FormControlLabel
+      {...props}
+      label={label}
+      control={
+        <Switch
+          {...inputProps}
+          name={name}
+          onChange={onChange}
+          checked={value}
+          value={name}
+        />
+      }
+    />
+  )
+};
 
 export const SelectKamandField = ({
   value,

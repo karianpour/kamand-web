@@ -173,8 +173,12 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
   };
 
   const changeHandler = (e: React.ChangeEvent<any>): void=> {
-    const { name, value } = e.target;
-    setFieldValue(name, value);
+    const { name, value, type, checked } = e.target;
+    if(type==='checkbox'){
+      setFieldValue(name, checked);
+    }else{
+      setFieldValue(name, value);
+    }
   };
 
   const getFieldProps = (path: string): FormFieldProps => {
