@@ -404,7 +404,7 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
                   <TableCell className={classes.cells} padding='none' align="center">
                     <Button
                       variant="outlined" color="secondary"
-                      // onClick={() => form.remove(index)} //todo
+                      onClick={() => form.removeFromArray(`articles`, index)}
                     >
                       <RemoveIcon />
                     </Button>

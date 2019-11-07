@@ -62,6 +62,7 @@ export interface KamandForm<Values> {
   submitForm: () => Promise<boolean>,
   resetForm: () => void,
   setFieldValue: (path: string, value: any) => void,
+  removeFromArray: (pathToArray: string, index: number) => void,
 }
 
 export function useKamandForm<Values extends FormValues = FormValues> (props: FormConfig<Values>): KamandForm<Values> {
@@ -158,6 +159,19 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
     rerender();
   };
 
+  const removeFromArray = (pathToArray: string, index: number): void => {
+    const array = getIn(state.current.values, pathToArray);
+    if(Array.isArray(array)){
+      if(index < array.length){
+        array.splice(index, 1);
+        const newValues = setIn(state.current.values, pathToArray, array);
+        state.current.values = newValues;
+        state.current.touched = setIn(state.current.touched, `${pathToArray}[${index}]`, true);
+        rerender();
+      }
+    }
+  };
+
   const changeHandler = (e: React.ChangeEvent<any>): void=> {
     const { name, value } = e.target;
     setFieldValue(name, value);
@@ -190,6 +204,7 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
     submitForm,
     resetForm,
     setFieldValue,
+    removeFromArray,
   }
 
   return kamandForm;
