@@ -19,7 +19,7 @@ const LazyLoadOnView: React.FunctionComponent<IProps> = (props) => {
       //   backgroundColor: 'blue',
       // }}
     >
-      <Suspense fallback={LoadingIndicator}>
+      <Suspense fallback={<LoadingIndicator/>}>
         {inView ? props.children : null}
       </Suspense>
     </div>
@@ -27,7 +27,7 @@ const LazyLoadOnView: React.FunctionComponent<IProps> = (props) => {
 }
 
 interface IProps {
-  LoadingIndicator?: React.Component,
+  LoadingIndicator?: React.FunctionComponent,
 }
 
 export const DefaultLoadingIndicator = () => (
