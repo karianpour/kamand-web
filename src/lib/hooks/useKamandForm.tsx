@@ -63,6 +63,7 @@ export interface KamandForm<Values> {
   resetForm: () => void,
   setFieldValue: (path: string, value: any) => void,
   removeFromArray: (pathToArray: string, index: number) => void,
+  getHelperText(path: string): Node,
 }
 
 export function useKamandForm<Values extends FormValues = FormValues> (props: FormConfig<Values>): KamandForm<Values> {
@@ -199,6 +200,10 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
     }
   };
 
+  const getHelperText = (path: string): Node => {
+    return getIn(state.current.errors, path);
+  }
+
   const kamandForm = {
     getFieldProps,
     values: state.current.values,
@@ -209,6 +214,7 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
     resetForm,
     setFieldValue,
     removeFromArray,
+    getHelperText,
   }
 
   return kamandForm;

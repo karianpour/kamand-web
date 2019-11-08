@@ -23,7 +23,7 @@ const App: React.FC = () => {
 
   return (
     <KamandApp
-      direction="ltr"
+      direction="rtl"
       menus={(
         <React.Fragment>
           <Link to="/data">

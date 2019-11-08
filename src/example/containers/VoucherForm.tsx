@@ -20,6 +20,7 @@ import {
   Grid,
   Button,
   Paper,
+  FormHelperText,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
@@ -111,7 +112,6 @@ interface Values {
 
 const validationFunction = (t: (k: string) => string) => async (values: Values) => {
   const errors: any = {};
-  errors.registered = t('error.required');
   if (!values.id) {
     errors.id = t('error.required');
   }
@@ -168,7 +168,7 @@ const VoucherForm: React.FunctionComponent<IProps> = observer((props) => {
       if(errors.message){
         appStore.setSnackMessage(errors);
       }
-      return errors;
+      return {errors};
     }
   };
 
@@ -188,6 +188,10 @@ const VoucherForm: React.FunctionComponent<IProps> = observer((props) => {
   if (!form.values) {
     return <DefaultLoadingIndicator/>;
   }
+
+  const formHelperText = form.getHelperText('');
+
+  console.log('render on form', {formHelperText})
 
   return (
     <Paper className={classes.root}>
@@ -221,6 +225,13 @@ const VoucherForm: React.FunctionComponent<IProps> = observer((props) => {
           {activeTab === 0 && <MainTab form={form} />}
           {activeTab === 1 && <ArticleTab form={form} />}
         </Grid>
+        {formHelperText && 
+          <Grid xs={12} item>
+            <FormHelperText error>
+              formHelperText
+            </FormHelperText>
+          </Grid>
+        }
         <Grid sm={8} item>
           <Button
             fullWidth

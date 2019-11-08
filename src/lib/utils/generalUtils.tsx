@@ -58,7 +58,7 @@ export function extractArrayError(err: any[]): any {
   const error = err.reduce( (r, e) => {
     const translated = tryTranslation(e);
     const otherMessages = getIn(r, e.path);
-    r = setIn(r, e.path, (otherMessages ? otherMessages + '\n' : '') + translated || e.message);
+    r = setIn(r, e.path, (otherMessages ? otherMessages + '\n' : '') + (translated || e.message));
     return r;
   }, {});
   return error;
