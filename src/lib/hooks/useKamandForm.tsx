@@ -71,7 +71,7 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
   const rerender = () => {
     setRenderCount(renderCount + 1);
   }
-  console.log(`rerender kamand form hook`)
+  // console.log(`rerender kamand form hook`)
   const state = useRef<FormState<Values>>({
     values: props.initialValues,
     errors: {},
@@ -112,6 +112,7 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
     if(state.current.isSubmitting || state.current.isValidating) return false;
 
     state.current.touched = setNestedObjectValues<FormTouched<Values>>(state.current.values, true);
+    state.current.errors = {};
     state.current.isValidating = true;
     state.current.isSubmitting = true;
     state.current.submitCount = state.current.submitCount + 1;
