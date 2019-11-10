@@ -1,4 +1,4 @@
-import React, { Suspense, ReactNode } from 'react';
+import React, { Suspense, ReactNode, useEffect } from 'react';
 import {
   RouteComponentProps,
 } from "react-router-dom";
@@ -28,12 +28,19 @@ const KamandApp: React.FC<IProps> = (props) => {
 
   const generateClassName = createGenerateClassName();
 
+  useEffect(()=>{
+    if(document && document.getElementsByTagName && props.direction==='rtl'){
+      const bodyElement = document.getElementsByTagName("BODY")[0];
+      bodyElement.setAttribute("dir", props.direction)
+    }
+  }, [props.direction]);
+
   return (
     <StylesProvider {...jss} generateClassName={generateClassName}>
       <MuiThemeProvider theme={theme}>
         <Notifier/>
         <Suspense fallback={<DefaultLoadingIndicator />}>
-          <Scaffold direction={props.direction} menus={props.menus} login={props.login} home={props.home}>
+          <Scaffold menus={props.menus} login={props.login} home={props.home}>
             {props.children}
           </Scaffold>
         </Suspense>

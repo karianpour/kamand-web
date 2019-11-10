@@ -15,6 +15,7 @@ import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBack from '@material-ui/icons/ArrowForward';
+import FilterIcon from '@material-ui/icons/FilterList';
 import { AuthStoreContext, AuthStore } from '../store/authStore';
 import { AppStoreContext, AppStore } from '../store/appStore';
 import useKamandData, { IDataOptions } from '../hooks/useKamandData';
@@ -236,14 +237,18 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
       //TODO we have to check if the back url is in reports
       history.goBack();
     }else{
-      history.push(`#F`);
+      history.push(`${history.location.pathname}${history.location.search}#F`);
     }
+  }
+
+  const handleShowFilter = () => {
+    history.push(`${history.location.pathname}${history.location.search}#F`);
   }
 
   return (
     <React.Fragment>
       {tab==='F' && <ReportFilters filters={filters} classes={classes} showReport={showReport}/>}
-      {tab==='R' && <ReportTable query={query} filters={filters} HeaderComponent={HeaderComponent} TableComponent={TableComponent} classes={classes} handleGoBack={handleGoBack}/>}
+      {tab==='R' && <ReportTable query={query} filters={filters} HeaderComponent={HeaderComponent} TableComponent={TableComponent} classes={classes} handleGoBack={handleGoBack} handleShowFilter={handleShowFilter}/>}
     </React.Fragment>
   );
 
@@ -256,9 +261,10 @@ interface ReportTable {
   TableComponent: React.FunctionComponent<TableProps>,
   HeaderComponent: React.FunctionComponent<HeaderProps>,
   handleGoBack: ()=>void,
+  handleShowFilter: ()=>void,
 }
 const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
-  const { query, filters, TableComponent, HeaderComponent, classes, handleGoBack } = props;
+  const { query, filters, TableComponent, HeaderComponent, classes, handleGoBack, handleShowFilter } = props;
   const appStore = useContext(AppStoreContext);
   const authStore = useContext(AuthStoreContext);
 
@@ -288,7 +294,8 @@ const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
           <CircularProgress/>
         </Grid>}
         {(!queryData || !queryData.loading) && 
-        <Grid item xs={3}>
+        <Grid item xs={4}>
+          <Button onClick={handleShowFilter}><FilterIcon/></Button>
           <Button onClick={refreshHandler}><RefreshIcon/></Button>
         </Grid>}
       </Grid>

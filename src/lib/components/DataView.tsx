@@ -47,8 +47,9 @@ const DataView: React.FunctionComponent<IDataViewProps> = (props) =>{
   if(span){
     return <span>{`${label}: `}<span className={(formattedValue.ltr ? ' ' + classes.ltr : '')}>{formattedValue.formattedValue}</span></span>
   }else{
+    const classNames = inline || className ? {className: (className ? className: '') +(!inline ? '' : ' '+ classes.inline)} : undefined;
     return (
-      <div className={className +(!inline ? '' : ' '+ classes.inline)}><span className={classes.label}>{label} :</span> <span className={(important ? classes.textImportant : classes.text) +' '+ (formattedValue.ltr ? classes.ltr : '')}>{formattedValue.formattedValue}</span></div>
+      <div {...classNames}><span className={classes.label}>{label} :</span> <span className={(important ? classes.textImportant : classes.text) +' '+ (formattedValue.ltr ? classes.ltr : '')}>{formattedValue.formattedValue}</span></div>
     );
   }
 }
