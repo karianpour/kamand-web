@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import Autosuggest, { RenderSuggestionsContainerParams } from 'react-autosuggest';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 // import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/styles';
@@ -46,18 +47,18 @@ const useStyles = makeStyles({
   },
 });
 
-function renderSuggestionsContainer(options: RenderSuggestionsContainerParams) {
+// function renderSuggestionsContainer(options: RenderSuggestionsContainerParams) {
   // const refresh = ()=>{
     // refreshHandler();
     // {(options.children!=null || options.query) && <span onClick={refresh}>refresh</span>}
   // }
 
-  return (
-    <Paper {...options.containerProps} square>
-      {options.children}
-    </Paper>
-  )
-}
+//   return (
+//     <Paper {...options.containerProps} square>
+//       {options.children}
+//     </Paper>
+//   )
+// }
 
 function renderInputComponent(inputProps: any) {
   const { refreshHandler, classes, inputRef = () => {}, ref, ...other } = inputProps;
@@ -106,6 +107,7 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
     ...restProps
   } = props;
   const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const classes = useStyles();
 
@@ -174,6 +176,9 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
     onChange: handleInputChange,
     onBlur: handleBlur,
     refreshHandler,
+    inputRef: (node: HTMLInputElement | null) => {
+      setAnchorEl(node);
+    },
     ...restProps,
   };
 
@@ -204,7 +209,18 @@ const KamandSuggestBase: React.FunctionComponent<IPropsInput> = observer((props)
         suggestion: classes.suggestion,
         // input: classes.input,
       }}
-      renderSuggestionsContainer={renderSuggestionsContainer}
+      renderSuggestionsContainer={(options: RenderSuggestionsContainerParams) => (
+        <Popper style={{zIndex: 10000,}} anchorEl={anchorEl} placement="bottom-start" open={Boolean(options.children)}>
+          <Paper {...options.containerProps} square
+            style={{
+              width: anchorEl ? anchorEl.clientWidth : undefined,
+              maxHeight: 200,
+              overflowY: 'auto',
+            }}>
+            {options.children}
+          </Paper>
+        </Popper>
+      )}
     />
   );
 });

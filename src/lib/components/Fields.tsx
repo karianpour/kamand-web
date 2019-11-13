@@ -180,11 +180,14 @@ export const SelectKamandField = ({
     value = '';
   }
 
+  const shrink = !!value;
+
   return (
   <TextField
     // value={value}
     {...props}
     name={name}
+    InputLabelProps={shrink ? {shrink} : {}}
     InputProps={{
       inputComponent: (props: any)=> (
         <Select
