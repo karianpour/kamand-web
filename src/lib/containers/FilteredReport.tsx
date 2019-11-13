@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) => { console.log(theme.direction);  
   },
   page: {
     flip: false,
-    padding: 20,
+    padding: 0,
     direction: theme.direction
   } as any,
   table: {
@@ -119,6 +119,9 @@ const useStyles = makeStyles((theme: Theme) => { console.log(theme.direction);  
     },
     cellHiddenPrint: {
       display: 'none',
+    },
+    page: {
+      padding: 20,
     },
   },
 })});
@@ -352,18 +355,18 @@ const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
 
   return (
     <Container className={classes.root}>
-      <Grid container spacing={1}>
-        <Grid item xs={3}>
+      <Grid container spacing={1} direction="row" justify="flex-start">
+        <Grid item>
           <Button onClick={handleGoBack} fullWidth className={classes.backBtn}>
             <ArrowBack/>
           </Button>
         </Grid>
         {queryData && queryData.loading && 
-        <Grid item xs={3}>
+        <Grid item>
           <CircularProgress/>
         </Grid>}
         {(!queryData || !queryData.loading) && 
-        <Grid item xs={4}>
+        <Grid item>
           <Button onClick={handleShowFilter}><FilterIcon/></Button>
           <Button onClick={refreshHandler}><RefreshIcon/></Button>
           <ReactToPrint
