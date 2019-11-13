@@ -11,6 +11,8 @@ const translation = {
       data: 'داده',
       voucher: 'اسناد',
       acc: 'حسابها',
+      report: 'گزارش',
+      print: 'چاپ',
     },
     info:{
       succeed: 'عملیات با موفقیت انجام شد.',
@@ -49,6 +51,9 @@ const translation = {
       registered: 'ثبت شده',
       row: 'ردیف',
       id: 'شناسه',
+      reportTitle: 'گزارش نمونه',
+      reportRowAction: 'عملیات',
+      total: 'جمع',
     },
   },
 }

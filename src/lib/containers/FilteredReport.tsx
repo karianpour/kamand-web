@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useContext, useLayoutEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { observer } from 'mobx-react-lite';
 
@@ -15,7 +15,9 @@ import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBack from '@material-ui/icons/ArrowForward';
+import AdvanceIcon from '@material-ui/icons/MoreHoriz';
 import FilterIcon from '@material-ui/icons/FilterList';
+import PrintIcon from '@material-ui/icons/Print';
 import { AuthStoreContext, AuthStore } from '../store/authStore';
 import { AppStoreContext, AppStore } from '../store/appStore';
 import useKamandData, { IDataOptions } from '../hooks/useKamandData';
@@ -24,9 +26,11 @@ import { useSetFilter } from '../hooks/useSetFilters';
 import { useTranslation } from 'react-i18next';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { calcTotalOffset } from '../utils/generalUtils';
+import ReactToPrint from 'react-to-print';
 
 type ReportStyles =
   "root" |
+  "page" |
   "backBtn" |
   "btnContainer" |
   "table" |
@@ -34,12 +38,15 @@ type ReportStyles =
   "headerCell1" |
   "headerCell2" |
   "cellClickable" |
+  "cellHiddenPrint" |
   "cellCode" |
-  "cellNumber";
+  "cellNumber" |
+  "@media screen" | 
+  "@media print";
 
 export type ReportClasses = ClassNameMap<ClassKeyOfStyles<Styles<Theme, {}, ReportStyles>>>;
-  
-const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
+
+const useStyles = makeStyles((theme: Theme) => { console.log(theme.direction);  return createStyles<ReportStyles, {}>({
   root: {
     marginBottom: '45px',
   },
@@ -51,14 +58,23 @@ const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
     display: 'flex',
     justifyContent: 'flex-start',
   },
+  page: {
+    flip: false,
+    padding: 20,
+    direction: theme.direction
+  } as any,
   table: {
     minWidth: 700,
   },
   rowRoot: {
     marginTop: '5px',
   },
+  cellHiddenPrint: {
+    visibility: 'visible',
+  },
   headerCell1: {
     position: 'sticky',
+    zIndex: 1,
     top: 0,
     // height: '1em',
     textAlign: 'center',
@@ -67,6 +83,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
   },
   headerCell2: {
     position: 'sticky',
+    zIndex: 1,
     top: '2.6em',
     // height: '1em',
     textAlign: 'center',
@@ -84,7 +101,27 @@ const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
     flip: false,
     textAlign: 'right',
   } as any,
-}));
+  ['@media screen']: { // eslint-disable-line no-useless-computed-key
+    table: {
+      minWidth: 1200,
+    },
+    cellHiddenPrint: {
+    },
+  },
+  ['@media print']: { // eslint-disable-line no-useless-computed-key
+    table: {
+      maxWidth: 768,
+    },
+    '@global':{
+      html: {
+        fontSize: '10px',
+      },
+    },
+    cellHiddenPrint: {
+      display: 'none',
+    },
+  },
+})});
 
 interface FilterEditorProps {
   value: any,
@@ -95,6 +132,7 @@ interface FilterField {
   key: string,
   label: string,
   mandatory: boolean,
+  advanced?: boolean,
   source: 'auth' | 'app',
   editor?: {
     EditorComponent: React.FunctionComponent<FilterEditorProps>,
@@ -110,6 +148,21 @@ const ReportFilters: React.FunctionComponent<ReportFiltersProps> = observer((pro
   const { filters, classes, showReport } = props;
   const history = useHistory();
   const appStore = useContext(AppStoreContext);
+  const [advanceMode, setAdvanceMode] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if(advanceMode===null){
+      let hasAdvancedFilter = false;
+      for(let i=0; i < filters.length; i++){
+        if(!filters[i].advanced) continue;
+        if(appStore.getFilter(filters[i].key)){
+          hasAdvancedFilter = true;
+          break;
+        }
+      }
+      setAdvanceMode(hasAdvancedFilter);
+    }
+  }, [advanceMode, filters, appStore]);
 
   const handleChange = (key: string) => {
     return (e: any) => {
@@ -129,6 +182,10 @@ const ReportFilters: React.FunctionComponent<ReportFiltersProps> = observer((pro
     }
   }
 
+  const handleAdvance = () => {
+    setAdvanceMode(!advanceMode);
+  }
+
   return (
     <Container className={classes.root}>
       <Divider/>
@@ -139,12 +196,22 @@ const ReportFilters: React.FunctionComponent<ReportFiltersProps> = observer((pro
         alignItems="flex-end"
       >
         <Grid item xs={12}>
-          <Button onClick={handleGoBack} fullWidth className={classes.backBtn}>
-            <ArrowBack/>
-          </Button>
+          <Grid container direction="row" justify="flex-start">
+            <Grid item>
+              <Button onClick={handleGoBack}>
+                <ArrowBack/>
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button onClick={handleAdvance}>
+                <AdvanceIcon/>
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
         {filters.map( f => {
           if(!f.editor) return null;
+          if(!advanceMode && f.advanced) return null;
           const { key, label, editor: { EditorComponent } } = f;
           const value = appStore.getFilter(key) || '';
           return <EditorComponent key={key} label={t(label)} value={value} handleChange={handleChange(key)}/>;
@@ -281,6 +348,8 @@ const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
 
   const { queryData, queryParams, refreshHandler } = useKamandData(dataOptions(query, filters, appStore, authStore));
 
+  const componentRef = useRef<HTMLDivElement>(null);
+
   return (
     <Container className={classes.root}>
       <Grid container spacing={1}>
@@ -297,6 +366,10 @@ const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
         <Grid item xs={4}>
           <Button onClick={handleShowFilter}><FilterIcon/></Button>
           <Button onClick={refreshHandler}><RefreshIcon/></Button>
+          <ReactToPrint
+                  trigger={() => <Button><PrintIcon/></Button>}
+                  content={() => componentRef.current as any}
+          />
         </Grid>}
       </Grid>
 
@@ -306,7 +379,9 @@ const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
 
       {queryData && !queryData.loading && !queryData.error && queryData.data && (
         <div ref={tableDivRef} style={{overflow: 'auto', maxHeight: 300}}>
-          <TableComponent queryParams={queryParams} data={queryData.data} classes={classes}/>
+          <div ref={componentRef} className={classes.page}>
+            <TableComponent queryParams={queryParams} data={queryData.data} classes={classes}/>
+          </div>
         </div>
       )}
     </Container>

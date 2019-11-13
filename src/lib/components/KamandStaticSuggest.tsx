@@ -94,6 +94,7 @@ const KamandStaticSuggestBase: React.FunctionComponent<IPropsInput> = observer((
     placeholder,
     getSuggestionValue,
     getSuggestionDescription,
+    getSuggestionRow,
     getMatchingSuggestions,
     getListSuggestions,
     ...restProps
@@ -159,7 +160,8 @@ const KamandStaticSuggestBase: React.FunctionComponent<IPropsInput> = observer((
   const renderSuggestion = (suggestion: any, { query, isHighlighted }: any) => {
     return (
       <MenuItem selected={isHighlighted} component="div">
-        <span>{getSuggestionDescription(suggestion)}</span>
+        {getSuggestionRow && getSuggestionRow(suggestion)}
+        {!getSuggestionRow && <span>{getSuggestionDescription(suggestion)}</span>}
       </MenuItem>
     );
   }
@@ -195,6 +197,7 @@ interface IPropsInput {
   placeholder?: string,
   getSuggestionValue: (suggection: any)=>string,
   getSuggestionDescription: (suggection: any)=>string,
+  getSuggestionRow?: (suggection: any)=>Node,
   getMatchingSuggestions: (value: string, suggestionData: any[])=>any[],
   getListSuggestions: ()=>any[],
 }

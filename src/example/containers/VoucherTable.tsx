@@ -15,6 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import PrintIcon from '@material-ui/icons/Print';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { AppStoreContext, AppStore, appStore } from '../../lib/store/appStore';
 import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
@@ -108,6 +109,7 @@ const VoucherTable: React.FunctionComponent<IProps> = observer((props) => {
               <TableCell padding='none' align="center">{mapToFarsi(formatDateTimeString(td.createdAt))}</TableCell>
               <TableCell padding='none' align="center">
                 <Button component={AdapterLink} to={`/voucher/edit/${td.id}`}><EditIcon/></Button>
+                <Button component={AdapterLink} to={`/voucher/print/${td.id}`}><PrintIcon/></Button>
               </TableCell>
             </TableRow>
           ))}

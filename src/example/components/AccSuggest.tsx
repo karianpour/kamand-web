@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect, useContext} from 'react';
 import { KamandSuggestInput } from '../../lib/components/KamandSuggest';
 import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';
+import Chip from '@material-ui/core/Chip';
+import { AppStoreContext } from '../../lib/store/appStore';
+import { observer } from 'mobx-react-lite';
+import DataView from '../../lib/components/DataView';
 
 function getSuggestionValue(suggestion: any) {
   return suggestion.id;
@@ -28,3 +32,44 @@ export const AccSuggestInput = (props: any)=>{
              {...props}
           />
 }
+
+interface IDataIDViewProps {
+  label: string,
+  id: any,
+  important?: boolean,
+  chip?: boolean,
+  span?: boolean,
+  handleDelete?: () => void,
+}
+
+export const AccView: React.FunctionComponent<IDataIDViewProps> = observer((props) => {
+  const {id, label, important, chip, span, handleDelete} = props;
+
+  const appStore = useContext(AppStoreContext);
+
+  const accKey = `acc/${id}`;
+  const acc = appStore.getActData(accKey);
+
+  useEffect(() => {
+    if(!acc && id){
+      appStore.loadActData(accKey, `/acc/${id}`, {});
+    }
+  }, [accKey, id, acc, appStore]);
+
+  const value = acc ? acc.name : '...';
+
+  if(chip){
+    return (
+      <Chip
+        label={`${label}: ${value}`}
+        onDelete={handleDelete}
+      />      
+    );
+  }else if(span){
+    return <span>{`${label}: ${value}`}</span>
+  }else{
+    return (
+      <DataView value={value} label={label} important={important} format="text"/>
+    );
+  }
+})

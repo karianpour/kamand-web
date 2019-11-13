@@ -170,6 +170,8 @@ export const SelectKamandField = ({
   value,
   children,
   inputProps,
+  onChange,
+  name,
   ...props
 }:({inputProps?: any, children: React.ReactNode} & TextFieldProps)) => {
   // console.log({value, restField});
@@ -180,12 +182,16 @@ export const SelectKamandField = ({
 
   return (
   <TextField
-    value={value}
+    // value={value}
     {...props}
+    name={name}
     InputProps={{
       inputComponent: (props: any)=> (
         <Select
           fullWidth
+          value={value}
+          onChange={onChange}
+          name={name}
           {...inputProps}
           // renderValue={value => `⚠️  - ${value}`}
         >
