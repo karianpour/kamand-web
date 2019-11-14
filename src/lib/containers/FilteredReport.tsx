@@ -27,6 +27,7 @@ import { useTranslation } from 'react-i18next';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { calcTotalOffset } from '../utils/generalUtils';
 import ReactToPrint from 'react-to-print';
+import './print.css';
 
 type ReportStyles =
   "root" |
@@ -34,6 +35,7 @@ type ReportStyles =
   "backBtn" |
   "btnContainer" |
   "table" |
+  "tableScroll" |
   "rowRoot" |
   "headerCell1" |
   "headerCell2" |
@@ -65,6 +67,10 @@ const useStyles = makeStyles((theme: Theme) => { console.log(theme.direction);  
   } as any,
   table: {
     minWidth: 700,
+  },
+  tableScroll: {
+    overflow: 'auto',
+    maxHeight: 300
   },
   rowRoot: {
     marginTop: '5px',
@@ -111,6 +117,10 @@ const useStyles = makeStyles((theme: Theme) => { console.log(theme.direction);  
   ['@media print']: { // eslint-disable-line no-useless-computed-key
     table: {
       maxWidth: 768,
+    },
+    tableScroll: {
+      overflow: 'unset',
+      maxHeight: 'unset',
     },
     '@global':{
       html: {
@@ -378,15 +388,15 @@ const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
 
       {queryData && queryData.error && <p>error</p>}
 
-      <HeaderComponent queryParams={queryParams} classes={classes}/>
+      <div ref={componentRef} className={classes.page}>
+        <HeaderComponent queryParams={queryParams} classes={classes}/>
 
-      {queryData && !queryData.loading && !queryData.error && queryData.data && (
-        <div ref={tableDivRef} style={{overflow: 'auto', maxHeight: 300}}>
-          <div ref={componentRef} className={classes.page}>
-            <TableComponent queryParams={queryParams} data={queryData.data} classes={classes}/>
+        {queryData && !queryData.loading && !queryData.error && queryData.data && (
+          <div ref={tableDivRef} className={classes.tableScroll}>
+              <TableComponent queryParams={queryParams} data={queryData.data} classes={classes}/>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </Container>
   );
 
