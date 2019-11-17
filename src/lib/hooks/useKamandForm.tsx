@@ -207,7 +207,7 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
 
   const kamandForm = {
     getFieldProps,
-    values: state.current.values,
+    get values():any { return state.current.values },
     isDirty,
     isSubmitting,
     isValidating,
