@@ -106,7 +106,6 @@ export class AppStore {
     this.loadingActData[hashKey] = true;
     try{
       const data = await loadActData(query, queryParam);
-      delete this.loadingActData[hashKey];
       if(data){
         if(makeObservable){
           this.setActData(key, makeObservable(data));
@@ -117,6 +116,8 @@ export class AppStore {
       return data;
     }catch(err){
       throw err;
+    }finally{
+      delete this.loadingActData[hashKey];
     }
   }
 

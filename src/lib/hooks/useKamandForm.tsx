@@ -26,7 +26,7 @@ export type FormTouched<Values> = {
 };
 
 export interface FormState<Values> {
-  values: Values;
+  values?: Values;
   errors: FormErrors<Values>;
   touched: FormTouched<Values>;
   isSubmitting: boolean;
@@ -40,7 +40,7 @@ export interface FormSubmitResult<Values> {
 }
 
 export interface FormConfig<Values>{
-  initialValues: Values;
+  initialValues?: Values;
   validate?: (values: Values) => Promise<FormErrors<Values>>;
   submit: (values: Values, form: KamandForm<Values>) => Promise<FormSubmitResult<Values>>;
 }
@@ -109,6 +109,7 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
   }
 
   const submitForm = async (): Promise<boolean> => {
+    if(!state.current.values) return false;
     if(state.current.isSubmitting || state.current.isValidating) return false;
 
     state.current.touched = setNestedObjectValues<FormTouched<Values>>(state.current.values, true);
