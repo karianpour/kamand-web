@@ -16,7 +16,7 @@ import ReportIcon from '@material-ui/icons/Toc';
 
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { format } from "d3-format";
-import { AccSuggestInput, AccView } from '../components/AccSuggest';
+import { AccField, AccView } from '../components/AccSuggest';
 import FilteredReport, { ReportClasses, makeReportUrl } from '../../lib/containers/FilteredReport';
 import { Typography } from '@material-ui/core';
 
@@ -45,7 +45,7 @@ const VoucherReport: React.FunctionComponent<IProps> = observer((props) => {
           editor: {
             EditorComponent: ({value, handleChange, label})=>(
               <Grid item xs={12} sm={6} lg={3} >
-                <AccSuggestInput
+                <AccField
                   value={value}
                   onChange={handleChange}
                   label={label}

@@ -27,10 +27,11 @@ import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../../lib/store/appStore';
 import { makeStyles } from '@material-ui/styles';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
-import { AccSuggestInput } from '../components/AccSuggest';
+import { AccField } from '../components/AccSuggest';
 import uuidv4 from 'uuid/v4';
 import { useKamandForm, KamandForm, FormSubmitResult } from '../../lib/hooks/useKamandForm';
 import { DefaultLoadingIndicator } from '../../lib/components/LazyLoadOnView';
+import { VoucherTypeField } from '../components/VoucherTypeField';
 
 
 const useStyles = makeStyles({
@@ -191,8 +192,6 @@ const VoucherForm: React.FunctionComponent<IProps> = observer((props) => {
 
   const formHelperText = form.getHelperText('');
 
-  console.log('render on form', {formHelperText})
-
   return (
     <Paper className={classes.root}>
       <Grid container spacing={3}>
@@ -284,16 +283,10 @@ const MainTab: React.FunctionComponent<{form: KamandForm<Values>}> = (props) => 
           <DateKamandField {...form.getFieldProps('voucherDate')} fullWidth label={t('data.voucherDate')} />
         </Grid>
         <Grid item xs={12}>
-          <AccSuggestInput {...form.getFieldProps('accId')} fullWidth label={t('data.accSuggest')} />
+          <AccField {...form.getFieldProps('accId')} fullWidth label={t('data.accSuggest')} />
         </Grid>
         <Grid item xs={12}>
-          <SelectKamandField {...form.getFieldProps('voucherType')} label={t('data.voucherType')} fullWidth>
-            <MenuItem value="">
-              <em>-</em>
-            </MenuItem>
-            <MenuItem value="normal">{t('data.normal')}</MenuItem>
-            <MenuItem value="special">{t('data.special')}</MenuItem>
-          </SelectKamandField>
+          <VoucherTypeField {...form.getFieldProps('voucherType')} label={t('data.voucherType')} fullWidth/>
         </Grid>
         <Grid item xs={12} sm={4}>
           <DecimalKamandField {...form.getFieldProps('amount')} fullWidth label={t('data.amount')} />
@@ -387,7 +380,7 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
                     <DateKamandField {...form.getFieldProps(`articles.${index}.articleDate`)} />
                   </TableCell>
                   <TableCell style={{minWidth:120}} className={classes.cells} padding='none' align="center">
-                    <AccSuggestInput {...form.getFieldProps(`articles.${index}.accId`)} placeholder={t('data.accSuggest')} fullWidth margin="normal" />
+                    <AccField {...form.getFieldProps(`articles.${index}.accId`)} placeholder={t('data.accSuggest')} fullWidth margin="normal" />
                   </TableCell>
                   <TableCell style={{minWidth:80}} className={classes.cells} padding='none' align="center">
                     <SelectKamandField {...form.getFieldProps(`articles.${index}.voucherType`)} placeholder={t('data.voucherType')} fullWidth>

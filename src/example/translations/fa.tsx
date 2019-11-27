@@ -14,6 +14,12 @@ const translation = {
       report: 'گزارش',
       print: 'چاپ',
     },
+    autoComplete: {
+      openText: 'باز',
+      closeText: 'بستن',
+      clearText: 'پاک‌کن',
+      noOptionsText: 'انتخابی نیست',
+    },
     info:{
       succeed: 'عملیات با موفقیت انجام شد.',
     },

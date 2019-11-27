@@ -1,6 +1,7 @@
 import React, { useEffect, useContext} from 'react';
-import { KamandSuggestInput } from '../../lib/components/KamandSuggest';
-import { IQueryData } from '../../lib/store/interfaces/dataInterfaces';
+import { useTranslation } from 'react-i18next';
+import KamandAutoComplete from '../../lib/components/KamandAutoComplete';
+import UpIcon from '@material-ui/icons/ArrowForward';
 import Chip from '@material-ui/core/Chip';
 import { AppStoreContext } from '../../lib/store/appStore';
 import { observer } from 'mobx-react-lite';
@@ -14,22 +15,61 @@ function getSuggestionDescription(suggestion: any) {
   return !suggestion || !suggestion.name ? '' : suggestion.name;
 }
 
-function getMatchingSuggestions(value: any, suggestionData: IQueryData){
-  if(!suggestionData || !suggestionData.data) return [];
-  const suggestions = suggestionData.data.filter(row => getSuggestionDescription(row).indexOf(value) > -1).map(row => row);
+function getSuggestionRow(suggestion: any) {
+  if(!suggestion) return null;
+  const {code, name, level, isParent} = suggestion;
+
+  if(isParent){
+    return (
+      <div>
+        <UpIcon style={{position: 'absolute', right: 0, top: 'calc(50% - 14px)'}}/>
+        <div style={{textIndent: 50, color: 'grey'}}>{code} - {name}</div>
+      </div>)
+  }
+
+  return <div style={{textIndent: (+level - 1) * 10}}>{code} - {name}</div>
+}
+
+function filterValueOptions(options: any[], inputValue: string): any[]{
+  const suggestions = options.filter(row => getSuggestionDescription(row).indexOf(inputValue) > -1);
   return suggestions;
 }
 
-export const AccSuggestInput = (props: any)=>{
-  return <KamandSuggestInput
+function isOptionParent(option: any): boolean{
+  return !option.leaf;
+}
+
+function filterParentOptions(options: any[], parent: any): any[]{
+  const suggestions = 
+    parent ? options.filter(row => row.parentId === parent.id && row.id !== parent.id) :
+      options.filter(row => row.parentId === row.id);
+  if(parent) suggestions.unshift(parent);
+  return suggestions;
+}
+
+export const AccField = (props: any)=>{
+  const { t } = useTranslation();
+  
+  const translation = {
+    openText: t('autoComplete.openText'),
+    closeText: t('autoComplete.closeText'),
+    clearText: t('autoComplete.clearText'),
+    noOptionsText: t('autoComplete.noOptionsText'),
+  }
+
+  return <KamandAutoComplete
             queryKey={'acc_suggest'}
             query={'acc_list'}
             publicQuery={false}
             queryParam={{}}
+            translation={translation}
             getSuggestionValue={getSuggestionValue}
             getSuggestionDescription={getSuggestionDescription}
-            getMatchingSuggestions={getMatchingSuggestions}
-             {...props}
+            getSuggestionRow={getSuggestionRow}
+            filterValueOptions={filterValueOptions}
+            isOptionParent={isOptionParent}
+            filterParentOptions={filterParentOptions}
+            {...props}
           />
 }
 
