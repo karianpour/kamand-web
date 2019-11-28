@@ -1,75 +1,25 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, lazy } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../lib/store/appStore';
 
 import { makeStyles } from '@material-ui/styles';
-import { Grid } from '@material-ui/core';
-import { Paper, Typography } from '@material-ui/core';
-// import { secondColor, primaryColor } from '../assets/colors';
+import {
+  Grid,
+  Container,
+} from '@material-ui/core';
+import LazyLoadOnView from '../lib/components/LazyLoadOnView';
 
+const GeneralInfo = lazy(() => import('./containers/widgets/GeneralInfo'));
+const FilterList = lazy(() => import('./containers/widgets/FilterList'));
+const VoucherStat = lazy(() => import('./containers/widgets/VoucherStat'));
+const AccStat = lazy(() => import('./containers/widgets/AccStat'));
 
 const useStyles = makeStyles({
-  list: {
-    overflow: 'hidden',
+  root: {
+    marginBottom: 65,
   },
-  paperBox: {
-    // width: '81.7%',
-    margin: '20px 0',
-    '@media(max-width:920px)':{
-      margin: 10
-    }
-  },
-  paper: {
-    // width: '80%',
-    margin: '20px 0',
-    padding: 10,
-    '@media(max-width:920px)':{
-      margin: 10
-    }
-  },
-  homeBox: {
-    // borderRight: `1px solid ${secondColor}`
-  },
-  aboutBox: {
-    // backgroundColor: primaryColor,
-    // border: `1px solid ${primaryColor}`,
-    borderRadius: '0 5px 5px 0',
-  },
-  about: {
-    width: '100%'
-  },
-  aboutText: {
-    padding: 10
-  },
-  logoBox: {
-    marginTop: 20
-  },
-  listAbout: {
-    padding: 10,
-    margin: '20px 0',
-    '@media(max-width:920px)':{
-      margin: 10
-    }
-  },
-  aboutTextAbout: {
-    // color: primaryColor,
-    padding: 20
-  },
-  logo: {
-    width: 150,
-    '@media(max-width:920px)':{
-      width: '100%'
-    }
-  },
-  advertismentBox:{
-    margin: 10,
-    '@media(min-width:920px)':{
-      width: '100%',
-      marginRight: 20
-    }
-  }
 });
 
 const HomePage: React.FunctionComponent<IProps> = observer((props) => {
@@ -84,19 +34,27 @@ const HomePage: React.FunctionComponent<IProps> = observer((props) => {
 
 
   return (
-    <div className={classes.list}>
-      <Grid container>
-        <Grid item sm={12} md={9}>
-          <Paper className={classes.paper}>
-            <Grid container>
-              <Grid item sm={8}>
-                <Typography align="left" gutterBottom={true} variant="h5" className={classes.aboutText}>{t('home.mainPage')}</Typography>
-              </Grid>
-            </Grid>
-          </Paper>
+    <Container maxWidth="xl" className={classes.root}>
+      {/* <div style={{height: 1500, backgroundColor: 'green', border: '10px solid red'}}>scroll down</div> */}
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <GeneralInfo/>
+        </Grid>
+        <Grid item xs={12}>
+          <FilterList/>
+        </Grid>
+        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+          <LazyLoadOnView>
+            <VoucherStat/>
+          </LazyLoadOnView>
+        </Grid>
+        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+          <LazyLoadOnView>
+            <AccStat/>
+          </LazyLoadOnView>
         </Grid>
       </Grid>
-    </div>
+    </Container>
   );
 
 });
