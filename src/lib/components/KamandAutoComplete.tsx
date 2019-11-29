@@ -32,6 +32,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     color: theme.palette.action.active,
     visibility: 'hidden',
   },
+  inputRoot: { // if material design add the `important` tag we can remove this class
+    '& $input': {
+      width: '0 !important',
+    },
+  },
 }));
 
 const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props) => {
@@ -57,6 +62,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     filterValueOptions,
     isOptionParent,
     filterParentOptions,
+    acceptParent,
   } = props;
 
   const classes = useStyles();
@@ -88,14 +94,21 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     if(value){
       if(value.isParent){
         setParent(value.parent ? {isParent: true, ...value.parent} : null);
-        setValue(null);
-        setInputValue('');
+        if(!acceptParent){
+          setValue(null);
+          setInputValue('');
+        }
         setTimeout(()=>setOpen(true), 500);
       }else{
         if(isOptionParent && isOptionParent(value)){
           setParent({isParent: true, parent, ...value});
-          setValue(null);
-          setInputValue('');
+          if(acceptParent){
+            setValue(value);
+            setInputValue(getSuggestionDescription(value));
+          }else{
+            setValue(null);
+            setInputValue('');
+          }
           setTimeout(()=>setOpen(true), 500);
         }else{
           if(onChange) onChange({target: {name, value: getSuggestionValue(value)}});
@@ -165,6 +178,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
           variant="standard"
           InputProps={{
             ...params.InputProps,
+            className: `${params.InputProps.className} ${classes.inputRoot}`,
             endAdornment: (
               <React.Fragment>
                 {suggestionData && suggestionData.loading ? <CircularProgress color="inherit" size={20} /> : null}
@@ -202,8 +216,9 @@ interface IPropsInput {
   getSuggestionDescription: (suggection: any)=>string,
   getSuggestionRow?: (suggection: any)=>Node,
   filterValueOptions: (options: any[], inputValue: string)=>any[],
-  isOptionParent: (option: any) => boolean,
-  filterParentOptions: (options: any[], parent: any) => any[],
+  isOptionParent?: (option: any) => boolean,
+  filterParentOptions?: (options: any[], parent: any) => any[],
+  acceptParent?: boolean,
 }
 
 

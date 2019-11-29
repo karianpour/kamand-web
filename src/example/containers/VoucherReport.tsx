@@ -49,6 +49,7 @@ const VoucherReport: React.FunctionComponent<IProps> = observer((props) => {
                   value={value}
                   onChange={handleChange}
                   label={label}
+                  acceptParent={true}
                   filter={{forReport: true}}
                 />
               </Grid>

@@ -11,6 +11,11 @@ import { FilterOptionsState } from '@material-ui/lab/useAutocomplete';
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
   },
+  inputRoot: { // if material design add the `important` tag we can remove this class
+    '& $input': {
+      width: '0 !important',
+    },
+  },
 }));
 
 const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer((props) => {
@@ -81,6 +86,10 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
       renderInput={params => (
         <TextField
           {...params}
+          InputProps={{
+            ...params.InputProps,
+            className: `${params.InputProps.className} ${classes.inputRoot}`,
+          }}
           label={label}
           name={name}
           placeholder={placeholder}
