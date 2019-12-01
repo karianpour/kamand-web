@@ -1,9 +1,11 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 import MenuItem from '@material-ui/core/MenuItem';
 // import { useTranslation } from 'react-i18next';
 import { makeStyles, createStyles } from '@material-ui/styles';
@@ -63,6 +65,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     isOptionParent,
     filterParentOptions,
     acceptParent,
+    addNew,
   } = props;
 
   const classes = useStyles();
@@ -82,10 +85,12 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
   const suggestionData: IQueryData = appStore.getQueryData(hashKey);
 
   useEffect(()=>{
-    if(suggestionData && suggestionData.data && selectedValue && (!value || selectedValue!==getSuggestionValue(value))){
+    if(suggestionData && suggestionData.data && selectedValue){ // && (!value || selectedValue!==getSuggestionValue(value))
       const newValue = suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
-      setValue(newValue);
-      setInputValue(getSuggestionDescription(newValue));
+      if(value !== newValue){
+        setValue(newValue);
+        setInputValue(getSuggestionDescription(newValue));
+      }
       // setLastSelectedValue(newValue);
     }
   }, [appStore, suggestionData, selectedValue, value, getSuggestionValue, getSuggestionDescription]);
@@ -144,6 +149,16 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     return filtered;
   }
 
+  const handleAddNew = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if(!addNew) return;
+    const selected = await addNew(value, parent);
+    if(selected){
+      const newValue = suggestionData.data.find(row => getSuggestionValue(row) === getSuggestionValue(selected));
+      handleChange({type: 'new'}, newValue);
+      refreshHandler();
+    }
+  }
+
   return (
     <Autocomplete
       className={classes.root}
@@ -186,6 +201,10 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
                   <IconButton className={classes.refreshIndicator} onClick={refreshHandler}>
                     <RefreshIcon />
                   </IconButton>) : null}
+                {addNew ? (
+                  <IconButton className={classes.refreshIndicator} onClick={handleAddNew}>
+                    {value ? <EditIcon /> : <AddIcon />}
+                  </IconButton>) : null}
                 {params.InputProps.endAdornment}
               </React.Fragment>
             ),
@@ -210,7 +229,7 @@ interface IPropsInput {
     openText: string,
     closeText: string,
     clearText: string,
-    noOptionsText: string,
+    noOptionsText: Node,
   },
   getSuggestionValue: (suggection: any)=>string,
   getSuggestionDescription: (suggection: any)=>string,
@@ -219,7 +238,47 @@ interface IPropsInput {
   isOptionParent?: (option: any) => boolean,
   filterParentOptions?: (options: any[], parent: any) => any[],
   acceptParent?: boolean,
+  addNew?: (value: any, parent: any) => Promise<any>,
 }
 
 
 export default KamandAutoComplete;
+
+export const AutoCompleteWithAdd = (props: any)=>{
+  const { AutoCompleteFiled, EntryDialog, ...rest } = props;
+  const [open, setOpen] = useState(false);
+  const [parent, setParent] = useState(null);
+  const [value, setValue] = useState(null);
+
+  const handleClose = () => {
+    setOpen(false);
+    if(resolveRef.current){
+      resolveRef.current(null);
+    }
+  };
+  
+  const handleSaved = (value: any) => {
+    setOpen(false);
+    if(resolveRef.current){
+      resolveRef.current(value);
+    }
+  };
+
+  const resolveRef = useRef<any>(null);
+
+  const handleAddNew = async (value: any, parent: any) => {
+    setValue(value);
+    setParent(parent);
+    setOpen(true);
+    return new Promise((resolve)=>{
+      resolveRef.current = resolve;
+    });
+  }
+
+  return (
+    <React.Fragment>
+      <AutoCompleteFiled addNew={handleAddNew} {...rest}/>
+      <EntryDialog open={open} onSaved={handleSaved} onClose={handleClose} filter={{...props.filter, parent, value}}/>
+    </React.Fragment>
+  )
+}

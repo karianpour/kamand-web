@@ -283,7 +283,7 @@ const MainTab: React.FunctionComponent<{form: KamandForm<Values>}> = (props) => 
           <DateKamandField {...form.getFieldProps('voucherDate')} fullWidth label={t('data.voucherDate')} />
         </Grid>
         <Grid item xs={12}>
-          <AccField {...form.getFieldProps('accId')} fullWidth label={t('data.accSuggest')} />
+          <AccField {...form.getFieldProps('accId')} fullWidth label={t('data.accSuggest')} addNew/>
         </Grid>
         <Grid item xs={12}>
           <VoucherTypeField {...form.getFieldProps('voucherType')} label={t('data.voucherType')} fullWidth/>
@@ -380,7 +380,7 @@ const ArticleTab: React.FunctionComponent<IArticleTabProps> = (props) => {
                     <DateKamandField {...form.getFieldProps(`articles.${index}.articleDate`)} />
                   </TableCell>
                   <TableCell style={{minWidth:120}} className={classes.cells} padding='none' align="center">
-                    <AccField {...form.getFieldProps(`articles.${index}.accId`)} placeholder={t('data.accSuggest')} fullWidth margin="normal" />
+                    <AccField {...form.getFieldProps(`articles.${index}.accId`)} placeholder={t('data.accSuggest')} fullWidth margin="normal" addNew/>
                   </TableCell>
                   <TableCell style={{minWidth:80}} className={classes.cells} padding='none' align="center">
                     <SelectKamandField {...form.getFieldProps(`articles.${index}.voucherType`)} placeholder={t('data.voucherType')} fullWidth>

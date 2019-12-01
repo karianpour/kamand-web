@@ -49,6 +49,13 @@ function filterParentOptions(options: any[], parent: any): any[]{
 
 export const AccField = (props: any)=>{
   const { t } = useTranslation();
+
+  const { addNew, restProps } = props;
+
+  const handleAddNew = async () => {
+    console.log(`let's add new`);
+    return null;
+  }
   
   const translation = {
     openText: t('autoComplete.openText'),
@@ -69,7 +76,8 @@ export const AccField = (props: any)=>{
             filterValueOptions={filterValueOptions}
             isOptionParent={isOptionParent}
             filterParentOptions={filterParentOptions}
-            {...props}
+            addNew={addNew ? handleAddNew : null}
+            {...restProps}
           />
 }
 
