@@ -50,6 +50,8 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
   const {
     name,
     value: selectedValue,
+    error,
+    helperText,
     onChange,
     label,
     placeholder,
@@ -153,8 +155,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     if(!addNew) return;
     const selected = await addNew(value, parent);
     if(selected){
-      const newValue = suggestionData.data.find(row => getSuggestionValue(row) === getSuggestionValue(selected));
-      handleChange({type: 'new'}, newValue);
+      if(onChange) onChange({target: {name, value: getSuggestionValue(selected)}});
       refreshHandler();
     }
   }
@@ -188,6 +189,8 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
           {...params}
           label={label}
           name={name}
+          error={error}
+          helperText={helperText}
           placeholder={placeholder}
           fullWidth
           variant="standard"
@@ -220,6 +223,8 @@ interface IPropsInput {
   name?: string,
   onChange: any,
   label?: string,
+  error?: boolean,
+  helperText?: string,
   placeholder?: string,
   queryKey: string,
   query: string,

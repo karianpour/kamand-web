@@ -24,6 +24,8 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
   const {
     name,
     value: selectedValue,
+    error,
+    helperText,
     onChange,
     label,
     placeholder,
@@ -92,6 +94,8 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
           }}
           label={label}
           name={name}
+          error={error}
+          helperText={helperText}
           placeholder={placeholder}
           fullWidth
           variant="standard"
@@ -106,6 +110,8 @@ interface IPropsInput {
   name?: string,
   onChange: any,
   label?: string,
+  error?: boolean,
+  helperText?: string,
   placeholder?: string,
   queryKey: string,
   query: string,
