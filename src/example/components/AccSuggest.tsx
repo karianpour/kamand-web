@@ -50,7 +50,7 @@ function filterParentOptions(options: any[], parent: any): any[]{
 export const AccField = (props: any)=>{
   const { t } = useTranslation();
 
-  const { addNew, restProps } = props;
+  const { addNew, ...restProps } = props;
 
   const handleAddNew = async () => {
     console.log(`let's add new`);

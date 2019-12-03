@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext, useEffect, useRef, useCallback } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -46,6 +46,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
   const [inputValue, setInputValue] = useState<string>('');
   const [parent, setParent] = useState<any>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const keepOpenRef = useRef<boolean>(false);
 
   const {
     name,
@@ -97,7 +98,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     }
   }, [appStore, suggestionData, selectedValue, value, getSuggestionValue, getSuggestionDescription]);
 
-  const handleChange = (event: any, value: any)=> {
+  const handleChange = useCallback((event: any, value: any)=> {
     if(value){
       if(value.isParent){
         setParent(value.parent ? {isParent: true, ...value.parent} : null);
@@ -105,18 +106,21 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
           setValue(null);
           setInputValue('');
         }
-        setTimeout(()=>setOpen(true), 500);
+        keepOpenRef.current = true;
+        // setTimeout(()=>setOpen(true), 200);
       }else{
         if(isOptionParent && isOptionParent(value)){
           setParent({isParent: true, parent, ...value});
           if(acceptParent){
+            if(onChange) onChange({target: {name, value: getSuggestionValue(value)}});
             setValue(value);
             setInputValue(getSuggestionDescription(value));
           }else{
             setValue(null);
             setInputValue('');
           }
-          setTimeout(()=>setOpen(true), 500);
+          keepOpenRef.current = true;
+          // setTimeout(()=>setOpen(true), 200);
         }else{
           if(onChange) onChange({target: {name, value: getSuggestionValue(value)}});
           setValue(value);
@@ -131,15 +135,15 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
         setParent(null);
       }
     }
-  }
+  }, [parent, name, setValue, setInputValue, setParent, onChange, getSuggestionDescription, getSuggestionValue, keepOpenRef, isOptionParent, acceptParent])
 
-  const onInputChange = (event: React.ChangeEvent<{}>, value: any) => {
+  const onInputChange = useCallback((event: React.ChangeEvent<{}>, value: any) => {
     if(!event || event.type==='change'){
       setInputValue(value);
     }
-  }
+  }, [setInputValue]);
 
-  const filterOptions = (options: any[], state: FilterOptionsState): any[] => {
+  const filterOptions = useCallback((options: any[], state: FilterOptionsState): any[] => {
     let filtered = options;
 
     if(state.inputValue){
@@ -149,7 +153,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
       filtered = filterParentOptions(filtered, parent);
     }
     return filtered;
-  }
+  }, [parent, filterValueOptions, filterParentOptions]);
 
   const handleAddNew = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if(!addNew) return;
@@ -160,6 +164,18 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     }
   }
 
+  const handleOpen = useCallback(()=>{
+    setOpen(true);
+    keepOpenRef.current = false;
+  }, [setOpen]);
+
+  const handleClose = useCallback(()=>{
+    if(!keepOpenRef.current){
+      setOpen(false);
+    }
+    keepOpenRef.current = false;
+  }, [setOpen, keepOpenRef])
+
   return (
     <Autocomplete
       className={classes.root}
@@ -168,8 +184,8 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
       inputValue={inputValue}
       onInputChange={onInputChange}
       open={open}
-      onOpen={() => setOpen(true)}
-      onClose={() => setOpen(false)}
+      onOpen={handleOpen}
+      onClose={handleClose}
       openText={translation.openText}
       closeText={translation.closeText}
       clearText={translation.clearText}
