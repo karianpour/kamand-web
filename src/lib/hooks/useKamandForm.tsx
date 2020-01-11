@@ -48,6 +48,7 @@ export interface FormConfig<Values>{
 export interface FormFieldProps {
   onChange: (e: React.ChangeEvent<any>)=>void,
   name: string,
+  id: string,
   value: any,
   error: boolean,
   helperText: Node,
@@ -196,6 +197,7 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
     return {
       onChange: changeHandler,
       name: path,
+      id: path,
       value,
       error,
       helperText,

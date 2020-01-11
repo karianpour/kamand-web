@@ -5,6 +5,7 @@ import { fetchData, loadActData, saveActData, removeActData } from '../api/kaman
 import { ISnackMessage } from './interfaces/authInterfaces';
 import { IQueryData } from './interfaces/dataInterfaces';
 import { hash } from '../utils/generalUtils';
+import { connectWebSocketToServer, doAsyncActData } from '../api/kamandSocket';
 
 configure({ enforceActions: "observed" });
 
@@ -19,9 +20,10 @@ export class AppStore {
 
   readonly optionData = observable.map<string, any>({}, { deep: false });
 
-  // constructor(){
+  constructor(){
+    connectWebSocketToServer();
     // setAppStore(this);
-  // }
+  }
 
   setPageTitle(pageTitle: string) {
     this.pageTitle = pageTitle;
@@ -136,6 +138,13 @@ export class AppStore {
       this.deleteActData(key);
     }
     return result;
+  }
+
+  async doAsyncActData(key: string, query: string, data: any) : Promise<void> {
+    this.setActData(key, data);
+    doAsyncActData(query, data, (payload: any)=>{
+      this.setActData(key, payload);
+    });
   }
 
   setOptionData(key: string, data: any) {

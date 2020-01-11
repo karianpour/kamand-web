@@ -13,6 +13,7 @@ const translation = {
       acc: 'حسابها',
       report: 'گزارش',
       print: 'چاپ',
+      job: 'کار',
     },
     autoComplete: {
       openText: 'باز',
@@ -65,6 +66,7 @@ const translation = {
       accStat: 'آمار حسابها',
       qty: 'تعداد',
       newVoucher: 'سند جدید',
+      start: 'شروع',
     },
   },
 }
