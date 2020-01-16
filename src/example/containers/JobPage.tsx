@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles, Button } from '@material-ui/core';
 import { AppStoreContext } from '../../lib/store/appStore';
+import FileUpload from './FileUpload';
 
 
 const useStyles = makeStyles({
@@ -39,6 +40,7 @@ const JobPage: React.FunctionComponent<{}> = observer((props) => {
 
   return (
     <Paper className={classes.root}>
+      <FileUpload/>
       {!value && <Button variant="outlined" onClick={handleStart}>{t('data.start')}</Button>}
       {value && <div>{JSON.stringify(value, null, 2)}</div>}
     </Paper>

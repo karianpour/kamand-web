@@ -128,7 +128,7 @@ export async function removeActData(query: string, params: any) : Promise<any>{
 
 export async function executeApi(executionConfig: AxiosRequestConfig) : Promise<any>{
   try{
-    const headers = {};
+    const headers = executionConfig.headers || {};
     addToken(headers);
     const config:AxiosRequestConfig = {
       baseURL: APIADDRESS,
