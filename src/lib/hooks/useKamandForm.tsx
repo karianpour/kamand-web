@@ -147,6 +147,7 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
     if(result.valuesFromServer){
       state.current.values = result.valuesFromServer;
     }
+    state.current.touched = {};
     state.current.isValidating = false;
     state.current.isSubmitting = false;
     rerender();

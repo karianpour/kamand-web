@@ -19,7 +19,8 @@ import { FilterOptionsState } from '@material-ui/lab/useAutocomplete';
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     '&:hover $refreshIndicator, &$focused $refreshIndicator': {
-      visibility: 'visible',
+      // visibility: 'visible',
+      display: 'block',
     },
     focused: {},
     //TODO K1: I have to put focued class name in root class so when the component get focused
@@ -32,7 +33,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     marginRight: -2,
     padding: 4,
     color: theme.palette.action.active,
-    visibility: 'hidden',
+    // visibility: 'hidden',
+    display: 'none',
+    // display: 'block',
   },
   inputRoot: { // if material design add the `important` tag we can remove this class
     '& $input': {
@@ -42,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props) => {
-  const [value, setValue] = useState<any>(null);
+  const [value, setValue] = useState<any>('');
   const [inputValue, setInputValue] = useState<string>('');
   const [parent, setParent] = useState<any>(null);
   const [open, setOpen] = useState<boolean>(false);
@@ -91,7 +94,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     if(suggestionData && suggestionData.data && selectedValue){ // && (!value || selectedValue!==getSuggestionValue(value))
       const newValue = suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
       if(value !== newValue){
-        setValue(newValue);
+        setValue(newValue || '');
         setInputValue(getSuggestionDescription(newValue));
       }
       // setLastSelectedValue(newValue);
@@ -103,7 +106,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
       if(value.isParent){
         setParent(value.parent ? {isParent: true, ...value.parent} : null);
         if(!acceptParent){
-          setValue(null);
+          setValue('');
           setInputValue('');
         }
         keepOpenRef.current = true;
@@ -113,10 +116,10 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
           setParent({isParent: true, parent, ...value});
           if(acceptParent){
             if(onChange) onChange({target: {name, value: getSuggestionValue(value)}});
-            setValue(value);
+            setValue(value || '');
             setInputValue(getSuggestionDescription(value));
           }else{
-            setValue(null);
+            setValue('');
             setInputValue('');
           }
           keepOpenRef.current = true;
@@ -129,7 +132,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
       }
     }else{
       if(onChange) onChange({target: {name, value: null}});
-      setValue(null);
+      setValue('');
       setInputValue('');
       if(event.type!=='change'){
         setParent(null);
@@ -217,12 +220,12 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
               <React.Fragment>
                 {suggestionData && suggestionData.loading ? <CircularProgress color="inherit" size={20} /> : null}
                 {!suggestionData || !suggestionData.loading ? (
-                  <IconButton className={classes.refreshIndicator} onClick={refreshHandler}>
-                    <RefreshIcon />
+                  <IconButton className={classes.refreshIndicator} size="small" onClick={refreshHandler}>
+                    <RefreshIcon fontSize="small" />
                   </IconButton>) : null}
                 {addNew ? (
-                  <IconButton className={classes.refreshIndicator} onClick={handleAddNew}>
-                    {value ? <EditIcon /> : <AddIcon />}
+                  <IconButton className={classes.refreshIndicator} size="small" onClick={handleAddNew}>
+                    {value ? <EditIcon fontSize="small" /> : <AddIcon />}
                   </IconButton>) : null}
                 {params.InputProps.endAdornment}
               </React.Fragment>
@@ -269,7 +272,7 @@ export const AutoCompleteWithAdd = (props: any)=>{
   const { AutoCompleteFiled, EntryDialog, ...rest } = props;
   const [open, setOpen] = useState(false);
   const [parent, setParent] = useState(null);
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState('');
 
   const handleClose = () => {
     setOpen(false);
@@ -288,7 +291,7 @@ export const AutoCompleteWithAdd = (props: any)=>{
   const resolveRef = useRef<any>(null);
 
   const handleAddNew = async (value: any, parent: any) => {
-    setValue(value);
+    setValue(value || '');
     setParent(parent);
     setOpen(true);
     return new Promise((resolve)=>{

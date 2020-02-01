@@ -127,7 +127,7 @@ export class AppStore {
     if(key) this.setActData(key, data);
     const result = await saveActData(query, data);
     if(result && key){
-      this.setActData(key, data);
+      this.setActData(key, result);
     }
     return result;
   }
