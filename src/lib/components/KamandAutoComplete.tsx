@@ -63,6 +63,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     query,
     publicQuery,
     queryParam,
+    makeupData,
     getSuggestionValue,
     getSuggestionDescription,
     getSuggestionRow,
@@ -81,11 +82,11 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
   const hashKey = queryKey + '/'+ hash(JSON.stringify(queryParam));
 
   useEffect(()=>{
-    appStore.prepareQueryData(hashKey, query, queryParam, false, publicQuery);
+    appStore.prepareQueryData(hashKey, query, queryParam, false, publicQuery, makeupData);
   }, [appStore, hashKey, query, queryParam, publicQuery]);
 
   const refreshHandler = () => {
-    appStore.prepareQueryData(hashKey, query, queryParam, true, publicQuery);
+    appStore.prepareQueryData(hashKey, query, queryParam, true, publicQuery, makeupData);
   }
 
   const suggestionData: IQueryData = appStore.getQueryData(hashKey);
@@ -195,7 +196,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
       noOptionsText={translation.noOptionsText}
       debug={false}
       filterOptions={filterOptions}
-      options={suggestionData && (suggestionData.data || [])}
+      options={suggestionData?.data || []}
       getOptionLabel={(option) => getSuggestionDescription(option)}
       renderOption={(option, state) => (
         <MenuItem selected={state.selected} component="div">
@@ -249,6 +250,7 @@ interface IPropsInput {
   query: string,
   publicQuery: boolean,
   queryParam: any,
+  makeupData: (data: any)=>any,
   translation: {
     openText: string,
     closeText: string,

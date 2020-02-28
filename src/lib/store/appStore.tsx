@@ -64,7 +64,7 @@ export class AppStore {
     return this.queryData.get(key);
   }
 
-  async prepareQueryData(key: string, query: string, queryParam: any, forceRefresh: boolean, publicQuery: boolean = true) : Promise<void> {
+  async prepareQueryData(key: string, query: string, queryParam: any, forceRefresh: boolean, publicQuery: boolean = true, makeupData?: ( (data:any)=>any ) ) : Promise<void> {
     if(!this.queryData.has(key) || forceRefresh){
       const previousData = this.getQueryData(key);
       if(previousData){
@@ -73,7 +73,8 @@ export class AppStore {
         this.setQueryData(key, queryParam, undefined, true, false);
       }
       try{
-        const data = await fetchData(query, queryParam, publicQuery);
+        let data = await fetchData(query, queryParam, publicQuery);
+        if(makeupData) data = makeupData(data);
         this.setQueryData(key, queryParam, data, false, !data);
       }catch(err){
         console.error(`error while fetching data in prepareQueryData with ${err}`);
