@@ -6,6 +6,35 @@ import Chip from '@material-ui/core/Chip';
 import { AppStoreContext } from '../../lib/store/appStore';
 import { observer } from 'mobx-react-lite';
 import DataView from '../../lib/components/DataView';
+import { fatrim } from '../../lib/utils/farsiUtils';
+
+function getSearchText(suggestion: any) {
+  if(!suggestion) return '';
+  return `${fatrim(suggestion.code)}${fatrim(suggestion.name)}`;
+}
+
+function makeupData(suggestions: any): any {
+  if(Array.isArray(suggestions)){
+    for(let i = suggestions.length - 1; i >= 0; i--){
+      const row = suggestions[i];
+      row.__search_text = getSearchText(row);
+      for(let j = i - 1; j >= 0; j--){
+        const parent = suggestions[j];
+        if(row.parentId === parent.id){
+          row.__parent = parent;
+          if(!parent.__children){
+            parent.__children = [row];
+          }else{
+            parent.__children.unshift(row);
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  return suggestions;
+}
 
 function getSuggestionValue(suggestion: any) {
   return suggestion.id;
@@ -31,8 +60,27 @@ function getSuggestionRow(suggestion: any) {
 }
 
 function filterValueOptions(options: any[], inputValue: string): any[]{
-  const suggestions = options.filter(row => getSuggestionDescription(row).indexOf(inputValue) > -1);
+  inputValue = fatrim(inputValue);
+  if(!inputValue || inputValue.toString().length < 3) return options;
+  const filtered = options.filter(row => {
+    return row.__search_text.indexOf(inputValue) > -1
+  });
+
+  const suggestions = [] as any[];
+  for(let i = 0; i < filtered.length; i++){
+    const row = filtered[i];
+    addParents(suggestions, row);
+  }
+
   return suggestions;
+}
+
+function addParents(suggestions: any[], row: any){
+  if(row.__parent){
+    addParents(suggestions, row.__parent);
+  }
+  if(suggestions.indexOf(row)===-1)
+    suggestions.push(row);
 }
 
 function isOptionParent(option: any): boolean{
@@ -69,6 +117,7 @@ export const AccField = (props: any)=>{
             query={'acc_list'}
             publicQuery={false}
             queryParam={{}}
+            makeupData={makeupData}
             translation={translation}
             getSuggestionValue={getSuggestionValue}
             getSuggestionDescription={getSuggestionDescription}
@@ -87,11 +136,12 @@ interface IDataIDViewProps {
   important?: boolean,
   chip?: boolean,
   span?: boolean,
+  withCode?: boolean,
   handleDelete?: () => void,
 }
 
 export const AccView: React.FunctionComponent<IDataIDViewProps> = observer((props) => {
-  const {id, label, important, chip, span, handleDelete} = props;
+  const {id, label, important, chip, span, handleDelete, withCode} = props;
 
   const appStore = useContext(AppStoreContext);
 
@@ -104,7 +154,7 @@ export const AccView: React.FunctionComponent<IDataIDViewProps> = observer((prop
     }
   }, [accKey, id, acc, appStore]);
 
-  const value = acc ? acc.name : '...';
+  const value = !acc ? '...' : (withCode ? acc.code + ' - ' : '') + acc.name;
 
   if(chip){
     return (

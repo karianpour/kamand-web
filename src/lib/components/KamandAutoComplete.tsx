@@ -83,7 +83,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
 
   useEffect(()=>{
     appStore.prepareQueryData(hashKey, query, queryParam, false, publicQuery, makeupData);
-  }, [appStore, hashKey, query, queryParam, publicQuery]);
+  }, [appStore, hashKey, query, queryParam, makeupData, publicQuery]);
 
   const refreshHandler = () => {
     appStore.prepareQueryData(hashKey, query, queryParam, true, publicQuery, makeupData);
