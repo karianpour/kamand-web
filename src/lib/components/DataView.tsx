@@ -44,7 +44,7 @@ const DataView: React.FunctionComponent<IDataViewProps> = (props) =>{
   const formattedValue = formatValue(value, format, scale);
 
   if(span){
-    return <span>{`${label}: `}<span className={(formattedValue.ltr ? ' ' + classes.ltr : '')}>{formattedValue.formattedValue}</span></span>
+    return <span>{label ? `${label}: ` : ''}<span className={(formattedValue.ltr ? ' ' + classes.ltr : '')}>{formattedValue.formattedValue}</span></span>
   }else{
     const classNames = inline || className ? {className: (className ? className: '') +(!inline ? '' : ' '+ classes.inline)} : undefined;
     return (
