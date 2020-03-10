@@ -37,15 +37,16 @@ const useKamandData = (options: IDataOptions) => {
     }
   }, [appStore, options, hashKey, queryParams]);
 
+  const queryData: IQueryData = appStore.getQueryData(hashKey);
+
   useEffect(()=>{
-    prepare(false);
-  }, [prepare]);
+    if(!queryData)
+      prepare(false);
+  }, [prepare, queryData]);
 
   const refreshHandler = () => {
     prepare(true);
   }
-
-  const queryData: IQueryData = appStore.getQueryData(hashKey);
 
   return {
     queryData,
