@@ -43,6 +43,7 @@ export interface FormConfig<Values>{
   initialValues?: Values;
   validate?: (values: Values) => Promise<FormErrors<Values>>;
   submit: (values: Values, form: KamandForm<Values>) => Promise<FormSubmitResult<Values>>;
+  onChange?: (path: string, previousValue: any, value: any) => void | Promise<void>;
 }
 
 export interface FormFieldProps {
@@ -154,14 +155,29 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
     return true;
   };
 
-  const setFieldValue = (path: string, value: any): void => {
+  let rerenderDepth  = 0;
+  const setFieldValue = async (path: string, value: any): Promise<void> => {
     const newValues = setIn(state.current.values, path, value);
     if(newValues === state.current.values){
       return;
     }
+    const previousValues = state.current.values;
     state.current.values = newValues;
     state.current.touched = setIn(state.current.touched, path, value !== getIn(props.initialValues, path));
-    rerender();
+    if(props.onChange) {
+      const previousValue = getIn(previousValues, path);
+      rerenderDepth++;
+      try{
+        await props.onChange(path, previousValue, value);
+      }catch(err){
+
+      }finally{
+        rerenderDepth--;
+      }
+    }
+    if(rerenderDepth===0) {
+      rerender();
+    }
   };
 
   const removeFromArray = (pathToArray: string, index: number): void => {
