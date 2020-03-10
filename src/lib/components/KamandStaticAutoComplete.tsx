@@ -42,8 +42,8 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
   const suggestionData = getListSuggestions();
 
   useEffect(()=>{
-    if(suggestionData && selectedValue && (!value || selectedValue!==getSuggestionValue(value))){
-      const newValue = suggestionData.find(row => getSuggestionValue(row) === selectedValue);
+    if(suggestionData && (selectedValue || (value && !selectedValue)) && (!value || selectedValue!==getSuggestionValue(value))){
+      const newValue = !selectedValue ? '' : suggestionData.find(row => getSuggestionValue(row) === selectedValue);
       setValue(newValue);
     }
   }, [suggestionData, selectedValue, value, getSuggestionValue, getSuggestionDescription]);

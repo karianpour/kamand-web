@@ -92,8 +92,8 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
   const suggestionData: IQueryData = appStore.getQueryData(hashKey);
 
   useEffect(()=>{
-    if(suggestionData && suggestionData.data && selectedValue){ // && (!value || selectedValue!==getSuggestionValue(value))
-      const newValue = suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
+    if(suggestionData && suggestionData.data && (selectedValue || (value && !selectedValue))){ // && (!value || selectedValue!==getSuggestionValue(value))
+      const newValue = !selectedValue ? '' : suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
       if(value !== newValue){
         setValue(newValue || '');
         setInputValue(getSuggestionDescription(newValue));
