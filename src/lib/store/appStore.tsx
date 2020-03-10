@@ -64,6 +64,10 @@ export class AppStore {
     return this.queryData.get(key);
   }
 
+  invalidateQueryDataCache(key: string): any{
+    return this.queryData.delete(key);
+  }
+
   async prepareQueryData(key: string, query: string, queryParam: any, forceRefresh: boolean, publicQuery: boolean = true, makeupData?: ( (data:any)=>any ) ) : Promise<void> {
     if(!this.queryData.has(key) || forceRefresh){
       const previousData = this.getQueryData(key);
@@ -167,6 +171,7 @@ decorate(AppStore, {
   
   setFilter: action,
   setQueryData: action,
+  invalidateQueryDataCache: action,
   prepareQueryData: action,
   setActData: action,
   loadActDataFirstCache: action,
