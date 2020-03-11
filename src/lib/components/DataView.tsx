@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 interface IDataViewProps {
-  label: string,
+  label?: string,
   value: any,
   format: Formats,
   scale?: number,
@@ -48,7 +48,7 @@ const DataView: React.FunctionComponent<IDataViewProps> = (props) =>{
   }else{
     const classNames = inline || className ? {className: (className ? className: '') +(!inline ? '' : ' '+ classes.inline)} : undefined;
     return (
-      <div {...classNames}><span className={classes.label}>{label} :</span> <span className={(important ? classes.textImportant : classes.text) +' '+ (formattedValue.ltr ? classes.ltr : '')}>{formattedValue.formattedValue}</span></div>
+      <div {...classNames}>{label && <span className={classes.label}>{label} : </span>}<span className={(important ? classes.textImportant : classes.text) +' '+ (formattedValue.ltr ? classes.ltr : '')}>{formattedValue.formattedValue}</span></div>
     );
   }
 }
