@@ -95,7 +95,6 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
 
   useEffect(()=>{
     if((!multiple && selectedValue !== insideValue) || (multiple && (selectedValue || []).join(',') !== insideValue)){
-      console.log('setting initial value');
       if(suggestionData?.data){
         if(!multiple){
           const newValue = !selectedValue ? '' : suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
