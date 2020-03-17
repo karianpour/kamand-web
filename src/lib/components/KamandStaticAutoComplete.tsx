@@ -19,8 +19,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer((props) => {
-  const [value, setValue] = useState<any>(null);
-
   const {
     name,
     value: selectedValue,
@@ -35,24 +33,46 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
     translation,
     filterValueOptions,
     getListSuggestions,
+    multiple,
   } = props;
+
+  const [value, setValue] = useState<any>(multiple ? [] : '');
+  const [insideValue, setInsideValue] = useState<any>('');
 
   const classes = useStyles();
 
   const suggestionData = getListSuggestions();
 
   useEffect(()=>{
-    if(suggestionData && (selectedValue || (value && !selectedValue)) && (!value || selectedValue!==getSuggestionValue(value))){
-      const newValue = !selectedValue ? '' : suggestionData.find(row => getSuggestionValue(row) === selectedValue);
-      setValue(newValue);
+    if((!multiple && selectedValue !== insideValue) || (multiple && (selectedValue || []).join(',') !== insideValue)){
+      if(suggestionData){
+        if(!multiple){
+          setInsideValue(selectedValue);
+          const newValue = !selectedValue ? '' : suggestionData.find(row => getSuggestionValue(row) === selectedValue);
+          setValue(newValue);
+        }else if(multiple){
+          const values = selectedValue || [];
+          setInsideValue(values.join(','));
+          const newValue = values.map( (v: string) => suggestionData.find(row => getSuggestionValue(row) === v));
+          setValue(newValue);
+        }
+      }
     }
-  }, [suggestionData, selectedValue, value, getSuggestionValue, getSuggestionDescription]);
+  }, [suggestionData, selectedValue, insideValue, getSuggestionValue, getSuggestionDescription, multiple]);
 
-  const handleChange = (event: any, value: any)=> {
-    if(value){
-      if(onChange) onChange({target: {name, value: getSuggestionValue(value)}});
-      setValue(value);
+  const handleChange = (event: any, newValue: any)=> {
+    if(!multiple && newValue){
+      const eventValue = getSuggestionValue(newValue);
+      setInsideValue(eventValue);
+      if(onChange) onChange({target: {name, value: eventValue}});
+      setValue(newValue);
+    }else if(multiple && Array.isArray(newValue)){
+      const eventValue = newValue.map( v=>getSuggestionValue(v));
+      setInsideValue(eventValue.join(','));
+      if(onChange) onChange({target: {name, value: eventValue}});
+      setValue(newValue);
     }else{
+      setInsideValue('');
       if(onChange) onChange({target: {name, value: ''}});
       setValue('');
     }
@@ -76,6 +96,7 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
       clearText={translation.clearText}
       noOptionsText={translation.noOptionsText}
       debug={false}
+      multiple={multiple}
       filterOptions={filterOptions}
       options={suggestionData || []}
       getOptionLabel={(option) => getSuggestionDescription(option)}
@@ -128,6 +149,7 @@ interface IPropsInput {
   getSuggestionRow?: (suggection: any)=>Node,
   filterValueOptions: (options: any[], inputValue: string)=>any[],
   getListSuggestions: ()=>any[],
+  multiple?: boolean,
 }
 
 

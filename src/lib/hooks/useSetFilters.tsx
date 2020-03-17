@@ -12,7 +12,14 @@ export const useSetFilter = (filterKeys: string[]) => {//filters?: string[]) => 
   useEffect(()=>{
     const params = parseSearch(search);
     filterKeys.forEach( k => {
-      appStore.setFilter(k, params[k] || null);
+      let pv = params[k] || null;
+      let v: string | string[] | null;
+      if( pv && pv.startsWith('{') && pv.endsWith('}')){
+        v = pv.substring(1, pv.length - 1).split(',');
+      }else{
+        v = pv;
+      }
+      appStore.setFilter(k, v);
     });
     // if(filters){
     //   const addingParams = filters.filter( f => params.findIndex( p => p.key === f ) === -1)

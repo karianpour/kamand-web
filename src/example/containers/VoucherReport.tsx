@@ -19,11 +19,15 @@ import { format } from "d3-format";
 import { AccField, AccView } from '../components/AccSuggest';
 import FilteredReport, { ReportClasses, makeReportUrl } from '../../lib/containers/FilteredReport';
 import { Typography } from '@material-ui/core';
+import { VoucherTypeField } from '../components/VoucherTypeField';
 
 const decimalFormatter = format("(,.0f");
 
 const FilterKeys = [
   'accId',
+  'accIds',
+  'voucherType',
+  'voucherTypes',
 ];
 
 const VoucherReport: React.FunctionComponent<IProps> = observer((props) => {
@@ -51,6 +55,43 @@ const VoucherReport: React.FunctionComponent<IProps> = observer((props) => {
                   label={label}
                   acceptParent={true}
                   filter={{forReport: true}}
+                />
+              </Grid>
+        )}},
+        {key: 'accIds', label: 'data.accs', mandatory: false, source: 'app',
+          editor: {
+            EditorComponent: ({value, handleChange, label})=>(
+              <Grid item xs={12} sm={6} lg={3} >
+                <AccField
+                  multiple
+                  value={value}
+                  onChange={handleChange}
+                  label={label}
+                  acceptParent={true}
+                  filter={{forReport: true}}
+                />
+              </Grid>
+        )}},
+        {key: 'voucherType', label: 'data.voucherType', mandatory: false, source: 'app',
+          editor: {
+            EditorComponent: ({value, handleChange, label})=>(
+              <Grid item xs={12} sm={6} lg={3} >
+                <VoucherTypeField
+                  value={value}
+                  onChange={handleChange}
+                  label={label}
+                />
+              </Grid>
+        )}},
+        {key: 'voucherTypes', label: 'data.voucherTypes', mandatory: false, source: 'app',
+          editor: {
+            EditorComponent: ({value, handleChange, label})=>(
+              <Grid item xs={12} sm={6} lg={3} >
+                <VoucherTypeField
+                  multiple
+                  value={value}
+                  onChange={handleChange}
+                  label={label}
                 />
               </Grid>
         )}},

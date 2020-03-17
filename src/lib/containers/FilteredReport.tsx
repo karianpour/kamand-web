@@ -48,7 +48,7 @@ type ReportStyles =
 
 export type ReportClasses = ClassNameMap<ClassKeyOfStyles<Styles<Theme, {}, ReportStyles>>>;
 
-const useStyles = makeStyles((theme: Theme) => { console.log(theme.direction);  return createStyles<ReportStyles, {}>({
+const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
   root: {
     marginBottom: '45px',
   },
@@ -134,7 +134,7 @@ const useStyles = makeStyles((theme: Theme) => { console.log(theme.direction);  
       padding: 20,
     },
   },
-})});
+}));
 
 interface FilterEditorProps {
   value: any,
@@ -306,7 +306,7 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
       return r;
     }).reduce<boolean>((r, f)=> (r && f), true);
     if(r){
-      const params = filters.map( f => ({key: f.key, value: appStore.getFilter(f.key)})).filter( f => !!f.value).map( f => `${f.key}=${f.value}`);
+      const params = filters.map( f => ({key: f.key, value: appStore.getFilter(f.key)})).filter( f => !!f.value).map( f => `${f.key}=${Array.isArray(f.value) ? '{'+f.value.join(',')+'}' : f.value}`);
       const location = `${history.location.pathname}${params.length===0?'':('?' + params.join('&'))}#R`;
       history.push(location);
     }
@@ -405,7 +405,7 @@ const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
 export default (FilteredReport);
 
 export const makeReportUrl = (baseUser: string, filterKeys: string[], argParams: any, queryParams: any): string => {
-  const params = filterKeys.map( f => ({key: f, value: (argParams[f] || queryParams[f])})).filter( f => !!f.value).map( f => `${f.key}=${f.value}`);
+  const params = filterKeys.map( f => ({key: f, value: (argParams[f] || queryParams[f])})).filter( f => !!f.value).map( f => `${f.key}=${Array.isArray(f.value) ? '{'+f.value.join(',')+'}' : f.value}`);
   const url = `${baseUser}${params.length===0?'':('?' + params.join('&'))}#R`;
   return url;
 }

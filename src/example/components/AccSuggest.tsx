@@ -2,6 +2,7 @@ import React, { useEffect, useContext} from 'react';
 import { useTranslation } from 'react-i18next';
 import KamandAutoComplete from '../../lib/components/KamandAutoComplete';
 import UpIcon from '@material-ui/icons/ArrowForward';
+import SelectMeIcon from '@material-ui/icons/Check';
 import Chip from '@material-ui/core/Chip';
 import { AppStoreContext } from '../../lib/store/appStore';
 import { observer } from 'mobx-react-lite';
@@ -46,17 +47,20 @@ function getSuggestionDescription(suggestion: any) {
 
 function getSuggestionRow(suggestion: any) {
   if(!suggestion) return null;
-  const {code, name, level, isParent} = suggestion;
+  const {code, name, level, leaf, isParent} = suggestion;
 
   if(isParent){
     return (
-      <div>
+      <>
         <UpIcon style={{position: 'absolute', right: 0, top: 'calc(50% - 14px)'}}/>
         <div style={{textIndent: 50, color: 'grey'}}>{code} - {name}</div>
-      </div>)
+      </>)
   }
 
-  return <div style={{textIndent: (+level - 1) * 10}}>{code} - {name}</div>
+  return <>
+    <div data-for="item" style={{textIndent: (+level - 1) * 10}}>{code} - {name}</div>
+    {!leaf && <SelectMeIcon data-for="selectMe"/>}
+  </>
 }
 
 function filterValueOptions(options: any[], inputValue: string): any[]{

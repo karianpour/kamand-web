@@ -45,12 +45,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props) => {
-  const [value, setValue] = useState<any>('');
-  const [inputValue, setInputValue] = useState<string>('');
-  const [parent, setParent] = useState<any>(null);
-  const [open, setOpen] = useState<boolean>(false);
-  const keepOpenRef = useRef<boolean>(false);
-
   const {
     name,
     value: selectedValue,
@@ -73,7 +67,15 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     filterParentOptions,
     acceptParent,
     addNew,
+    multiple,
   } = props;
+
+  const [value, setValue] = useState<any>(multiple ? [] : '');
+  const [insideValue, setInsideValue] = useState<any>('');
+  const [inputValue, setInputValue] = useState<string>('');
+  const [parent, setParent] = useState<any>(null);
+  const [open, setOpen] = useState<boolean>(false);
+  const keepOpenRef = useRef<boolean>(false);
 
   const classes = useStyles();
 
@@ -92,33 +94,47 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
   const suggestionData: IQueryData = appStore.getQueryData(hashKey);
 
   useEffect(()=>{
-    if(suggestionData && suggestionData.data && (selectedValue || (value && !selectedValue))){ // && (!value || selectedValue!==getSuggestionValue(value))
-      const newValue = !selectedValue ? '' : suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
-      if(value !== newValue){
-        setValue(newValue || '');
-        setInputValue(getSuggestionDescription(newValue));
+    if((!multiple && selectedValue !== insideValue) || (multiple && (selectedValue || []).join(',') !== insideValue)){
+      console.log('setting initial value');
+      if(suggestionData?.data){
+        if(!multiple){
+          const newValue = !selectedValue ? '' : suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
+          setInsideValue(newValue ? getSuggestionValue(newValue) : '');
+          setValue(newValue || '');
+          setInputValue(getSuggestionDescription(newValue));
+        }else if(multiple && selectedValue){
+          const values = selectedValue || [];
+          const newValue = values.map( (v: string) => suggestionData.data.find(row => getSuggestionValue(row) === v));
+          setInsideValue(newValue.filter( (v: any) => !!v ).map( (v: any)=>getSuggestionValue(v)).join(','));
+          setValue(newValue);
+          setInputValue('');
+        }else if(multiple && !selectedValue){
+          setValue([]);
+          setInputValue('');
+        }
       }
-      // setLastSelectedValue(newValue);
     }
-  }, [appStore, suggestionData, selectedValue, value, getSuggestionValue, getSuggestionDescription]);
+  }, [appStore, suggestionData, selectedValue, insideValue, setInsideValue, getSuggestionValue, getSuggestionDescription, multiple]);
 
-  const handleChange = useCallback((event: any, value: any)=> {
-    if(value){
-      if(value.isParent){
-        setParent(value.parent ? {isParent: true, ...value.parent} : null);
+  const handleChange = useCallback((event: any, newValue: any)=> {
+    if(!multiple && newValue){
+      if(newValue.isParent){
+        setParent(newValue.parent ? {isParent: true, ...newValue.parent} : null);
         if(!acceptParent){
-          setValue('');
+          setValue(multiple ? [] : '');
           setInputValue('');
         }
         keepOpenRef.current = true;
         // setTimeout(()=>setOpen(true), 200);
       }else{
-        if(isOptionParent && isOptionParent(value)){
-          setParent({isParent: true, parent, ...value});
+        if(isOptionParent && isOptionParent(newValue)){
+          setParent({isParent: true, parent, ...newValue});
           if(acceptParent){
-            if(onChange) onChange({target: {name, value: getSuggestionValue(value)}});
-            setValue(value || '');
-            setInputValue(getSuggestionDescription(value));
+            const eventValue = getSuggestionValue(newValue);
+            setInsideValue(eventValue);
+            if(onChange) onChange({target: {name, value: eventValue}});
+            setValue(newValue || '');
+            setInputValue(getSuggestionDescription(newValue));
           }else{
             setValue('');
             setInputValue('');
@@ -126,20 +142,73 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
           keepOpenRef.current = true;
           // setTimeout(()=>setOpen(true), 200);
         }else{
-          if(onChange) onChange({target: {name, value: getSuggestionValue(value)}});
-          setValue(value);
-          setInputValue(getSuggestionDescription(value));
+          const eventValue = getSuggestionValue(newValue);
+          setInsideValue(eventValue);
+          if(onChange) onChange({target: {name, value: eventValue}});
+          setValue(newValue);
+          setInputValue(getSuggestionDescription(newValue));
+        }
+      }
+    }else if(multiple && Array.isArray(newValue)){
+      const isItemTarget = isAttributeOf(event.target, 'data-for', 'item');
+      if(newValue.length < value.length && !isItemTarget){//user removed an item
+        const eventValue = newValue.map( v=>getSuggestionValue(v));
+        setInsideValue(eventValue.join(','));
+
+        if(onChange) onChange({target: {name, value: eventValue}});
+        setValue(newValue);
+        setInputValue('');
+        keepOpenRef.current = true;
+      }else{
+        let lastlySelected;
+        if(newValue.length > value.length){
+          lastlySelected = newValue[newValue.length - 1];
+        }else{
+          lastlySelected = value.find( (v: any) => newValue.findIndex( nv => getSuggestionValue(v) === getSuggestionValue(nv) ) === -1 );
+        }
+        if(lastlySelected.isParent){
+          setParent(lastlySelected.parent ? {isParent: true, ...lastlySelected.parent} : null);
+          keepOpenRef.current = true;
+        }else{
+          const isSelectMe = isAttributeOf(event.target, 'data-for', 'selectMe');
+          if(isOptionParent && isOptionParent(lastlySelected)){
+            if(!isSelectMe || !acceptParent) setParent({isParent: true, parent, ...lastlySelected});
+            if(acceptParent){
+              if(isSelectMe){
+                const eventValue = newValue.map( v=>getSuggestionValue(v));
+                setInsideValue(eventValue.join(','));
+                if(onChange) onChange({target: {name, value: eventValue}});
+                setValue(newValue);
+                setInputValue('');
+              }
+              // setInputValue(getSuggestionDescription(value));
+            }else{
+              newValue.splice(newValue.length - 1);
+              setValue(newValue);
+              setInputValue('');
+            }
+            keepOpenRef.current = true;
+            // setTimeout(()=>setOpen(true), 200);
+          }else{
+            const eventValue = newValue.map( v=>getSuggestionValue(v));
+            setInsideValue(eventValue.join(','));
+            if(onChange) onChange({target: {name, value: eventValue}});
+            setValue(newValue);
+            setInputValue('');
+            // setInputValue(getSuggestionDescription(newValue));
+          }
         }
       }
     }else{
+      setInsideValue('');
       if(onChange) onChange({target: {name, value: null}});
-      setValue('');
+      setValue(multiple ? [] : '');
       setInputValue('');
       if(event.type!=='change'){
         setParent(null);
       }
     }
-  }, [parent, name, setValue, setInputValue, setParent, onChange, getSuggestionDescription, getSuggestionValue, keepOpenRef, isOptionParent, acceptParent])
+  }, [value, parent, name, setValue, setInputValue, setParent, onChange, getSuggestionDescription, getSuggestionValue, keepOpenRef, isOptionParent, acceptParent, multiple])
 
   const onInputChange = useCallback((event: React.ChangeEvent<{}>, value: any) => {
     if(!event || event.type==='change'){
@@ -163,7 +232,9 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     if(!addNew) return;
     const selected = await addNew(value, parent);
     if(selected){
-      if(onChange) onChange({target: {name, value: getSuggestionValue(selected)}});
+      const eventValue = getSuggestionValue(selected);
+      setInsideValue(eventValue);
+      if(onChange) onChange({target: {name, value: eventValue}});
       refreshHandler();
     }
   }
@@ -195,6 +266,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
       clearText={translation.clearText}
       noOptionsText={translation.noOptionsText}
       debug={false}
+      multiple={multiple}
       filterOptions={filterOptions}
       options={suggestionData?.data || []}
       getOptionLabel={(option) => getSuggestionDescription(option)}
@@ -265,6 +337,7 @@ interface IPropsInput {
   filterParentOptions?: (options: any[], parent: any) => any[],
   acceptParent?: boolean,
   addNew?: (value: any, parent: any) => Promise<any>,
+  multiple?: boolean,
 }
 
 
@@ -307,4 +380,15 @@ export const AutoCompleteWithAdd = (props: any)=>{
       <EntryDialog open={open} onSaved={handleSaved} onClose={handleClose} filter={{...props.filter, parent, value}}/>
     </React.Fragment>
   )
+}
+
+function isAttributeOf(element: any, attr: string, value: string, asHighAs?: number): boolean{
+  const matched = element?.attributes[attr]?.value === value;
+  if(matched) return true;
+  if(asHighAs===0) return false;
+  if(!asHighAs) asHighAs = 4;
+  if(element?.parentElement){
+    return isAttributeOf(element?.parentElement, attr, value, asHighAs - 1);
+  }
+  return false;
 }
