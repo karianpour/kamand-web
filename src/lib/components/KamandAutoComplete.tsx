@@ -169,11 +169,11 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
           setParent(lastlySelected.parent ? {isParent: true, ...lastlySelected.parent} : null);
           keepOpenRef.current = true;
         }else{
-          const isSelectMe = isAttributeOf(event.target, 'data-for', 'selectMe');
+          const isDrill = isAttributeOf(event.target, 'data-for', 'drill');
           if(isOptionParent && isOptionParent(lastlySelected)){
-            if(!isSelectMe || !acceptParent) setParent({isParent: true, parent, ...lastlySelected});
+            if(isDrill || !acceptParent) setParent({isParent: true, parent, ...lastlySelected});
             if(acceptParent){
-              if(isSelectMe){
+              if(!isDrill){
                 const eventValue = newValue.map( v=>getSuggestionValue(v));
                 setInsideValue(eventValue.join(','));
                 if(onChange) onChange({target: {name, value: eventValue}});
@@ -215,7 +215,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
     }
   }, [setInputValue]);
 
-  const filterOptions = useCallback((options: any[], state: FilterOptionsState): any[] => {
+  const filterOptions = useCallback((options: any[], state: FilterOptionsState<any>): any[] => {
     let filtered = options;
 
     if(state.inputValue){

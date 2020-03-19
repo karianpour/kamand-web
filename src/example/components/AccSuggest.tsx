@@ -2,7 +2,7 @@ import React, { useEffect, useContext} from 'react';
 import { useTranslation } from 'react-i18next';
 import KamandAutoComplete from '../../lib/components/KamandAutoComplete';
 import UpIcon from '@material-ui/icons/ArrowForward';
-import SelectMeIcon from '@material-ui/icons/Check';
+import DrillIcon from '@material-ui/icons/ExpandMore';
 import Chip from '@material-ui/core/Chip';
 import { AppStoreContext } from '../../lib/store/appStore';
 import { observer } from 'mobx-react-lite';
@@ -58,8 +58,13 @@ function getSuggestionRow(suggestion: any) {
   }
 
   return <>
-    <div data-for="item" style={{textIndent: (+level - 1) * 10}}>{code} - {name}</div>
-    {!leaf && <SelectMeIcon data-for="selectMe"/>}
+    <div data-for="item" style={{textIndent: (+level - 1) * 10}}>
+      {code}
+      &nbsp;
+      {!leaf && <DrillIcon data-for="drill" style={{verticalAlign: 'middle'}}/>}
+      &nbsp;-&nbsp;
+      {name}
+    </div>
   </>
 }
 

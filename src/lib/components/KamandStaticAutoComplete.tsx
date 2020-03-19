@@ -78,7 +78,7 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
     }
   }
 
-  const filterOptions = (options: any[], state: FilterOptionsState): any[] => {
+  const filterOptions = (options: any[], state: FilterOptionsState<any>): any[] => {
     let filtered = options;
     if(state.inputValue){
       filtered = filterValueOptions(filtered, state.inputValue);
