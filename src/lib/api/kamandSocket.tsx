@@ -1,4 +1,6 @@
 import openSocket from 'socket.io-client';
+import { reaction } from 'mobx';
+import { authStore } from '../store/authStore';
 
 let socket: SocketIOClient.Socket;
 
@@ -21,7 +23,7 @@ export function connectWebSocketToServer() : void{
     console.log('socket event: error', payload);
   });
   socket.on('connect', () => {
-    // connected();
+    connected();
   });
   socket.on('connect_error', (error: any) => {
     console.log('socket event: connect_error', error);
@@ -49,12 +51,39 @@ export function connectWebSocketToServer() : void{
   });
 }
 
+async function connected() {
+  console.log('connected');
+  authorize(authStore.token);
+  reaction<string>(() => authStore.token || '', token => {
+    authorize(token);
+  }, {
+    delay: 2000,
+  });
+}
 
-export function doAsyncActData (query: string, data: any, callback: ((payload: any)=>void)): void {
+async function authorize(token?: string) {
+  console.log('authorizing');
+  if(!socket) return;
+  console.log('I have socket');
+  if(token){
+    console.log('I have token');
+    socket.emit('authorize', token);
+  }
+}
+
+export function doAsyncActData (query: string, data: any): void {
   if(!socket) {
     //TODO it should be handled properly!
     return;
   }
   socket.emit(query, data);
+}
+
+export function listenAsyncActData (query: string, callback: ((payload: any)=>void)): void {
+  if(!socket) {
+    //TODO it should be handled properly!
+    return;
+  }
+  socket.off(query, callback);
   socket.on(query, callback);
 }

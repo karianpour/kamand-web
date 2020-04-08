@@ -5,7 +5,7 @@ import { fetchData, loadActData, saveActData, removeActData } from '../api/kaman
 import { ISnackMessage } from './interfaces/authInterfaces';
 import { IQueryData } from './interfaces/dataInterfaces';
 import { hash } from '../utils/generalUtils';
-import { connectWebSocketToServer, doAsyncActData } from '../api/kamandSocket';
+import { connectWebSocketToServer, doAsyncActData, listenAsyncActData } from '../api/kamandSocket';
 
 configure({ enforceActions: "observed" });
 
@@ -145,11 +145,12 @@ export class AppStore {
     return result;
   }
 
-  async doAsyncActData(key: string, query: string, data: any) : Promise<void> {
-    this.setActData(key, data);
-    doAsyncActData(query, data, (payload: any)=>{
-      this.setActData(key, payload);
-    });
+  doAsyncActData(query: string, data: any) : void {
+    doAsyncActData(query, data);
+  }
+
+  listenAsyncActData(event: string, callback: ((payload: any)=>void)){
+    listenAsyncActData(event, callback);
   }
 
   setOptionData(key: string, data: any) {

@@ -11,6 +11,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import VoucherIcon from '@material-ui/icons/DataUsage';
 import ReportIcon from '@material-ui/icons/List';
 import JobIcon from '@material-ui/icons/CallToAction';
+import LongTaskIcon from '@material-ui/icons/AvTimer';
 // import DataTable from "./DataTable";
 import DataTab from './containers/DataTab';
 import VoucherTab from './containers/VoucherTab';
@@ -18,6 +19,7 @@ import VoucherForm from './containers/VoucherForm';
 import VoucherPrint from './containers/VoucherPrint';
 import VoucherReport from './containers/VoucherReport';
 import JobPage from './containers/JobPage';
+import LongTaskPage from './containers/LongTaskPage';
 // import AccForm from './containers/AccForm';
 import HomePage from './HomePage';
 import Login from './Login';
@@ -55,6 +57,12 @@ const App: React.FC = () => {
               <ListItemText primary={t('pages.job')} />
             </ListItem>
           </Link>
+          <Link to="/longTask">
+            <ListItem button key='longTask'>
+            <ListItemIcon><LongTaskIcon/></ListItemIcon>
+              <ListItemText primary={t('pages.longTask')} />
+            </ListItem>
+          </Link>
         </React.Fragment>
       )}
       login={<Login />}
@@ -67,6 +75,7 @@ const App: React.FC = () => {
       <Route path="/voucher" component={VoucherTab} />
       <Route path="/report" component={VoucherReport} />
       <Route path="/job" component={JobPage} />
+      <Route path="/longTask" component={LongTaskPage} />
     </KamandApp>
   );
 }

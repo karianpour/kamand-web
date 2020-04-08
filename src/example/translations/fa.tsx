@@ -14,6 +14,7 @@ const translation = {
       report: 'گزارش',
       print: 'چاپ',
       job: 'کار',
+      longTask: 'کار طولانی',
     },
     autoComplete: {
       openText: 'باز',
