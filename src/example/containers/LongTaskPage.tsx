@@ -100,22 +100,34 @@ function handleLongTaskEvent(appStore: AppStore, payload: any){
 }
 
 class LongTaskStore {
-  readonly list = observable.array<any>([]);
+  readonly list = observable.array<any>([], { deep: false});
 
   setList(list: any){
     this.list.clear();
-    this.list.push(...list)
+    this.list.push(...list.map( (p: any) => LongTaskStore.wrapProgress(p)))
   }
 
   setProgress(progress: any){
     const { id } = progress;
     const index = this.list.findIndex( (longTask: any) => longTask.id === id);
     if(index === -1){
-      this.list.push(progress);
+      this.list.unshift(LongTaskStore.wrapProgress(progress));
     }else{
-      this.list[index].progress = progress.progress;
-      this.list[index].finishedAt = progress.finishedAt;
+      this.list[index].setProgress(progress.progress, progress.finishedAt);
     }
+  }
+
+  static wrapProgress(p: any){
+    p.setProgress = function (progress: any, finishedAt: any){
+      this.progress = progress;
+      this.finishedAt = finishedAt;
+    };
+    
+    return observable.object(p, {
+      progress: observable,
+      finishedAt: observable,
+      setProgress: action,
+    }, { deep: false});
   }
 }
 decorate(LongTaskStore, {
