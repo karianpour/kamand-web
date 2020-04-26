@@ -28,7 +28,7 @@ import { AppStoreContext } from '../../lib/store/appStore';
 import { makeStyles } from '@material-ui/styles';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { AccField } from '../components/AccSuggest';
-import uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import { useKamandForm, KamandForm, FormSubmitResult } from '../../lib/hooks/useKamandForm';
 import { DefaultLoadingIndicator } from '../../lib/components/LazyLoadOnView';
 import { VoucherTypeField } from '../components/VoucherTypeField';
