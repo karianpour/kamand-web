@@ -1,6 +1,6 @@
 {
   "name": "kamand-web",
-  "version": "3.0.33",
+  "version": "3.0.34",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "files": [
@@ -61,24 +61,24 @@
     "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
-    "@material-ui/core": "^4.9.11",
+    "@material-ui/core": "^4.9.12",
     "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.50",
+    "@material-ui/lab": "^4.0.0-alpha.51",
     "@material-ui/styles": "^4.9.10",
     "@types/d3-dsv": "^1.0.36",
     "@types/d3-format": "^1.3.1",
     "@types/d3-time-format": "^2.1.1",
     "@types/jest": "^25.2.1",
-    "@types/node": "^12.12.36",
+    "@types/node": "^12.12.37",
     "@types/react": "^16.9.34",
-    "@types/react-dom": "^16.9.6",
-    "@types/react-router-dom": "^5.1.4",
+    "@types/react-dom": "^16.9.7",
+    "@types/react-router-dom": "^5.1.5",
     "@types/socket.io-client": "^1.4.32",
-    "@types/uuid": "^7.0.2",
+    "@types/uuid": "^7.0.3",
     "axios": "^0.19.2",
     "copyfiles": "^2.2.0",
     "d3-dsv": "^1.2.0",
-    "i18next": "^19.4.2",
+    "i18next": "^19.4.4",
     "jss-rtl": "^0.3.0",
     "localforage": "^1.7.3",
     "mobx": "^5.15.4",
@@ -86,10 +86,10 @@
     "mobx-react-lite": "^2.0.6",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-hichestan-datetimepicker": "^2.0.15",
-    "react-hichestan-numberinput": "^1.0.8",
-    "react-i18next": "^11.3.5",
-    "react-intersection-observer": "^8.26.1",
+    "react-hichestan-datetimepicker": "^2.0.16",
+    "react-hichestan-numberinput": "^1.0.9",
+    "react-i18next": "^11.4.0",
+    "react-intersection-observer": "^8.26.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1",
     "react-svg-gauge": "^1.0.10",
@@ -99,6 +99,6 @@
     "tslint-config-airbnb": "^5.11.2",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.8.3",
-    "uuid": "^7.0.3"
+    "uuid": "^8.0.0"
   }
 }

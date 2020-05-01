@@ -119,7 +119,7 @@ export function useKamandForm<Values extends FormValues = FormValues> (props: Fo
     state.current.isValidating = true;
     state.current.isSubmitting = true;
     state.current.submitCount = state.current.submitCount + 1;
-    // if I rerender he, the next rerender will not work
+    // if I rerender here, the next rerender will not work
     // rerender();
     
     if(props.validate){
