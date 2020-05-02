@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {TextKamandField, NumberKamandField} from '../lib/components/Fields';
 
 import {
   Grid,
   Button,
+  Box,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
@@ -14,22 +15,6 @@ import { makeStyles } from '@material-ui/styles';
 import { useKamandForm, FormSubmitResult } from '../lib/hooks/useKamandForm';
 
 const useStyles = makeStyles({
-  titleBox: {
-    padding: '8px 16px',
-    marginBottom: 25,
-    borderRadius: 3,
-  },
-  marginBtn: {
-    marginTop: 20
-  },
-  loginInput: {
-    width: '100%',
-    minHeight: 290,
-    margin: '3px 0'
-  },
-  marginInput: {
-    marginTop: 15
-  },
   loginBox: {
     padding: '60px 40px',
     margin: '15px auto',
@@ -38,16 +23,15 @@ const useStyles = makeStyles({
     '@media(max-width: 920px)':{
       padding: 20,
       width: 'auto',
-    }
+    },
   },
   btnBox: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    marginTop: 16,
+    marginBottom: 24,
+    // display: 'flex',
+    // justifyContent: 'flex-end',
+    // alignItems: 'flex-end',
   },
-  forgetBtn: {
-    margin: '20px 0 0'
-  }
 });
 
 interface Values {
@@ -59,10 +43,16 @@ const Login: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const authStore = useContext(AuthStoreContext);
+  const [ forgot, setForgot ] = useState<boolean>(false);
 
   const handleSubmit = async (values: Values): Promise<FormSubmitResult<Values>>  => {
     try {
-      await authStore.login(values.mobileNumber, values.password);
+      if(!forgot){
+        await authStore.login(values.mobileNumber, values.password);
+      }else{
+        await authStore.forgot(values.mobileNumber);
+        setForgot(false);
+      }
       return {}
     } catch (errors) {
       return {
@@ -76,7 +66,7 @@ const Login: React.FunctionComponent<IProps> = observer((props) => {
     if (!values.mobileNumber) {
       errors.mobileNumber = t('messages.required');
     }
-    if (!values.password) {
+    if (!forgot && !values.password) {
       errors.password = t('messages.required');
     }
     return errors;
@@ -90,44 +80,56 @@ const Login: React.FunctionComponent<IProps> = observer((props) => {
   });
 
   return (
-    <div className={classes.loginBox}>
-      <Grid container spacing={1}>
-        <div className={classes.loginInput}>
-          <Grid item xs={12}>
-            <NumberKamandField {...form.getFieldProps('mobileNumber')} label={t('auth.mobileNumber')} fullWidth placeholder={'0912*******'} inputProps={{type:'tel', maxLength: 12}}/>
-          </Grid>
-          <Grid item xs={12} className={classes.marginInput}>
-            <TextKamandField {...form.getFieldProps('password')} label={t('auth.password')} fullWidth type="password"/>
-          </Grid>
-        </div>
-        <Grid container spacing={1} className={classes.btnBox}>
-          <Grid sm={8} item>
-            <Button
-              style={{ width: '100%' }}
-              type="button"
-              variant="contained"
-              color="primary"
-              onClick={form.submitForm}
-              disabled={form.isSubmitting()}
-            >
-              {t('buttons.submit')}
-            </Button>
-          </Grid>
-          <Grid sm={4} item>
-            <Button
-              style={{ width: '100%' }}
-              type="button"
-              color="primary"
-              variant="contained"
-              onClick={form.resetForm}
-              disabled={form.isSubmitting() || !form.isDirty()}
-            >
-              {t('buttons.reset')}
-            </Button>
-          </Grid>
+    <Grid container spacing={1} className={classes.loginBox}>
+      <Grid item xs={12}>
+        <NumberKamandField {...form.getFieldProps('mobileNumber')} label={t('auth.mobileNumber')} fullWidth placeholder={'0912*******'} inputProps={{type:'tel', maxLength: 12, style: {textAlign: 'right' as any}}}/>
+      </Grid>
+      <Grid item xs={12}>
+        {!forgot && <TextKamandField {...form.getFieldProps('password')} label={t('auth.password')} fullWidth type="password"/>}
+        {forgot && <Box height={48}/>}
+      </Grid>
+      <Grid xs={12} item>
+        <Box height={24}/>
+      </Grid>
+      <Grid xs={8} item>
+        <Button
+          fullWidth
+          type="button"
+          variant="contained"
+          color="primary"
+          onClick={form.submitForm}
+          disabled={form.isSubmitting()}
+        >
+          {t('buttons.submit')}
+        </Button>
+      </Grid>
+      <Grid xs={4} item>
+        <Button
+          fullWidth
+          type="button"
+          color="primary"
+          variant="contained"
+          onClick={form.resetForm}
+          disabled={form.isSubmitting() || !form.isDirty()}
+        >
+          {t('buttons.reset')}
+        </Button>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid xs={12} item>
+          <Button
+            type="button"
+            fullWidth
+            color="primary"
+            variant="outlined"
+            onClick={() => setForgot(!forgot)}
+            disabled={form.isSubmitting()}
+          >
+            {forgot ? t('auth.remembered') : t('auth.forgot')}
+          </Button>
         </Grid>
       </Grid>
-    </div>
+    </Grid>
   );
 });
 

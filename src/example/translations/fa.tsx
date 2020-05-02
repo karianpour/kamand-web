@@ -32,6 +32,17 @@ const translation = {
       malformat: '{{field, translate}} فرمت نامناسبی دارد',
       network_error: 'ارتباط با سرور مشکل دارد',
     },
+    buttons: {
+      submit: 'ارسال',
+      reset: 'از اول',
+    },
+    auth: {
+      mobileNumber: 'شماره مبایل',
+      password: 'گذرواژه',
+      forgot: 'گذرواژه را فراموش کرده‌ام',
+      remembered: 'گذرواژه یادم‌آمد',
+      logout: 'خروج',
+    },
     data: {
       type_name: 'نوع',
       gauge_label: 'متوسط',

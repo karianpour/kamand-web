@@ -1,6 +1,6 @@
 import { observable, decorate, action, reaction, toJS, configure } from 'mobx';
 import { createContext, Context } from 'react';
-import { login, IUser } from '../api/authApi';
+import { login, forgot, IUser } from '../api/authApi';
 
 
 configure({ enforceActions: "observed" });
@@ -31,7 +31,13 @@ export class AuthStore {
 
   async login (username:string, password: string) : Promise<void> {
     const user = await login({username, password});
-    this.setUser(user);
+    setTimeout(() => {
+      this.setUser(user);
+    }, 0);
+  }
+
+  async forgot (username:string) : Promise<void> {
+    await forgot({username});
   }
 
   setOptionData(key: string, data: any) {

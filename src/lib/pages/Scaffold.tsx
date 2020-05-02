@@ -28,7 +28,6 @@ import ExitIcon from '@material-ui/icons/ExitToApp';
 import { AuthStoreContext } from '../store/authStore';
 import { AppStoreContext } from '../store/appStore';
 import NotFound from './NotFound';
-import LogoutPage from './LogoutPage';
 import PageTitle from '../containers/PageTitle';
 
 const useStyles = makeStyles({
@@ -60,6 +59,10 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
   const { appBarHidden } = appStore;
   const classes = useStyles();
   // const { user } = authStore;
+
+  const logout = () => {
+    authStore.clearUser();
+  }
 
   return (
     <Router>
@@ -96,12 +99,10 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
                 </ListItem>
               </Link>
               <Divider />
-              <Link to="/logout">
-                <ListItem button key='logout'>
-                  <ListItemIcon><ExitIcon /></ListItemIcon>
-                  <ListItemText primary={t('auth.logout')} />
-                </ListItem>
-              </Link>
+              <ListItem button key='logout' onClick={logout}>
+                <ListItemIcon><ExitIcon /></ListItemIcon>
+                <ListItemText primary={t('auth.logout')} />
+              </ListItem>
               <Divider />
               {props.menus}
             </List>
@@ -109,13 +110,12 @@ const Scaffold: React.FunctionComponent<IProps> = observer((props) => {
           </div>
         </Drawer>
         <div className={classes.content}>
-          {authStore.loggedin || !props.login ? null: props.login}
-          <Switch>
+          {(!authStore.loggedin && props.login) && props.login}
+          {(authStore.loggedin || !props.login) && <Switch>
             {props.home && <Route exact path="/" component={props.home} />}
-            <Route path="/logout" component={LogoutPage} />
             {props.children}
             <Route component={NotFound} />
-          </Switch>
+          </Switch>}
         </div>
       </div>
     </Router>
