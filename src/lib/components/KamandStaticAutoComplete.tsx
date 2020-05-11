@@ -36,8 +36,8 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
     multiple,
   } = props;
 
-  const [value, setValue] = useState<any>(multiple ? [] : '');
-  const [insideValue, setInsideValue] = useState<any>('');
+  const [value, setValue] = useState<any>(multiple ? [] : null);
+  const [insideValue, setInsideValue] = useState<any>(null);
 
   const classes = useStyles();
 
@@ -48,7 +48,7 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
       if(suggestionData){
         if(!multiple){
           setInsideValue(selectedValue);
-          const newValue = !selectedValue ? '' : suggestionData.find(row => getSuggestionValue(row) === selectedValue);
+          const newValue = !selectedValue ? null : suggestionData.find(row => getSuggestionValue(row) === selectedValue);
           setValue(newValue);
         }else if(multiple){
           const values = selectedValue || [];
@@ -72,9 +72,9 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
       if(onChange) onChange({target: {name, value: eventValue}});
       setValue(newValue);
     }else{
-      setInsideValue('');
+      setInsideValue(null);
       if(onChange) onChange({target: {name, value: ''}});
-      setValue('');
+      setValue(null);
     }
   }
 
@@ -84,6 +84,13 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
       filtered = filterValueOptions(filtered, state.inputValue);
     }
     return filtered;
+  }
+
+  const handleOptionSelected = (option: any, value: any):boolean => {
+    if(option && value && getSuggestionValue(option)===getSuggestionValue(value)){
+      return true;
+    }
+    return false;
   }
 
   return (
@@ -100,6 +107,7 @@ const KamandStaticAutoComplete: React.FunctionComponent<IPropsInput> = observer(
       filterOptions={filterOptions}
       options={suggestionData || []}
       getOptionLabel={(option) => getSuggestionDescription(option)}
+      getOptionSelected={handleOptionSelected}
       renderOption={(option, state) => (
         <MenuItem selected={state.selected} component="div">
           {getSuggestionRow && getSuggestionRow(option)}
