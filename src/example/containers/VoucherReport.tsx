@@ -20,6 +20,7 @@ import { AccField, AccView } from '../components/AccSuggest';
 import FilteredReport, { ReportClasses, makeReportUrl } from '../../lib/containers/FilteredReport';
 import { Typography } from '@material-ui/core';
 import { VoucherTypeField } from '../components/VoucherTypeField';
+import { DateInput, BooleanInput } from '../../lib/components/inputs';
 
 const decimalFormatter = format("(,.0f");
 
@@ -94,6 +95,33 @@ const VoucherReport: React.FunctionComponent<IProps> = observer((props) => {
                   label={label}
                 />
               </Grid>
+        )}},
+        {key: 'fromDate', label: 'pbl.fromDate', mandatory: false, source: 'app',
+          editor: {
+            EditorComponent: observer(({value, handleChange, label})=>{
+              return (
+              <Grid item xs={12} sm={6} lg={3} >
+                <DateInput
+                  value={value}
+                  onChange={handleChange}
+                  label={label}
+                  fullWidth
+                />
+              </Grid>
+              )}
+        )}},
+        {key: 'noHistory', label: 'pbl.noHistory', mandatory: false, source: 'app',
+          editor: {
+            EditorComponent: observer(({value, handleChange, label})=>{
+              return (
+              <Grid item xs={12} sm={6} lg={3} >
+                <BooleanInput
+                  value={value}
+                  onChange={handleChange}
+                  label={label}
+                />
+              </Grid>
+              )}
         )}},
       ]}
       HeaderComponent={({queryParams, classes})=>(

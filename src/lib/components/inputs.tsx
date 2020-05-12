@@ -113,12 +113,12 @@ export const BooleanInput = ({
         control={
           <Switch
             {...inputProps}
-            name={name}
+            // name={name}
             onChange={(event: any) => {
               onChange({target: {value: event?.target?.checked}})
             }}
             checked={value}
-            value={name}
+            // value={name}
           />
         }
       />
@@ -153,7 +153,7 @@ export const SelectInput = ({
           fullWidth
           value={value}
           onChange={onChange}
-          name={name}
+          // name={name}
           {...inputProps}
           // renderValue={value => `⚠️  - ${value}`}
         >
