@@ -15,7 +15,7 @@ export const useSetFilter = (filterKeys: string[]) => {//filters?: string[]) => 
       let pv = params[k] || null;
       let v: string | string[] | null;
       if( pv && pv.startsWith('{') && pv.endsWith('}')){
-        v = pv.substring(1, pv.length - 1).split(',');
+        v = pv.substring(1, pv.length - 1).split(',').filter( v => !!v );
       }else{
         v = pv;
       }

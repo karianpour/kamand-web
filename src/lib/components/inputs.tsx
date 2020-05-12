@@ -103,6 +103,7 @@ export const BooleanInput = ({
 }:any) => {
 
   if(value==='false') value = false;
+  value = !!value;
 
   return (
     <FormControl>
