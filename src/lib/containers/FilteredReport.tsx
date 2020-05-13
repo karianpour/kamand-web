@@ -116,7 +116,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
   },
   ['@media print']: { // eslint-disable-line no-useless-computed-key
     table: {
-      maxWidth: 768,
+      maxWidth: '100%',
+      width: '100%',
     },
     tableScroll: {
       overflow: 'unset',

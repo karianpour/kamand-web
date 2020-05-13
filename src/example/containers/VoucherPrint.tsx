@@ -70,10 +70,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   ['@media print']: { // eslint-disable-line no-useless-computed-key
     table: {
-      maxWidth: 768,
+      maxWidth: '100%',
+      width: '100%',
     },
     headerTable: {
-      maxWidth: 768,
+      maxWidth: 'unset',
     },
     '@global':{
       html: {
