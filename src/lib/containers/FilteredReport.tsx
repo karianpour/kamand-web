@@ -288,6 +288,7 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
   useEffect(() => {
     appStore.setPageTitle(title);
     appStore.setOptionData('hideFab', true);
+    appStore.hideAppBar(false);
   }, [appStore, title]);
 
   useSetFilter(filterKeys || []);
