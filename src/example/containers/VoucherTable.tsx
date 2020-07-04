@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 
-import { makeStyles, Paper } from '@material-ui/core';
+import { makeStyles, Paper, FormControlLabel, Switch, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -39,6 +39,8 @@ const dataOptions = (appStore: AppStore): IDataOptions => ({
     return {
       voucherNo: appStore.getFilter('voucherNo'),
       voucherDate: appStore.getFilter('voucherDate'),
+      onlyRegistered: appStore.getFilter('onlyRegistered'),
+      voucherStatus: appStore.getFilter('voucherStatus'),
     }
   },
   publicQuery: false,
@@ -55,19 +57,43 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
       justify="flex-start"
       alignItems="flex-end"
     >
-      <Grid item xs={3} >
+      <Grid item xs={12} sm={6} md={4} lg={3}>
         <TextField
           value={appStore.getFilter('voucherNo') || ''}
           onChange={(e: any) => appStore.setFilter('voucherNo', e.target.value)}
           label={t('data.voucherNo')}
         />
       </Grid>
-      <Grid item xs={3} >
+      <Grid item xs={12} sm={6} md={4} lg={3}>
         <TextField
           value={appStore.getFilter('voucherDate') || ''}
           onChange={(e: any) => appStore.setFilter('voucherDate', e.target.value)}
           label={t('data.voucherDate')}
         />
+      </Grid>
+      <Grid item xs={12} sm={6} md={4} lg={3}>
+        <FormControlLabel
+          control={<Switch 
+            checked={appStore.getFilter('onlyRegistered') || false} 
+            onChange={(e: any) => appStore.setFilter('onlyRegistered', e.target.checked)}
+          />}
+          label={t('games.onlyRegistered')}
+        />
+      </Grid>
+      <Grid item xs={12} sm={6} md={4} lg={3}>
+        <FormControl fullWidth>
+          <InputLabel id="VoucherStatusFilter">{t('data.voucherStatus')}</InputLabel>
+          <Select
+            labelId="VoucherStatusFilter"
+            id="VoucherStatusFilterSelect"
+            value={appStore.getFilter('voucherStatus')}
+            onChange={(e: any) => appStore.setFilter('voucherStatus', e.target.value)}
+            >
+            <MenuItem value={'current'}>{t('games.current')}</MenuItem>
+            <MenuItem value={'future'}>{t('games.future')}</MenuItem>
+            <MenuItem value={'latest'}>{t('games.latest')}</MenuItem>
+          </Select>
+        </FormControl>
       </Grid>
     </Grid>
   );
