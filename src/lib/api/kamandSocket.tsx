@@ -8,8 +8,7 @@ const SOCKETADDRESS = process.env.REACT_APP_SOCKETADDRESS || '';
 
 export function connectWebSocketToServer() : void{
 
-  const uri = (process.env.REACT_APP_WEBSOCKETADDRESS ? process.env.REACT_APP_WEBSOCKETADDRESS : '/');
-  console.log(`connecting websocket to ${uri}`);
+  console.log(`connecting websocket to ${SOCKETADDRESS}`);
   socket = openSocket(SOCKETADDRESS, {
     path: process.env.REACT_APP_SOCKETPATH || '/kamand-io',
     // host: '/',
