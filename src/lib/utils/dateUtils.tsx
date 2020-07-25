@@ -1,4 +1,4 @@
-const DATE_SEPERATOR =  '/';// this is arabic date seperator ' ؍' but it is right to left glyph and as the numbers are left to right there will be caret position problem
+const DATE_SEPERATOR =  '/';
 const MIDDLE_SEPERATOR =  '\xa0';
 const TIME_SEPERATOR =  ':';
 

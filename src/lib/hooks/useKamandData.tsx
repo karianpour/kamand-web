@@ -22,7 +22,7 @@ const useKamandData = (options: IDataOptions) => {
     queryParams = options.queryParams;
   }
 
-  const hashKey = options.key ? options.key : options.query + '/'+ hash(JSON.stringify(queryParams));
+  const hashKey = options.query + '/'+ hash(JSON.stringify(queryParams));
 
   const prepare = useCallback((forceRefresh: boolean) => {
     // console.log(`execute prepareQuery with ${queryParams}`)
