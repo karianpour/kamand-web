@@ -18,7 +18,7 @@ import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { format } from "d3-format";
 import { AccField, AccView } from '../components/AccSuggest';
 import FilteredReport, { ReportClasses, makeReportUrl } from '../../lib/containers/FilteredReport';
-import { Typography, TableFooter } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { VoucherTypeField } from '../components/VoucherTypeField';
 import { DateInput, BooleanInput } from '../../lib/components/inputs';
 import clsx from 'clsx';
