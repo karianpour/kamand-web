@@ -20,7 +20,12 @@ const KamandApp: React.FC<IProps> = (props) => {
       fontFamily: [
         'Nahid',
       ].join(','),
-    },  
+    },
+    palette: {
+      selected: {
+        row: '#bbd2f6',
+      }
+    },
   });
   
   // @ts-ignore

@@ -3,7 +3,7 @@ import { createContext, Context } from 'react';
 // import { setAppStore } from '../api/kamandApi';
 import { fetchData, loadActData, saveActData, removeActData } from '../api/kamandApi';
 import { ISnackMessage } from './interfaces/authInterfaces';
-import { IQueryData } from './interfaces/dataInterfaces';
+import { IQueryData, ISelection } from './interfaces/dataInterfaces';
 import { hash } from '../utils/generalUtils';
 import { connectWebSocketToServer, doAsyncActData, listenAsyncActData } from '../api/kamandSocket';
 
@@ -54,6 +54,7 @@ export class AppStore {
     const qd: IQueryData = observable.object({
       queryParam: observable.map(queryParam, { deep: false }),
       data: !data ? [] : observable.array(data, { deep: false }),
+      selection: new Selection(),
       loading,
       error,
     }, {  });
@@ -185,3 +186,26 @@ decorate(AppStore, {
 export const appStore = new AppStore();
 
 export const AppStoreContext: Context<AppStore> = createContext(appStore);
+
+
+export class Selection implements ISelection {
+  private selection = observable.map<number, boolean>({}, { deep: false });
+
+  isSelected(index: number): boolean{
+    return !!this.selection.get(index);
+  }
+
+  setSelected(index: number, selected: boolean){
+    if(!selected)
+      this.selection.delete(index);
+    else
+      this.selection.set(index, selected);
+  }
+
+  get selected(): boolean {
+    return this.selection.size > 0;
+  }
+}
+decorate(Selection, {
+  setSelected: action,
+});

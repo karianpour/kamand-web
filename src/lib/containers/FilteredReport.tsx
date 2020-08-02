@@ -28,6 +28,7 @@ import { useWindowSize } from '../hooks/useWindowSize';
 import { calcTotalOffset } from '../utils/generalUtils';
 import ReactToPrint from 'react-to-print';
 import './print.css';
+import { ISelection } from '../store/interfaces/dataInterfaces';
 
 type ReportStyles =
   "root" |
@@ -37,8 +38,12 @@ type ReportStyles =
   "table" |
   "tableScroll" |
   "rowRoot" |
+  "selectedRow" |
   "headerCell1" |
   "headerCell2" |
+  "summaryCell3" |
+  "summarySpaceHolder" |
+  "invisible" |
   "cellClickable" |
   "cellHiddenPrint" |
   "cellCode" |
@@ -50,7 +55,7 @@ export type ReportClasses = ClassNameMap<ClassKeyOfStyles<Styles<Theme, {}, Repo
 
 const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
   root: {
-    marginBottom: '45px',
+    // marginBottom: '45px',
   },
   btnContainer: {
     margin: 0,
@@ -75,6 +80,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
   rowRoot: {
     marginTop: '5px',
   },
+  selectedRow: {
+    backgroundColor: theme.palette.selected.row,
+  },
   cellHiddenPrint: {
     visibility: 'visible',
   },
@@ -95,6 +103,19 @@ const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
     textAlign: 'center',
     backgroundColor: theme.palette.background.default,
     // border: '1px solid grey',
+  },
+  summaryCell3: {
+    position: 'sticky',
+    zIndex: 1,
+    top: 'calc(100% - 2.6em)',
+    textAlign: 'center',
+    backgroundColor: theme.palette.background.default,
+  },
+  summarySpaceHolder: {
+    height: '2.6em',
+  },
+  invisible: {
+    visibility: 'hidden',
   },
   cellClickable: {
     cursor: 'pointer',
@@ -125,7 +146,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
     },
     '@global':{
       html: {
-        fontSize: '10px',
+        // fontSize: '10px',
       },
     },
     cellHiddenPrint: {
@@ -262,6 +283,7 @@ interface TableProps {
   queryParams: any,
   data: any[],
   classes: ReportClasses,
+  selection: ISelection,
 }
 interface HeaderProps {
   queryParams: any,
@@ -395,7 +417,7 @@ const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
 
         {queryData && !queryData.loading && !queryData.error && queryData.data && (
           <div ref={tableDivRef} className={classes.tableScroll}>
-              <TableComponent queryParams={queryParams} data={queryData.data} classes={classes}/>
+              <TableComponent queryParams={queryParams} data={queryData.data} selection={queryData.selection} classes={classes}/>
           </div>
         )}
       </div>
