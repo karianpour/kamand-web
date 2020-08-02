@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
     marginTop: '5px',
   },
   selectedRow: {
-    backgroundColor: theme.palette.selected.row,
+    backgroundColor: theme.palette.selected?.row || theme.palette.grey[300],
   },
   cellHiddenPrint: {
     visibility: 'visible',
