@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
     zIndex: 1,
     top: 'calc(100% - 2.6em)',
     textAlign: 'center',
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.primary.light,
   },
   summarySpaceHolder: {
     height: '2.6em',
