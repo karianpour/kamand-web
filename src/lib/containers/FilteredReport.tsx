@@ -22,7 +22,7 @@ import { AuthStoreContext, AuthStore } from '../store/authStore';
 import { AppStoreContext, AppStore } from '../store/appStore';
 import useKamandData, { IDataOptions } from '../hooks/useKamandData';
 
-import { useSetFilter } from '../hooks/useSetFilters';
+import { useSetFilter, createQueryString } from '../hooks/useSetFilters';
 import { useTranslation } from 'react-i18next';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { calcTotalOffset } from '../utils/generalUtils';
@@ -30,30 +30,7 @@ import ReactToPrint from 'react-to-print';
 import './print.css';
 import { ISelection } from '../store/interfaces/dataInterfaces';
 
-type ReportStyles =
-  "root" |
-  "page" |
-  "backBtn" |
-  "btnContainer" |
-  "table" |
-  "tableScroll" |
-  "rowRoot" |
-  "selectedRow" |
-  "headerCell1" |
-  "headerCell2" |
-  "summaryCell3" |
-  "summarySpaceHolder" |
-  "invisible" |
-  "cellClickable" |
-  "cellHiddenPrint" |
-  "cellCode" |
-  "cellNumber" |
-  "@media screen" | 
-  "@media print";
-
-export type ReportClasses = ClassNameMap<ClassKeyOfStyles<Styles<Theme, {}, ReportStyles>>>;
-
-const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
+const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     // marginBottom: '45px',
   },
@@ -158,12 +135,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles<ReportStyles, {}>({
   },
 }));
 
+type ReportStyles = keyof ReturnType<typeof useStyles>;
+
+export type ReportClasses = ClassNameMap<ClassKeyOfStyles<Styles<Theme, {}, ReportStyles>>>;
+
 interface FilterEditorProps {
   value: any,
   handleChange:((e:any) => void),
   label: string,
 }
-interface FilterField {
+export interface FilterField {
   key: string,
   label: string,
   mandatory: boolean,
@@ -173,6 +154,7 @@ interface FilterField {
     EditorComponent: React.FunctionComponent<FilterEditorProps>,
   },
 }
+export const provideFilterKeys = (filters: FilterField[]) => filters.filter( f => f.source === 'app' ).map( f => f.key);
 interface ReportFiltersProps {
   filters: FilterField[],
   classes: ReportClasses,
@@ -198,15 +180,6 @@ const ReportFilters: React.FunctionComponent<ReportFiltersProps> = observer((pro
       setAdvanceMode(hasAdvancedFilter);
     }
   }, [advanceMode, filters, appStore]);
-
-  const handleChange = (key: string) => {
-    return (e: any) => {
-      appStore.setFilter(key, e.target.value);
-      // const params = filters.map( f => ({key: f.key, value: appStore.getFilter(f.key)})).filter( f => !!f.value).map( f => `${f.key}=${f.value}`);
-      // const location = `${history.location.pathname}${params.length===0?'':('?' + params.join('&'))}`;
-      // history.push(location);
-    }
-  }
 
   const handleGoBack = () => {
     if(history.length > 0){
@@ -244,13 +217,7 @@ const ReportFilters: React.FunctionComponent<ReportFiltersProps> = observer((pro
             </Grid>
           </Grid>
         </Grid>
-        {filters.map( f => {
-          if(!f.editor) return null;
-          if(!advanceMode && f.advanced) return null;
-          const { key, label, editor: { EditorComponent } } = f;
-          const value = appStore.getFilter(key) || '';
-          return <EditorComponent key={key} label={t(label)} value={value} handleChange={handleChange(key)}/>;
-        })}
+        {filters.filter( f => f.editor && (advanceMode || !f.advanced)).map( f => <Filter key={f.key} filter={f}/>)}
         <Grid item xs={12} container spacing={1} justify="center" className={classes.btnContainer}>
           <Grid item xs={4} sm={3}>
             <Button variant="contained" color="secondary" onClick={showReport} fullWidth>
@@ -262,6 +229,35 @@ const ReportFilters: React.FunctionComponent<ReportFiltersProps> = observer((pro
     </Container>
   );
 });
+
+const Filter: React.FunctionComponent<{filter: FilterField}> = ({filter}) => {
+  const { t } = useTranslation();
+  const appStore = useContext(AppStoreContext);
+
+  const { key, label, editor } = filter;
+  const [value, setValue] = useState('');
+  const latestValue = useRef<any>(null);
+  const handleChange = (e: any) => {
+    setValue(e.target.value);
+    appStore.setFilter(key, e.target.value);
+  };
+
+  const newValue = appStore.getFilter(key);
+
+  useEffect(()=>{
+    if(latestValue.current !== newValue){
+      if(newValue!== null && newValue !== undefined){
+        setValue(newValue);
+      }
+    }
+    latestValue.current = newValue;
+  }, [newValue, latestValue]);
+
+  if(!editor) return null; // K1 this line never runs, as the filter is checked 
+  const { EditorComponent } = editor;
+
+  return <EditorComponent key={key} label={t(label)} value={value} handleChange={handleChange}/>;
+}
 
 const dataOptions = (query: string, filters: FilterField[], appStore: AppStore, authStore: AuthStore): IDataOptions => {
   const valueOfFilter = ((f: FilterField): any => {
@@ -284,6 +280,7 @@ interface TableProps {
   data: any[],
   classes: ReportClasses,
   selection: ISelection,
+  filterKeys: string[],
 }
 interface HeaderProps {
   queryParams: any,
@@ -292,14 +289,13 @@ interface HeaderProps {
 interface IProps {
   query: string,
   title: string,
-  filterKeys: string[],
   filters: FilterField[],
   TableComponent: React.FunctionComponent<TableProps>,
   HeaderComponent: React.FunctionComponent<HeaderProps>,
 }
 const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
-  const { query, title, filterKeys, filters, TableComponent, HeaderComponent } = props;
+  const { query, title, filters, TableComponent, HeaderComponent } = props;
   const classes = useStyles();
   const appStore = useContext(AppStoreContext);
   const authStore = useContext(AuthStoreContext);
@@ -313,7 +309,9 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
     appStore.hideAppBar(false);
   }, [appStore, title]);
 
-  useSetFilter(filterKeys || []);
+  const filterKeys = provideFilterKeys(filters);
+
+  const filtersReady = useSetFilter(filterKeys || []);
 
   const showReport = ()=>{
     // history.push(`#R`);
@@ -330,8 +328,9 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
       return r;
     }).reduce<boolean>((r, f)=> (r && f), true);
     if(r){
-      const params = filters.map( f => ({key: f.key, value: appStore.getFilter(f.key)})).filter( f => !!f.value).map( f => `${f.key}=${Array.isArray(f.value) ? '{'+f.value.join(',')+'}' : f.value}`);
-      const location = `${history.location.pathname}${params.length===0?'':('?' + params.join('&'))}#R`;
+      const params = filters.map( f => ({key: f.key, value: appStore.getFilter(f.key)}));
+      const queryString = createQueryString(params);
+      const location = `${history.location.pathname}${queryString}#R`;
       history.push(location);
     }
   }
@@ -351,8 +350,8 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
 
   return (
     <React.Fragment>
-      {tab==='F' && <ReportFilters filters={filters} classes={classes} showReport={showReport}/>}
-      {tab==='R' && <ReportTable query={query} filters={filters} HeaderComponent={HeaderComponent} TableComponent={TableComponent} classes={classes} handleGoBack={handleGoBack} handleShowFilter={handleShowFilter}/>}
+      {filtersReady && tab==='F' && <ReportFilters filters={filters} classes={classes} showReport={showReport}/>}
+      {filtersReady && tab==='R' && <ReportTable query={query} filterKeys={filterKeys} filters={filters} HeaderComponent={HeaderComponent} TableComponent={TableComponent} classes={classes} handleGoBack={handleGoBack} handleShowFilter={handleShowFilter}/>}
     </React.Fragment>
   );
 
@@ -360,6 +359,7 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
 
 interface ReportTable {
   query: string,
+  filterKeys: string[],
   filters: FilterField[],
   classes: ReportClasses,
   TableComponent: React.FunctionComponent<TableProps>,
@@ -368,7 +368,7 @@ interface ReportTable {
   handleShowFilter: ()=>void,
 }
 const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
-  const { query, filters, TableComponent, HeaderComponent, classes, handleGoBack, handleShowFilter } = props;
+  const { query, filterKeys, filters, TableComponent, HeaderComponent, classes, handleGoBack, handleShowFilter } = props;
   const appStore = useContext(AppStoreContext);
   const authStore = useContext(AuthStoreContext);
 
@@ -383,7 +383,7 @@ const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
     }
   });
 
-  const { queryData, queryParams, refreshHandler } = useKamandData(dataOptions(query, filters, appStore, authStore));
+  const { queryData, refreshHandler } = useKamandData(dataOptions(query, filters, appStore, authStore));
 
   const componentRef = useRef<HTMLDivElement>(null);
 
@@ -413,11 +413,11 @@ const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
       {queryData && queryData.error && <p>error</p>}
 
       <div ref={componentRef} className={classes.page}>
-        <HeaderComponent queryParams={queryParams} classes={classes}/>
+        {queryData && <HeaderComponent queryParams={queryData.queryParams} classes={classes}/>}
 
         {queryData && !queryData.loading && !queryData.error && queryData.data && (
           <div ref={tableDivRef} className={classes.tableScroll}>
-              <TableComponent queryParams={queryParams} data={queryData.data} selection={queryData.selection} classes={classes}/>
+              <TableComponent queryParams={queryData.queryParams} data={queryData.data} selection={queryData.selection} classes={classes} filterKeys={filterKeys}/>
           </div>
         )}
       </div>
@@ -429,7 +429,8 @@ const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
 export default (FilteredReport);
 
 export const makeReportUrl = (baseUser: string, filterKeys: string[], argParams: any, queryParams: any): string => {
-  const params = filterKeys.map( f => ({key: f, value: (argParams[f] || queryParams[f])})).filter( f => !!f.value).map( f => `${f.key}=${Array.isArray(f.value) ? '{'+f.value.join(',')+'}' : f.value}`);
-  const url = `${baseUser}${params.length===0?'':('?' + params.join('&'))}#R`;
+  const params = filterKeys.map( f => ({key: f, value: (argParams[f] || queryParams[f])}));
+  const queryString = createQueryString(params);
+  const url = `${baseUser}${queryString}#R`;
   return url;
 }

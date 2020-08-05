@@ -97,13 +97,18 @@ export const DateTimeInput = (props : any) => {
 export const BooleanInput = ({
   onChange,
   value,
+  defaultValue,
   label,
   inputProps,
   ...props
 }:any) => {
 
+  if(value==='true') value = true;
   if(value==='false') value = false;
-  value = !!value;
+  if(value !== undefined) value = !!value;
+  if(defaultValue==='true') defaultValue = true;
+  if(defaultValue==='false') defaultValue = false;
+  if(defaultValue !== undefined) defaultValue = !!defaultValue;
 
   return (
     <FormControl>
@@ -118,6 +123,7 @@ export const BooleanInput = ({
               onChange({target: {value: event?.target?.checked}})
             }}
             checked={value}
+            defaultChecked={defaultValue}
             // value={name}
           />
         }

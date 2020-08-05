@@ -1,6 +1,7 @@
 
 export interface IQueryData {
-	queryParam: any;
+	// queryParam: any;
+	queryParams: any;
 	data: any[];
 	selection: ISelection,
 	loading: boolean;

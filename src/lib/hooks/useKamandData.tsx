@@ -1,4 +1,4 @@
-import { useEffect, useContext, useCallback } from 'react';
+import { useEffect, useContext, useCallback, useRef, useState } from 'react';
 // import { observer } from 'mobx-react-lite';
 import { AppStoreContext } from '../store/appStore';
 import { IQueryData } from '../store/interfaces/dataInterfaces';
@@ -14,18 +14,20 @@ export interface IDataOptions {
 
 const useKamandData = (options: IDataOptions) => {
   const appStore = useContext(AppStoreContext);
-
-  let queryParams: any;
-  if(typeof options.queryParams === 'function'){
-    queryParams = options.queryParams();
-  }else{
-    queryParams = options.queryParams;
-  }
-
-  const hashKey = options.query + '/'+ hash(JSON.stringify(queryParams));
+  const hashKey = useRef<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [ _, setRefresher ] = useState(0);
 
   const prepare = useCallback((forceRefresh: boolean) => {
-    // console.log(`execute prepareQuery with ${queryParams}`)
+    let queryParams: any;
+    if(typeof options.queryParams === 'function'){
+      queryParams = options.queryParams();
+    }else{
+      queryParams = options.queryParams;
+    }
+
+    hashKey.current = options.query + '/'+ hash(JSON.stringify(queryParams));
+
     let prepareIt = true;
     if(typeof options.notReady === 'function'){
       prepareIt = !options.notReady(queryParams);
@@ -33,16 +35,30 @@ const useKamandData = (options: IDataOptions) => {
       prepareIt = !options.notReady;
     }
     if(prepareIt){
-      appStore.prepareQueryData(hashKey, options.query, queryParams, forceRefresh, options.publicQuery);
+      appStore.prepareQueryData(hashKey.current, options.query, queryParams, forceRefresh, options.publicQuery);
+      setRefresher((r) => r + 1);
     }
-  }, [appStore, options, hashKey, queryParams]);
+  }, [appStore, options, setRefresher]);
 
-  const queryData: IQueryData = appStore.getQueryData(hashKey);
+  const queryData: IQueryData = hashKey.current && appStore.getQueryData(hashKey.current);
 
   useEffect(()=>{
-    if(!queryData)
+    let queryParams: any;
+    if(typeof options.queryParams === 'function'){
+      queryParams = options.queryParams();
+    }else{
+      queryParams = options.queryParams;
+    }
+
+    hashKey.current = options.query + '/'+ hash(JSON.stringify(queryParams));
+    setRefresher((r) => r + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(()=>{
+    if(!queryData && hashKey.current)
       prepare(false);
-  }, [prepare, queryData]);
+  }, [prepare, queryData, hashKey]);
 
   const refreshHandler = () => {
     prepare(true);
@@ -50,7 +66,6 @@ const useKamandData = (options: IDataOptions) => {
 
   return {
     queryData,
-    queryParams,
     refreshHandler,
   }
 };

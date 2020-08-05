@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router';
 import { observer } from 'mobx-react-lite';
 
-import { makeStyles, Paper, FormControlLabel, Switch, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { makeStyles, Paper, FormControlLabel, Switch, MenuItem } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -17,10 +18,12 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import PrintIcon from '@material-ui/icons/Print';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
-import { AppStoreContext, AppStore, appStore } from '../../lib/store/appStore';
+import { AppStore, appStore } from '../../lib/store/appStore';
 import useKamandData, { IDataOptions } from '../../lib/hooks/useKamandData';
 import { AdapterLink } from '../../lib/components/misc';
 import { formatDateString, formatDateTimeString } from '../../lib/utils/dateUtils';
+import { useSetFilter, createQueryString } from '../../lib/hooks/useSetFilters';
+import { FilterEditor } from '../../lib/components/FilterEditor';
 
 
 const useStyles = makeStyles({
@@ -32,23 +35,23 @@ const useStyles = makeStyles({
   },
 });
 
+const FilterKeys = [
+  'voucherNo',
+  'voucherDate',
+  'onlyRegistered',
+  'voucherStatus',
+];
+
 const dataOptions = (appStore: AppStore): IDataOptions => ({
-  key: 'voucher',
   query: 'voucher_list',
   queryParams: ()=>{
-    return {
-      voucherNo: appStore.getFilter('voucherNo'),
-      voucherDate: appStore.getFilter('voucherDate'),
-      onlyRegistered: appStore.getFilter('onlyRegistered'),
-      voucherStatus: appStore.getFilter('voucherStatus'),
-    }
+    return FilterKeys.reduce<{[key: string]: any}>( (r, key) => ({...r, [key]: appStore.getFilter(key)}), {});
   },
   publicQuery: false,
 });
 
 const DataFilters: React.FunctionComponent<{}> = observer((props) => {
   const { t } = useTranslation();
-  const appStore = useContext(AppStoreContext);
 
   return (
     <Grid 
@@ -58,42 +61,61 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
       alignItems="flex-end"
     >
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <TextField
-          value={appStore.getFilter('voucherNo') || ''}
-          onChange={(e: any) => appStore.setFilter('voucherNo', e.target.value)}
-          label={t('data.voucherNo')}
+        <FilterEditor
+          filterKey='voucherNo'
+          EditorComponent={({value, handleChange}) => (
+            <TextField
+              value={value}
+              onChange={handleChange}
+              label={t('data.voucherNo')}
+            />
+          )}
         />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <TextField
-          value={appStore.getFilter('voucherDate') || ''}
-          onChange={(e: any) => appStore.setFilter('voucherDate', e.target.value)}
-          label={t('data.voucherDate')}
+        <FilterEditor
+            filterKey='voucherDate'
+            EditorComponent={({value, handleChange}) => (
+              <TextField
+                value={value}
+                onChange={handleChange}
+                label={t('data.voucherDate')}
+              />
+            )}
+          />
+        </Grid>
+      <Grid item xs={12} sm={6} md={4} lg={3}>
+        <FilterEditor
+          filterKey='onlyRegistered'
+          EditorComponent={({value, handleChange}) => (
+            <FormControlLabel
+              control={<Switch 
+                checked={value || false} 
+                onChange={handleChange}
+              />}
+              label={t('games.onlyRegistered')}
+            />
+          )}
         />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <FormControlLabel
-          control={<Switch 
-            checked={appStore.getFilter('onlyRegistered') || false} 
-            onChange={(e: any) => appStore.setFilter('onlyRegistered', e.target.checked)}
-          />}
-          label={t('games.onlyRegistered')}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        <FormControl fullWidth>
-          <InputLabel id="VoucherStatusFilter">{t('data.voucherStatus')}</InputLabel>
-          <Select
-            labelId="VoucherStatusFilter"
-            id="VoucherStatusFilterSelect"
-            value={appStore.getFilter('voucherStatus')}
-            onChange={(e: any) => appStore.setFilter('voucherStatus', e.target.value)}
+        <FilterEditor
+          filterKey='voucherStatus'
+          EditorComponent={({value, handleChange}) => (
+            <TextField
+              value={value}
+              onChange={handleChange}
+              label={t('data.voucherStatus')}
+              fullWidth
+              select
             >
-            <MenuItem value={'current'}>{t('games.current')}</MenuItem>
-            <MenuItem value={'future'}>{t('games.future')}</MenuItem>
-            <MenuItem value={'latest'}>{t('games.latest')}</MenuItem>
-          </Select>
-        </FormControl>
+              <MenuItem value={''}>-</MenuItem>
+              <MenuItem value={'current'}>{t('games.current')}</MenuItem>
+              <MenuItem value={'future'}>{t('games.future')}</MenuItem>
+              <MenuItem value={'latest'}>{t('games.latest')}</MenuItem>
+            </TextField>
+          )}
+        />
       </Grid>
     </Grid>
   );
@@ -102,45 +124,60 @@ const DataFilters: React.FunctionComponent<{}> = observer((props) => {
 const VoucherTable: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
   const classes = useStyles();
+  const history = useHistory();
+  
+  useSetFilter(FilterKeys || []);
 
   const { queryData, refreshHandler } = useKamandData(dataOptions(appStore));
 
-  if(!queryData) return null;
+
+  const handleRefresh = () => {
+    const params = FilterKeys.map( key => ({key, value: appStore.getFilter(key)}));
+    const queryString = createQueryString(params);
+    const location = `${history.location.pathname}${queryString}`;
+    history.push(location);
+
+    refreshHandler();
+  }
+
+  // if(!queryData) return null;
 
   return (
     <Paper className={classes.root}>
       <DataFilters/>
       <Button component={AdapterLink} to={`/voucher/edit/new`}><AddIcon/></Button>
-      {queryData.loading && <CircularProgress/>}
-      {!queryData.loading && <Button onClick={refreshHandler}><RefreshIcon/></Button>}
+      {queryData && <>
+        {queryData.loading && <CircularProgress/>}
+        {!queryData.loading && <Button onClick={handleRefresh}><RefreshIcon/></Button>}
 
-      {queryData.error && <p>error</p>}
+        {queryData.error && <p>error</p>}
 
-      {!queryData.loading && !queryData.error && <Table size='small'>
-        <TableHead>
-          <TableRow>
-            <TableCell padding='none' align="center">{t('data.voucherNo')}</TableCell>
-            <TableCell padding='none' align="center">{t('data.voucherDate')}</TableCell>
-            <TableCell padding='none' align="center">{t('data.createdAt')}</TableCell>
-            <TableCell padding='none' align="center">{t('data.actions')}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {queryData && queryData.data && queryData.data.map((td, index) => (
-            <TableRow key={index}>
-              <TableCell padding='none' component="th" scope="row">
-                {td.voucherNo}
-              </TableCell>
-              <TableCell padding='none' align="center">{mapToFarsi(formatDateString(td.voucherDate))}</TableCell>
-              <TableCell padding='none' align="center">{mapToFarsi(formatDateTimeString(td.createdAt))}</TableCell>
-              <TableCell padding='none' align="center">
-                <Button component={AdapterLink} to={`/voucher/edit/${td.id}`}><EditIcon/></Button>
-                <Button component={AdapterLink} to={`/voucher/print/${td.id}`}><PrintIcon/></Button>
-              </TableCell>
+        {!queryData.loading && !queryData.error && <Table size='small'>
+          <TableHead>
+            <TableRow>
+              <TableCell padding='none' align="center">{t('data.voucherNo')}</TableCell>
+              <TableCell padding='none' align="center">{t('data.voucherDate')}</TableCell>
+              <TableCell padding='none' align="center">{t('data.createdAt')}</TableCell>
+              <TableCell padding='none' align="center">{t('data.actions')}</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>}
+          </TableHead>
+          <TableBody>
+            {queryData && queryData.data && queryData.data.map((td, index) => (
+              <TableRow key={index}>
+                <TableCell padding='none' component="th" scope="row">
+                  {td.voucherNo}
+                </TableCell>
+                <TableCell padding='none' align="center">{mapToFarsi(formatDateString(td.voucherDate))}</TableCell>
+                <TableCell padding='none' align="center">{mapToFarsi(formatDateTimeString(td.createdAt))}</TableCell>
+                <TableCell padding='none' align="center">
+                  <Button component={AdapterLink} to={`/voucher/edit/${td.id}`}><EditIcon/></Button>
+                  <Button component={AdapterLink} to={`/voucher/print/${td.id}`}><PrintIcon/></Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>}
+      </>}
     </Paper>
   );
 

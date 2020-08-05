@@ -17,7 +17,7 @@ import ReportIcon from '@material-ui/icons/Toc';
 import { mapToFarsi } from '../../lib/utils/farsiUtils';
 import { format } from "d3-format";
 import { AccField, AccView } from '../components/AccSuggest';
-import FilteredReport, { ReportClasses, makeReportUrl } from '../../lib/containers/FilteredReport';
+import FilteredReport, { ReportClasses, makeReportUrl, FilterField, provideFilterKeys } from '../../lib/containers/FilteredReport';
 import { Typography } from '@material-ui/core';
 import { VoucherTypeField } from '../components/VoucherTypeField';
 import { DateInput, BooleanInput } from '../../lib/components/inputs';
@@ -26,12 +26,88 @@ import { ISelection } from '../../lib/store/interfaces/dataInterfaces';
 
 const decimalFormatter = format("(,.0f");
 
-const FilterKeys = [
-  'accId',
-  'accIds',
-  'voucherType',
-  'voucherTypes',
+const Filters: FilterField[] = [
+  // {key: 'bookId', label: 'data.book', mandatory: true, source: 'auth'},
+  {key: 'accId', label: 'data.acc', mandatory: false, source: 'app',
+    editor: {
+      EditorComponent: ({value, handleChange, label})=>(
+        <Grid item xs={12} sm={6} lg={3} >
+          <AccField
+            value={value}
+            onChange={handleChange}
+            label={label}
+            acceptParent={true}
+            filter={{forReport: true}}
+          />
+        </Grid>
+  )}},
+  {key: 'accIds', label: 'data.accs', mandatory: false, source: 'app',
+    editor: {
+      EditorComponent: ({value, handleChange, label})=>(
+        <Grid item xs={12} sm={6} lg={3} >
+          <AccField
+            multiple
+            value={value}
+            onChange={handleChange}
+            label={label}
+            acceptParent={true}
+            filter={{forReport: true}}
+          />
+        </Grid>
+  )}},
+  {key: 'voucherType', label: 'data.voucherType', mandatory: false, source: 'app',
+    editor: {
+      EditorComponent: ({value, handleChange, label})=>(
+        <Grid item xs={12} sm={6} lg={3} >
+          <VoucherTypeField
+            value={value}
+            onChange={handleChange}
+            label={label}
+          />
+        </Grid>
+  )}},
+  {key: 'voucherTypes', label: 'data.voucherTypes', mandatory: false, source: 'app',
+    editor: {
+      EditorComponent: ({value, handleChange, label})=>(
+        <Grid item xs={12} sm={6} lg={3} >
+          <VoucherTypeField
+            multiple
+            value={value}
+            onChange={handleChange}
+            label={label}
+          />
+        </Grid>
+  )}},
+  {key: 'fromDate', label: 'pbl.fromDate', mandatory: false, source: 'app',
+    editor: {
+      EditorComponent: observer(({value, handleChange, label})=>{
+        return (
+        <Grid item xs={12} sm={6} lg={3} >
+          <DateInput
+            value={value}
+            onChange={handleChange}
+            label={label}
+            fullWidth
+          />
+        </Grid>
+        )}
+  )}},
+  {key: 'noHistory', label: 'pbl.noHistory', mandatory: false, source: 'app',
+    editor: {
+      EditorComponent: observer(({value, handleChange, label})=>{
+        return (
+        <Grid item xs={12} sm={6} lg={3} >
+          <BooleanInput
+            value={value}
+            onChange={handleChange}
+            label={label}
+          />
+        </Grid>
+        )}
+  )}},
 ];
+
+const FilterKeys = provideFilterKeys(Filters);
 
 const VoucherReport: React.FunctionComponent<IProps> = observer((props) => {
   const { t } = useTranslation();
@@ -45,87 +121,7 @@ const VoucherReport: React.FunctionComponent<IProps> = observer((props) => {
     <FilteredReport 
       query='report'
       title={title}
-      filterKeys={FilterKeys}
-      filters={[
-        // {key: 'bookId', label: 'data.book', mandatory: true, source: 'auth'},
-        {key: 'accId', label: 'data.acc', mandatory: false, source: 'app',
-          editor: {
-            EditorComponent: ({value, handleChange, label})=>(
-              <Grid item xs={12} sm={6} lg={3} >
-                <AccField
-                  value={value}
-                  onChange={handleChange}
-                  label={label}
-                  acceptParent={true}
-                  filter={{forReport: true}}
-                />
-              </Grid>
-        )}},
-        {key: 'accIds', label: 'data.accs', mandatory: false, source: 'app',
-          editor: {
-            EditorComponent: ({value, handleChange, label})=>(
-              <Grid item xs={12} sm={6} lg={3} >
-                <AccField
-                  multiple
-                  value={value}
-                  onChange={handleChange}
-                  label={label}
-                  acceptParent={true}
-                  filter={{forReport: true}}
-                />
-              </Grid>
-        )}},
-        {key: 'voucherType', label: 'data.voucherType', mandatory: false, source: 'app',
-          editor: {
-            EditorComponent: ({value, handleChange, label})=>(
-              <Grid item xs={12} sm={6} lg={3} >
-                <VoucherTypeField
-                  value={value}
-                  onChange={handleChange}
-                  label={label}
-                />
-              </Grid>
-        )}},
-        {key: 'voucherTypes', label: 'data.voucherTypes', mandatory: false, source: 'app',
-          editor: {
-            EditorComponent: ({value, handleChange, label})=>(
-              <Grid item xs={12} sm={6} lg={3} >
-                <VoucherTypeField
-                  multiple
-                  value={value}
-                  onChange={handleChange}
-                  label={label}
-                />
-              </Grid>
-        )}},
-        {key: 'fromDate', label: 'pbl.fromDate', mandatory: false, source: 'app',
-          editor: {
-            EditorComponent: observer(({value, handleChange, label})=>{
-              return (
-              <Grid item xs={12} sm={6} lg={3} >
-                <DateInput
-                  value={value}
-                  onChange={handleChange}
-                  label={label}
-                  fullWidth
-                />
-              </Grid>
-              )}
-        )}},
-        {key: 'noHistory', label: 'pbl.noHistory', mandatory: false, source: 'app',
-          editor: {
-            EditorComponent: observer(({value, handleChange, label})=>{
-              return (
-              <Grid item xs={12} sm={6} lg={3} >
-                <BooleanInput
-                  value={value}
-                  onChange={handleChange}
-                  label={label}
-                />
-              </Grid>
-              )}
-        )}},
-      ]}
+      filters={Filters}
       HeaderComponent={({queryParams, classes})=>(
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -137,7 +133,7 @@ const VoucherReport: React.FunctionComponent<IProps> = observer((props) => {
           </Grid>
         </Grid>
       )}
-      TableComponent={({queryParams, data, selection, classes})=>(
+      TableComponent={({queryParams, data, selection, classes, filterKeys})=>(
         <Table className={classes.table} size="small">
         <TableHead>
           <TableRow>
@@ -180,7 +176,6 @@ const ReportRow: React.FunctionComponent<{queryParams: any, rowNo: number, data:
 
   const handleClick = () => {
     selection.setSelected(rowNo, !selected);
-    console.log('clicked')
   }
 
   const avoidClick = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -226,7 +221,7 @@ const ReportFooter: React.FunctionComponent<{data: any[], classes: ReportClasses
         </TableCell>
         <TableCell className={classes.cellNumber}>{mapToFarsi(decimalFormatter(total.amount))}</TableCell>
       </TableRow>
-      <TableRow className={clsx(classes.summarySpaceHolder, classes.cellHiddenPrint)}>&nbsp;</TableRow>
+      <TableRow className={clsx(classes.summarySpaceHolder, classes.cellHiddenPrint)}></TableRow>
     </>
   );
 });
@@ -248,7 +243,7 @@ const SelectionSummary: React.FunctionComponent<{data: any[], selection: ISelect
   return (
     <TableRow className={clsx(classes.cellHiddenPrint, !selected && classes.invisible)}>
       <TableCell className={classes.summaryCell3}></TableCell>
-      <TableCell className={clsx(classes.summaryCell3, classes.cellHiddenPrint)}></TableCell>
+      <TableCell className={clsx(classes.summaryCell3, classes.cellHiddenPrint, !selected && classes.invisible)}></TableCell>
       <TableCell colSpan={2} scope="row" className={clsx(classes.summaryCell3, classes.cellCode)}>
         {t('data.total')}
       </TableCell>

@@ -53,6 +53,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
   const {
     name,
     value: selectedValue,
+    defaultValue,
     error,
     helperText,
     onChange,
@@ -81,6 +82,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
   const [parent, setParent] = useState<any>(null);
   const [open, setOpen] = useState<boolean>(false);
   const keepOpenRef = useRef<boolean>(false);
+  const defaultValueIsSet = useRef<boolean>(false);
 
   const classes = useStyles();
 
@@ -99,26 +101,36 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
   const suggestionData: IQueryData = appStore.getQueryData(hashKey);
 
   useEffect(()=>{
-    if((!multiple && selectedValue !== insideValue) || (multiple && (selectedValue || []).join(',') !== insideValue)){
-      if(suggestionData?.data){
+    let settingValue = selectedValue;
+    if(defaultValue !== undefined){
+      if(defaultValueIsSet.current){
+        return;
+      }
+      settingValue = defaultValue;
+    }
+    if((!multiple && settingValue !== insideValue) || (multiple && (settingValue || []).join(',') !== insideValue)){
+      if(suggestionData?.data && !suggestionData?.loading){
         if(!multiple){
-          const newValue = !selectedValue ? null : suggestionData.data.find(row => getSuggestionValue(row) === selectedValue);
+          const newValue = !settingValue ? null : suggestionData.data.find(row => getSuggestionValue(row) === settingValue);
           setInsideValue(newValue ? getSuggestionValue(newValue) : null);
           setValue(newValue || null);
+          defaultValueIsSet.current = true;
           setInputValue(getSuggestionDescription(newValue));
-        }else if(multiple && selectedValue){
-          const values = selectedValue || [];
+        }else if(multiple && settingValue){
+          const values = settingValue || [];
           const newValue = values.map( (v: string) => suggestionData.data.find(row => getSuggestionValue(row) === v));
           setInsideValue(newValue.filter( (v: any) => !!v ).map( (v: any)=>getSuggestionValue(v)).join(','));
           setValue(newValue);
+          defaultValueIsSet.current = true;
           setInputValue('');
-        }else if(multiple && !selectedValue){
+        }else if(multiple && !settingValue){
           setValue([]);
+          defaultValueIsSet.current = true;
           setInputValue('');
         }
       }
     }
-  }, [appStore, suggestionData, selectedValue, insideValue, setInsideValue, getSuggestionValue, getSuggestionDescription, multiple]);
+  }, [defaultValueIsSet, appStore, suggestionData, selectedValue, defaultValue, insideValue, setInsideValue, getSuggestionValue, getSuggestionDescription, multiple]);
 
   const handleChange = useCallback((event: any, newValue: any)=> {
     if(!multiple && newValue){
@@ -328,6 +340,7 @@ const KamandAutoComplete: React.FunctionComponent<IPropsInput> = observer((props
 
 interface IPropsInput {
   value?: any,
+  defaultValue?: any,
   name?: string,
   onChange: any,
   label?: string,

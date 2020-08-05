@@ -45,14 +45,15 @@ export class AppStore {
     return this.filtersData.get(key);
   }
 
-  setQueryData(key: string, queryParam: any, data: any, loading: boolean, error: boolean) {
+  setQueryData(key: string, queryParams: any, data: any, loading: boolean, error: boolean) {
     if(Array.isArray(data)){
       data.forEach((d, i) => {
         d.arrayIndex = i;
       })
     }
     const qd: IQueryData = observable.object({
-      queryParam: observable.map(queryParam, { deep: false }),
+      // queryParam: observable.map(queryParam, { deep: false }),
+      queryParams,
       data: !data ? [] : observable.array(data, { deep: false }),
       selection: new Selection(),
       loading,
@@ -69,21 +70,21 @@ export class AppStore {
     return this.queryData.delete(key);
   }
 
-  async prepareQueryData(key: string, query: string, queryParam: any, forceRefresh: boolean, publicQuery: boolean = true, makeupData?: ( (data:any)=>any ) ) : Promise<void> {
+  async prepareQueryData(key: string, query: string, queryParams: any, forceRefresh: boolean, publicQuery: boolean = true, makeupData?: ( (data:any)=>any ) ) : Promise<void> {
     if(!this.queryData.has(key) || forceRefresh){
       const previousData = this.getQueryData(key);
       if(previousData){
-        this.setQueryData(key, queryParam, previousData.data, true, false);
+        this.setQueryData(key, queryParams, previousData.data, true, false);
       }else{
-        this.setQueryData(key, queryParam, undefined, true, false);
+        this.setQueryData(key, queryParams, undefined, true, false);
       }
       try{
-        let data = await fetchData(query, queryParam, publicQuery);
+        let data = await fetchData(query, queryParams, publicQuery);
         if(makeupData) data = makeupData(data);
-        this.setQueryData(key, queryParam, data, false, !data);
+        this.setQueryData(key, queryParams, data, false, !data);
       }catch(err){
         console.error(`error while fetching data in prepareQueryData with ${err}`);
-        this.setQueryData(key, queryParam, undefined, false, true);
+        this.setQueryData(key, queryParams, undefined, false, true);
       }
     }
   }
@@ -100,20 +101,20 @@ export class AppStore {
     return this.actData.delete(key);
   }
 
-  async loadActDataFirstCache(key: string, query: string, queryParam: any, makeObservable?: (data: any)=>any) : Promise<any> {
+  async loadActDataFirstCache(key: string, query: string, queryParams: any, makeObservable?: (data: any)=>any) : Promise<any> {
     const cache = this.actData.get(key);
     if(cache) return cache;
-    const data = await this.loadActData(key, query, queryParam, makeObservable);    
+    const data = await this.loadActData(key, query, queryParams, makeObservable);    
     return data;
   }
 
   private loadingActData: {[key:string]: boolean} = {};
-  async loadActData(key: string, query: string, queryParam: any, makeObservable?: (data: any)=>any) : Promise<any> {
-    const hashKey = query + '/'+ hash(JSON.stringify(queryParam));
+  async loadActData(key: string, query: string, queryParams: any, makeObservable?: (data: any)=>any) : Promise<any> {
+    const hashKey = query + '/'+ hash(JSON.stringify(queryParams));
     if(this.loadingActData[hashKey]) return;
     this.loadingActData[hashKey] = true;
     try{
-      const data = await loadActData(query, queryParam);
+      const data = await loadActData(query, queryParams);
       if(data){
         if(makeObservable){
           this.setActData(key, makeObservable(data));
