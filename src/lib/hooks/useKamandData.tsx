@@ -50,13 +50,15 @@ const useKamandData = (options: IDataOptions) => {
       queryParams = options.queryParams;
     }
 
-    hashKey.current = options.query + '/'+ hash(JSON.stringify(queryParams));
-    setRefresher((r) => r + 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const newHash = options.query + '/'+ hash(JSON.stringify(queryParams));
+    if(hashKey.current !== newHash){
+      hashKey.current = newHash;
+      setRefresher((r) => r + 1);
+    }
+  }, [options, hashKey, setRefresher]);
 
   useEffect(()=>{
-    if(!queryData && hashKey.current)
+    if((!queryData && hashKey.current) || (queryData?.queryParams?.key && hashKey.current && queryData.queryParams.key !== hashKey.current))
       prepare(false);
   }, [prepare, queryData, hashKey]);
 
