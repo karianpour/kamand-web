@@ -17,27 +17,11 @@ import {
   ClassNameMap,
   Styles,
 } from '@material-ui/styles/withStyles';
-import useKamandData, { IDataOptions } from '../hooks/useKamandData';
+import { IDataOptions } from '../hooks/useKamandData';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import useObservedKamandData from '../hooks/useObservedKamandData';
 
-type WidgetStyles =
-  "root" |
-  "skeleton" |
-  "inline" |
-  "dataRow" |
-  "data" |
-  "actionLink" |
-  "actionContent" |
-  "bottomDivider" |
-  "detailContainer" |
-  "cellCenter" |
-  "cellStart" |
-  "cellRight" |
-  "refresh";
-
-export type WidgetClasses = ClassNameMap<ClassKeyOfStyles<Styles<Theme, {}, WidgetStyles>>>;
-
-const useStyles = makeStyles((theme: Theme) => createStyles<WidgetStyles, {}>({
+const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     // minHeight: 100,
     // display: 'flex',
@@ -108,12 +92,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles<WidgetStyles, {}>({
   },
 }));
 
+type WidgetStyles = keyof ReturnType<typeof useStyles>;
+
+export type WidgetClasses = ClassNameMap<ClassKeyOfStyles<Styles<Theme, {}, WidgetStyles>>>;
+
 const StatWidget: React.FunctionComponent<WidgetProps> = observer((props) => {
   const classes = useStyles();
   // const [data, setData] = useState(false);
   const { title, idKey, dataOptions, expandable, RowComponent, ActionComponent } = props;
 
-  const { queryData, refreshHandler } = useKamandData(dataOptions);
+  const { queryData, refreshHandler } = useObservedKamandData(dataOptions);
 
   const [ subTree, setSubTree ] = useState<{[key: string]: boolean}>({});
 
@@ -200,7 +188,7 @@ export const StatRowDetail: React.FunctionComponent<StatRowDetailProps> = observ
   const classes = useStyles();
   const { dataOptions, idKey, expandable, RowComponent } = props;
 
-  const { queryData, refreshHandler } = useKamandData(dataOptions);
+  const { queryData, refreshHandler } = useObservedKamandData(dataOptions);
 
   const [ subTree, setSubTree ] = useState<{[key: string]: boolean}>({});
 
