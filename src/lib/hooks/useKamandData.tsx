@@ -58,7 +58,7 @@ const useKamandData = (options: IDataOptions) => {
   }, [options, hashKey, setRefresher]);
 
   useEffect(()=>{
-    if((!queryData && hashKey.current) || (queryData?.queryParams?.key && hashKey.current && queryData.queryParams.key !== hashKey.current))
+    if((!queryData && hashKey.current) || (queryData?.key && hashKey.current && queryData.key !== hashKey.current))
       prepare(false);
   }, [prepare, queryData, hashKey]);
 

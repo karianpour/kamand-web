@@ -1,5 +1,6 @@
 
 export interface IQueryData {
+	key?: string,
 	// queryParam: any;
 	queryParams: any;
 	data: any[];

@@ -51,8 +51,8 @@ export class AppStore {
         d.arrayIndex = i;
       })
     }
-    queryParams.key = key;
     const qd: IQueryData = observable.object({
+      key,
       // queryParam: observable.map(queryParam, { deep: false }),
       queryParams,
       data: !data ? [] : observable.array(data, { deep: false }),
