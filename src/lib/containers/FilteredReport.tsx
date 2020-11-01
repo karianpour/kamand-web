@@ -357,7 +357,7 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
 
 });
 
-interface ReportTable {
+interface ReportTableProps {
   query: string,
   filterKeys: string[],
   filters: FilterField[],
@@ -367,7 +367,7 @@ interface ReportTable {
   handleGoBack: ()=>void,
   handleShowFilter: ()=>void,
 }
-const ReportTable: React.FunctionComponent<ReportTable> = observer((props) => {
+const ReportTable: React.FunctionComponent<ReportTableProps> = observer((props) => {
   const { query, filterKeys, filters, TableComponent, HeaderComponent, classes, handleGoBack, handleShowFilter } = props;
   const appStore = useContext(AppStoreContext);
   const authStore = useContext(AuthStoreContext);
