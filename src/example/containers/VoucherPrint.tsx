@@ -128,7 +128,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const VoucherPrint: React.FunctionComponent<{}> = observer((props) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { id } = useParams();
+  const { id } = useParams<{id: string}>();
   const history = useHistory();
   const appStore = useContext(AppStoreContext);
 
