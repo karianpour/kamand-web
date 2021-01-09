@@ -1,8 +1,10 @@
-
+export interface IQueryParams {
+	[key: string]: any,
+}
 export interface IQueryData {
 	key?: string,
 	// queryParam: any;
-	queryParams: any;
+	queryParams: IQueryParams;
 	data: any[];
 	selection: ISelection,
 	loading: boolean;

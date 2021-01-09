@@ -9,6 +9,7 @@ import { makeStyles, Typography } from '@material-ui/core';
 import { RouteComponentProps } from 'react-router';
 import VoucherTable from './VoucherTable';
 import AccTable from './AccTable';
+import AccPaginatedTable from './AccPaginatedTable';
 import { AppStoreContext } from '../../lib/store/appStore';
 
 
@@ -57,10 +58,14 @@ const VoucherTab: React.FunctionComponent<IProps> = observer((props) => {
         <Tab label={<Typography color="textSecondary" gutterBottom>
           {t('data.acc')}
         </Typography>} />
+        <Tab label={<Typography color="textSecondary" gutterBottom>
+          {t('data.acc')}
+        </Typography>} />
       </Tabs>
       
       {activeTab === 0 && <VoucherTable />}
       {activeTab === 1 && <AccTable/>}
+      {activeTab === 2 && <AccPaginatedTable/>}
     </Paper>
   );
 

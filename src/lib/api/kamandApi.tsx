@@ -31,6 +31,39 @@ export async function fetchData(query: string, params: any, publicQuery: boolean
   }
 }
 
+export interface IPaginationMeta {
+  totalCount?:number,
+  offset:number,
+  limit:number,
+}
+
+export async function fetchPaginatedData(query: string, params: any, offset: number, limit: number, publicQuery: boolean) : Promise<{data: any[], meta: IPaginationMeta} | undefined>{
+  try{
+    const headers = {};
+    addToken(headers);
+    const config:AxiosRequestConfig = {
+      baseURL: APIADDRESS,
+      timeout: 30 * 1000,
+      params,
+      headers,
+    };
+    const result:any = await axios.get(`${publicQuery? '':'/private'}/paginated/${query}/${offset}/${limit}`, config);
+  
+    if(result.status === 200){
+      const { data } = result;
+      if(Array.isArray(data.data) && data.meta) {
+        return data;
+      }else{
+        console.error('data at fetchPaginatedData is not pagination data: ', data);
+      }
+    }else{
+      console.error('failed at fetchPaginatedData', result);
+    }
+  }catch(err){
+    console.error('failed at fetchPaginatedData', err);
+  }
+}
+
 export async function loadActData(query: string, params: any) : Promise<any>{
   try{
     const headers = {};

@@ -1,15 +1,15 @@
 import { useEffect, useContext, useState, useRef } from 'react';
-import { useHistory } from 'react-router';
+import { useLocation } from 'react-router';
 import { parseSearch } from '../utils/generalUtils';
 import { AppStoreContext } from '../store/appStore';
 
 export const useSetFilter = (filterKeys: string[]): boolean => {
-  const history = useHistory();
+  const location = useLocation();
   const appStore = useContext(AppStoreContext);
   const [ ready, setReady ] = useState(false);
   const lastSearch = useRef<string | null>(null);
   
-  const search = history.location.search;
+  const search = location.search;
   if(search !== lastSearch.current && ready) setReady(false);
   
   useEffect(()=>{

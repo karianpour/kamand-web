@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useLayoutEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { observer } from 'mobx-react-lite';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core';
@@ -28,7 +28,7 @@ import { useWindowSize } from '../hooks/useWindowSize';
 import { calcTotalOffset } from '../utils/generalUtils';
 import ReactToPrint from 'react-to-print';
 import './print.css';
-import { ISelection } from '../store/interfaces/dataInterfaces';
+import { IQueryParams, ISelection } from '../store/interfaces/dataInterfaces';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -271,7 +271,7 @@ const dataOptions = (query: string, filters: FilterField[], appStore: AppStore, 
     query,
     queryParams: () => filters.reduce<{[key: string]: any}>( (r, f) => ({...r, [f.key]: valueOfFilter(f)}), {}),
     publicQuery: false,
-    notReady: (queryParams:any):boolean => filters.filter( f => f.mandatory ).reduce<boolean>( (r, f) => (r || !queryParams[f.key]), false),
+    notReady: (queryParams:IQueryParams):boolean => filters.filter( f => f.mandatory ).reduce<boolean>( (r, f) => (r || !queryParams[f.key]), false),
   }
 }
 
@@ -300,8 +300,9 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
   const appStore = useContext(AppStoreContext);
   const authStore = useContext(AuthStoreContext);
   const history = useHistory();
+  const location = useLocation();
 
-  const tab = history.location.hash ? history.location.hash.substring(1) : 'F';
+  const tab = location.hash ? location.hash.substring(1) : 'F';
 
   useEffect(() => {
     appStore.setPageTitle(title);
@@ -318,7 +319,7 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
     const options = dataOptions(query, filters, appStore, authStore);
     let queryParams: any;
     if(typeof options.queryParams==='function'){
-      queryParams = options.queryParams(queryParams);
+      queryParams = options.queryParams();
     }else{
       queryParams = options.queryParams;
     }
@@ -330,8 +331,8 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
     if(r){
       const params = filters.map( f => ({key: f.key, value: appStore.getFilter(f.key)}));
       const queryString = createQueryString(params);
-      const location = `${history.location.pathname}${queryString}#R`;
-      history.push(location);
+      const newLocation = `${location.pathname}${queryString}#R`;
+      history.push(newLocation);
     }
   }
 
@@ -340,12 +341,12 @@ const FilteredReport: React.FunctionComponent<IProps> = observer((props) => {
       //TODO we have to check if the back url is in reports
       history.goBack();
     }else{
-      history.push(`${history.location.pathname}${history.location.search}#F`);
+      history.push(`${location.pathname}${location.search}#F`);
     }
   }
 
   const handleShowFilter = () => {
-    history.push(`${history.location.pathname}${history.location.search}#F`);
+    history.push(`${location.pathname}${location.search}#F`);
   }
 
   return (

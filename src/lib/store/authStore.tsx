@@ -1,4 +1,4 @@
-import { observable, decorate, action, reaction, toJS, configure } from 'mobx';
+import { observable, makeObservable, action, reaction, toJS, configure } from 'mobx';
 import { createContext, Context } from 'react';
 import { login, forgot, IUser } from '../api/authApi';
 
@@ -10,6 +10,18 @@ export class AuthStore {
   loggedin:boolean = false;
   token?:string;
   readonly optionData = observable.map<string, any>({}, { deep: false });
+
+  constructor() {
+    makeObservable(this, {
+      loggedin: observable,
+      token: observable,
+      user: observable.shallow,
+      setUser: action,
+      clearUser: action,
+      login: action,
+      setOptionData: action,
+    });
+  }
 
   setUser(user:IUser) {
     this.user = user;
@@ -48,16 +60,6 @@ export class AuthStore {
     return this.optionData.get(key);
   }
 }
-
-decorate(AuthStore, {
-  loggedin: observable,
-  token: observable,
-  user: observable.shallow,
-  setUser: action,
-  clearUser: action,
-  login: action,
-  setOptionData: action,
-});
 
 export const authStore = new AuthStore();
 

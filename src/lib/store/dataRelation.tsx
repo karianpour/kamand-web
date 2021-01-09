@@ -1,9 +1,14 @@
-import { observable, decorate, action } from 'mobx';
+import { observable, action, makeObservable } from 'mobx';
 
 export class DataRelation<T> {
   readonly data = observable.array<T>([], { deep: false });
 
   constructor(data: T[]){
+    makeObservable(this, {
+      add: action,
+      remove: action,
+    });
+
     this.data.replace(data);
   }
 
@@ -15,7 +20,3 @@ export class DataRelation<T> {
     this.data.splice(index, 1);
   }
 }
-decorate(DataRelation, {
-  add: action,
-  remove: action,
-});

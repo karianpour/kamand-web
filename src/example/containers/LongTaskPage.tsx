@@ -6,7 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles, Button } from '@material-ui/core';
 import { AppStoreContext, AppStore } from '../../lib/store/appStore';
 import { v4 as uuidv4 } from 'uuid';
-import { observable, decorate, action } from 'mobx';
+import { observable, makeObservable, action } from 'mobx';
 
 const query = 'long-task';
 
@@ -102,6 +102,13 @@ function handleLongTaskEvent(appStore: AppStore, payload: any){
 class LongTaskStore {
   readonly list = observable.array<any>([], { deep: false});
 
+  constructor() {
+    makeObservable(this, {
+      setList: action,
+      setProgress: action,
+    });    
+  }
+
   setList(list: any){
     this.list.clear();
     this.list.push(...list.map( (p: any) => LongTaskStore.wrapProgress(p)))
@@ -130,7 +137,3 @@ class LongTaskStore {
     }, { deep: false});
   }
 }
-decorate(LongTaskStore, {
-  setList: action,
-  setProgress: action,
-});

@@ -6,7 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles, Button } from '@material-ui/core';
 import { AppStoreContext, AppStore } from '../../lib/store/appStore';
 import FileUpload from './FileUpload';
-import { observable, decorate, action } from 'mobx';
+import { observable, makeObservable, action } from 'mobx';
 
 
 const useStyles = makeStyles({
@@ -79,11 +79,14 @@ function handleExportDataEvent(appStore: AppStore, payload: any){
 class ExportDataStore {
   step?: number;
 
+  constructor() {
+    makeObservable(this, {
+      step: observable,
+      setStep: action,
+    });    
+  }
+
   setStep(step: number){
     this.step = step;
   }
 }
-decorate(ExportDataStore, {
-  step: observable,
-  setStep: action,
-});

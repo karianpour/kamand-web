@@ -1,12 +1,12 @@
 import React, { useEffect, useContext, useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
 import { AppStoreContext, AppStore } from '../store/appStore';
-import { IQueryData } from '../store/interfaces/dataInterfaces';
+import { IQueryData, IQueryParams } from '../store/interfaces/dataInterfaces';
 
 export interface IDataOptions {
   key: string,
   query: string,
-  queryParams: object | ((appStore:AppStore)=>any),
+  queryParams: IQueryParams | ((appStore:AppStore)=>any),
   publicQuery: boolean,
   readonly forwardRef?: boolean,
 }

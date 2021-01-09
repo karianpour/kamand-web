@@ -35,8 +35,8 @@ const KamandApp: React.FC<IProps> = (props) => {
 
   useEffect(()=>{
     if(document && document.getElementsByTagName && props.direction==='rtl'){
-      const bodyElement = document.getElementsByTagName("BODY")[0];
-      bodyElement.setAttribute("dir", props.direction)
+      const htmlElement = document.getElementsByTagName("HTML")[0];
+      htmlElement.setAttribute("dir", props.direction)
     }
   }, [props.direction]);
 

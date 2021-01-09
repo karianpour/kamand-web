@@ -1,18 +1,17 @@
 import { useEffect, useContext, useCallback, useRef, useState } from 'react';
 // import { observer } from 'mobx-react-lite';
-import { AppStoreContext } from '../store/appStore';
-import { IQueryData, IQueryParams } from '../store/interfaces/dataInterfaces';
+import { AppStoreContext, PaginatedQueryData } from '../store/appStore';
+import { IQueryParams } from '../store/interfaces/dataInterfaces';
 import { hash } from '../utils/generalUtils';
 
-export interface IDataOptions {
-  key?: string,
+export interface IPaginateDataOptions {
   query: string,
   queryParams: IQueryParams | (()=>IQueryParams),
   publicQuery: boolean,
   notReady?: boolean | ((queryParams:IQueryParams)=>boolean),
 }
 
-const useKamandData = (options: IDataOptions) => {
+const useKamandPaginated = (options: IPaginateDataOptions) => {
   const appStore = useContext(AppStoreContext);
   const hashKey = useRef<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -35,12 +34,12 @@ const useKamandData = (options: IDataOptions) => {
       prepareIt = !options.notReady;
     }
     if(prepareIt){
-      appStore.prepareQueryData(hashKey.current, options.query, queryParams, forceRefresh, options.publicQuery);
+      appStore.preparePaginatedQueryData(hashKey.current, options.query, queryParams, forceRefresh, options.publicQuery, 2);
       setRefresher((r) => r + 1);
     }
   }, [appStore, options, setRefresher]);
 
-  const queryData: IQueryData = hashKey.current && appStore.getQueryData(hashKey.current);
+  const queryData: PaginatedQueryData | undefined = hashKey.current ? appStore.getPaginatedQueryData(hashKey.current) : undefined;
 
   useEffect(()=>{
     let queryParams: IQueryParams;
@@ -58,7 +57,7 @@ const useKamandData = (options: IDataOptions) => {
   }, [options, hashKey, setRefresher]);
 
   useEffect(()=>{
-    if((!queryData && hashKey.current) || (queryData?.key && hashKey.current && queryData.key !== hashKey.current))
+    if((!queryData && hashKey.current))
       prepare(false);
   }, [prepare, queryData, hashKey]);
 
@@ -72,4 +71,4 @@ const useKamandData = (options: IDataOptions) => {
   }
 };
 
-export default useKamandData;
+export default useKamandPaginated;
