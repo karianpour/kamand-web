@@ -297,7 +297,6 @@ export class PaginatedQueryData {
     const pageData = new PageData(index);
     if(index > this.pages.length){
       for(let i = this.pages.length; i <= index; i++) {
-        console.log(`setting ${i} index`);
         this.pages[i] = null;
       }
     }
