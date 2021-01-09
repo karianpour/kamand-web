@@ -9,6 +9,7 @@ export interface IPaginateDataOptions {
   queryParams: IQueryParams | (()=>IQueryParams),
   publicQuery: boolean,
   notReady?: boolean | ((queryParams:IQueryParams)=>boolean),
+  pageSize?: number,
 }
 
 const useKamandPaginated = (options: IPaginateDataOptions) => {
@@ -34,7 +35,7 @@ const useKamandPaginated = (options: IPaginateDataOptions) => {
       prepareIt = !options.notReady;
     }
     if(prepareIt){
-      appStore.preparePaginatedQueryData(hashKey.current, options.query, queryParams, forceRefresh, options.publicQuery, 2);
+      appStore.preparePaginatedQueryData(hashKey.current, options.query, queryParams, forceRefresh, options.publicQuery, options.pageSize || 10);
       setRefresher((r) => r + 1);
     }
   }, [appStore, options, setRefresher]);

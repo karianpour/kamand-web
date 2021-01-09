@@ -40,6 +40,7 @@ const dataOptions = (appStore: AppStore): IPaginateDataOptions => ({
     }
   },
   publicQuery: false,
+  pageSize: 5,
 });
 
 const DataFilters: React.FunctionComponent<{}> = observer((props) => {

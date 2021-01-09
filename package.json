@@ -1,6 +1,6 @@
 {
   "name": "kamand-web",
-  "version": "3.0.47",
+  "version": "3.0.48",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "files": [
