@@ -261,6 +261,11 @@ export class PaginatedQueryData {
     });
   }
 
+  suggestFilename(){
+    const params = Object.getOwnPropertyNames(this.queryParams).map( n => this.queryParams[n] ? `${n}-${this.queryParams[n].toString()}` : '').filter( v => !!v );
+    return `${this.query}_${params.join('_')}.csv`;
+  }
+
   getActivePageIndex(): number {
     return this.activePageIndex;
   }
@@ -333,6 +338,7 @@ export class PageData {
     makeObservable(this, {
       loading: observable,
       error: observable,
+      data: observable,
       setData: action,
       setError: action,
     });

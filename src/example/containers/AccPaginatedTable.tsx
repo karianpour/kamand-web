@@ -21,6 +21,7 @@ import { AdapterLink } from '../../lib/components/misc';
 import { formatDateTimeString } from '../../lib/utils/dateUtils';
 import useKamandPaginated, { IPaginateDataOptions } from '../../lib/hooks/useKamandPaginated';
 import Pagination from '@material-ui/lab/Pagination';
+import CsvExporter from '../../lib/components/CsvExport';
 
 const useStyles = makeStyles({
   root: {
@@ -40,7 +41,7 @@ const dataOptions = (appStore: AppStore): IPaginateDataOptions => ({
     }
   },
   publicQuery: false,
-  pageSize: 5,
+  pageSize: 3,
 });
 
 const DataFilters: React.FunctionComponent<{}> = observer((props) => {
@@ -92,7 +93,10 @@ const AccPaginatedTable: React.FunctionComponent<IProps> = observer((props) => {
       <DataFilters/>
       <Button component={AdapterLink} to={`/acc/edit/new`}><AddIcon/></Button>
       {currentPage.loading && <CircularProgress/>}
-      {!currentPage.loading && <Button onClick={refreshHandler}><RefreshIcon/></Button>}
+      {!currentPage.loading && <>
+        <Button onClick={refreshHandler}><RefreshIcon/></Button>
+        <CsvExporter queryData={queryData}/>
+      </>}
 
       {currentPage.error && <p>error</p>}
 
