@@ -3,7 +3,16 @@ import {
   RouteComponentProps
 } from "react-router-dom";
 import MenuItem from '@material-ui/core/MenuItem';
-import { TextKamandField, DecimalKamandField, NumberKamandField, SelectKamandField, BooleanKamandField, DateTimeKamandField, DateKamandField } from '../../lib/components/Fields';
+import {
+  TextKamandField,
+  DecimalKamandField,
+  NumberKamandField,
+  SelectKamandField,
+  BooleanKamandField,
+  DateTimeKamandField,
+  DateKamandField,
+  QRCodeReaderField
+} from '../../lib/components/Fields';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -160,6 +169,7 @@ const VoucherForm: React.FunctionComponent<IProps> = observer((props) => {
 
   const handleSubmit = async (values: Values): Promise<FormSubmitResult<Values>> => {
     try {
+      alert(values.remark);
       await appStore.saveActData(key, `/voucher/${values.id}`, values);
       appStore.setSnackMessage({message: t('info.succeed')});
       // console.log(values)
@@ -299,7 +309,7 @@ const MainTab: React.FunctionComponent<{form: KamandForm<Values>}> = (props) => 
         <BooleanKamandField {...form.getFieldProps('registered')} label={t('data.registered')} inputProps={{color:"primary"}} />
       </Grid>
       <Grid item xs={12}>
-        <TextKamandField {...form.getFieldProps('remark')} label={t('data.remark')} fullWidth margin="normal" />
+        <QRCodeReaderField {...form.getFieldProps('remark')} label={t('data.remark')} fullWidth margin="normal" />
       </Grid>
     </React.Fragment>
   )
