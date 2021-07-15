@@ -11,7 +11,6 @@ import {
   BooleanKamandField,
   DateTimeKamandField,
   DateKamandField,
-  QRCodeReaderField
 } from '../../lib/components/Fields';
 
 import Tabs from '@material-ui/core/Tabs';
@@ -41,6 +40,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useKamandForm, KamandForm, FormSubmitResult } from '../../lib/hooks/useKamandForm';
 import { DefaultLoadingIndicator } from '../../lib/components/LazyLoadOnView';
 import { VoucherTypeField } from '../components/VoucherTypeField';
+import {QRCodeReaderField} from "../../lib/components/QRCodeReaderField";
 
 
 const useStyles = makeStyles({
