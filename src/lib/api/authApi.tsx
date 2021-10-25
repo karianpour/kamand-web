@@ -35,7 +35,7 @@ export async function login(loginInfo : ILogin) : Promise<IUser>{
       };
       throw e;
     }
-  }catch(err){
+  }catch(err:any){
     const error = extractError(err);
     if(!error){
       if(err.response.status===404){
@@ -68,7 +68,7 @@ export async function forgot(forgotInfo : IForgot) : Promise<IUser>{
       };
       throw e;
     }
-  }catch(err){
+  }catch(err:any){
     const error = extractError(err);
     if(!error){
       if(err.response.status===404){

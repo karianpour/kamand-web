@@ -69,8 +69,11 @@ export function exportToCsv(filename: string, headers: string[], rows: any[][]) 
   }
 
   var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
-  if (navigator.msSaveBlob) { // IE 10+
-      navigator.msSaveBlob(blob, filename);
+
+  let newVariable: any;
+  newVariable = navigator;
+  if (newVariable.msSaveBlob) { // IE 10+
+    newVariable.msSaveBlob(blob, filename);
   } else {
       var link = document.createElement("a");
       if (link.download !== undefined) { // feature detection

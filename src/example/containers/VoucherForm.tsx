@@ -174,7 +174,7 @@ const VoucherForm: React.FunctionComponent<IProps> = observer((props) => {
       appStore.setSnackMessage({message: t('info.succeed')});
       // console.log(values)
       return {}
-    } catch (errors) {
+    } catch (errors:any) {
       console.log({errors})
       if(errors.message){
         appStore.setSnackMessage(errors);
