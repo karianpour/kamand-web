@@ -54,7 +54,7 @@ const Login: React.FunctionComponent<IProps> = observer((props) => {
         setForgot(false);
       }
       return {}
-    } catch (errors) {
+    } catch (errors:any) {
       return {
         errors,
       }
