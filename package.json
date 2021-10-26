@@ -60,6 +60,7 @@
     "react-to-print": "^2.12.2",
     "socket.io-client": "^2.4.0"
   },
+
   "devDependencies": {
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
